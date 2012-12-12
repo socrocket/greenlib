@@ -1,0 +1,24 @@
+
+             SystemC 2.2.0 --- Jul  9 2007 11:52:11
+        Copyright (c) 1996-2006 by all Contributors
+                    ALL RIGHTS RESERVED
+created sharedio register Reg0 = 0xabc
+
+Entering sc_start : simulation starting
+
+Entered MyMod::end_of_elaboration..
+..Finished MyMod::end_of_elaboration
+5 ns ****** got register notification for Reg0 (DR)..1  value = 0xc
+5 ns ****** got register notification for Reg0 (DR)..2  value = 0xc
+5 ns ****** got register notification for Reg0 (DR)..3  value = 0xc
+
+10 ns ****** got register notification for Reg0 (DR)..2  value = 0xd4
+10 ns ****** got register notification for Reg0 (DR)..3  value = 0xd4
+10 ns ****** got register notification for Reg0 (DR)..1  value = 0xd4
+
+15 ns ****** got register notification for Reg0 (DR)..3  value = 0x19c
+15 ns ****** got register notification for Reg0 (DR)..2  value = 0x19c
+15 ns ****** got register notification for Reg0 (DR)..1  value = 0x19c
+
+..Finished MyMod::main_action 20 ns
+Exited sc_start : simulation finished

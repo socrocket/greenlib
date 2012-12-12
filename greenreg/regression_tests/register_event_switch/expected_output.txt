@@ -1,0 +1,177 @@
+
+             SystemC 2.2.0 --- Jul  9 2007 11:52:11
+        Copyright (c) 1996-2006 by all Contributors
+                    ALL RIGHTS RESERVED
+ReceiverSlaveDevice.slave_port.gs_param_base_0: Make callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_1: Make callbacks and notify event
+created sharedio register Reg0 = 0xabc
+
+created splitio register Reg1 = 0xab
+
+bit range bit_range_4_6 = 2
+
+
+--------- START simulation ---------
+
+Entered ReceiverSlaveDevice::end_of_elaboration
+register GR_FUNCTION usr out notification rule
+register GR_FUNCTION usr_out notification rule
+register GR_FUNCTION PRE bus read notification rule
+register SC_METHOD usr_out notification rule
+register GR_FUNCTION POST bus read notification rule
+register GR_FUNCTION bit range notification rule
+register SC_METHOD bit range notification rule
+
+Finished ReceiverSlaveDevice::end_of_elaboration
+
+
+ReceiverSlaveDevice::main_action_METHOD:
+  action r[0x00] = 50
+@0 s /0 (show_notification_reg0_GR): ****** got register notification (GR_FUNCTION callback) for Reg0
+   value = 2748=0xabc
+  action r[0x01] = 150
+@0 s /0 (show_notification_reg1_GR): ****** got register notification (GR_FUNCTION callback) for Reg1
+   value = 150=0x96
+@0 s /0 (show_bitr46_notification_GR): ****** got bit notification (GR_FUNCTION callback) for Reg1 bit range 4-6
+   value = 1
+@0 s /0 (TestMasterDevice): ---- SC_METHOD Reading reg [0x01]
+
+Warning: /GreenSocs/GreenReg: ATTENTION: Pre read notification rules will be skipped because you are calling from within an SC_METHOD! Either disable events for notification rules of this register or use an SC_THREAD to be able to process a wait here!
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register_data/primary_register_data.cpp:182
+In process: TestMasterDevice.send_method @ 0 s
+@0 s /0 (show_notification_reg1_POST_busread_GR): ****** got POST bus read notification (GR_FUNCTION callback) for Reg1
+   value = 150
+@0 s /0 (TestMasterDevice):      read value: 150
+
+@0 s /0 (show_notification_reg1_Sc): ****** got register notification (SC_METHOD event notification) for Reg1
+   value = 150=0x96
+
+
+Entered ReceiverSlaveDevice::main_action_THREAD:
+  action r[0x00] = 50
+@5 ns /1 (show_notification_reg0_GR): ****** got register notification (GR_FUNCTION callback) for Reg0
+   value = 2748=0xabc
+  action r[0x01] = 5
+@10 ns /2 (show_notification_reg1_GR): ****** got register notification (GR_FUNCTION callback) for Reg1
+   value = 5=0x5
+@10 ns /2 (show_bitr46_notification_GR): ****** got bit notification (GR_FUNCTION callback) for Reg1 bit range 4-6
+   value = 0
+
+  action reset reg to 0
+@15 ns /3 (show_notification_reg1_GR): ****** got register notification (GR_FUNCTION callback) for Reg1
+   value = 0=0x0
+@15 ns /3 (show_bitr46_notification_GR): ****** got bit notification (GR_FUNCTION callback) for Reg1 bit range 4-6
+   value = 0
+
+  action set bit 5 to 1
+@15 ns /3 (show_notification_reg1_GR): ****** got register notification (GR_FUNCTION callback) for Reg1
+   value = 32=0x20
+@15 ns /3 (show_bitr46_notification_GR): ****** got bit notification (GR_FUNCTION callback) for Reg1 bit range 4-6
+   value = 2
+  action r[0x01].br["bit_range_4_6"] = 1
+@15 ns /3 (show_notification_reg1_GR): ****** got register notification (GR_FUNCTION callback) for Reg1
+   value = 16=0x10
+@15 ns /3 (show_bitr46_notification_GR): ****** got bit notification (GR_FUNCTION callback) for Reg1 bit range 4-6
+   value = 1
+  action r[0x01].b[31] = true
+@20 ns /4 (show_notification_reg1_GR): ****** got register notification (GR_FUNCTION callback) for Reg1
+   value = 2147483664=0x80000010
+@20 ns /4 (show_bitr46_notification_GR): ****** got bit notification (GR_FUNCTION callback) for Reg1 bit range 4-6
+   value = 1
+  action r[0x01].b[31] = false
+@22 ns /5 (show_notification_reg1_GR): ****** got register notification (GR_FUNCTION callback) for Reg1
+   value = 16=0x10
+@22 ns /5 (show_bitr46_notification_GR): ****** got bit notification (GR_FUNCTION callback) for Reg1 bit range 4-6
+   value = 1
+   value register Reg1 = 16
+  action r[0x00] = 16
+@30 ns /7 (show_notification_reg0_GR): ****** got register notification (GR_FUNCTION callback) for Reg0
+   value = 2748=0xabc
+@30 ns /7 (ReceiverSlaveDevice): Finished ReceiverSlaveDevice::main_action local access, now switching
+
+
+
+@80 ns /8 (ReceiverSlaveDevice): enable events for reg 0x01 (current value = 16)
+  action r[0x01].br["bit_range_4_6"] = 4
+@80 ns /8 (show_notification_reg1_GR): ****** got register notification (GR_FUNCTION callback) for Reg1
+   value = 64=0x40
+
+Warning: /GreenSocs/GreenReg: DEPRECATED WARNING: You are using events in notification rules! 
+Due to performance reasons you should use GR_FUNCTIONs not SC_METHODs 
+and disable the event switch register-wise.
+This warning will only occur one time!
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/sysc_ext/kernel/gr_event.h:166
+In process: ReceiverSlaveDevice.main_action_THREAD @ 80 ns
+@80 ns /8 (show_bitr46_notification_GR): ****** got bit notification (GR_FUNCTION callback) for Reg1 bit range 4-6
+   value = 4
+@80 ns /8 (show_notification_reg1_Sc): ****** got register notification (SC_METHOD event notification) for Reg1
+   value = 64=0x40
+@80 ns /8 (show_bitr46_notification_SC): ****** got bit notification (SC_METHOD event notification) for Reg1 bit range 4-6
+   value = 4
+
+@100 ns /9 (TestMasterDevice): Start sending bus register accesses
+@100 ns /9 (TestMasterDevice): ---- SC_THREAD Reading reg [0x01]
+@100 ns /9 (show_notification_reg1_PRE_busread_GR): ****** got PRE bus read notification (GR_FUNCTION callback) for Reg1
+   value = 64
+@100 ns /10 (show_notification_reg1_POST_busread_GR): ****** got POST bus read notification (GR_FUNCTION callback) for Reg1
+   value = 64
+@100 ns /11 (TestMasterDevice):      read value: 64
+
+@105 ns /12 (TestMasterDevice): ---- SC_METHOD Reading reg [0x01]
+
+Warning: /GreenSocs/GreenReg: ATTENTION: Pre read notification rules will be skipped because you are calling from within an SC_METHOD! Either disable events for notification rules of this register or use an SC_THREAD to be able to process a wait here!
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register_data/primary_register_data.cpp:182
+In process: TestMasterDevice.send_method @ 105 ns
+@105 ns /12 (show_notification_reg1_POST_busread_GR): ****** got POST bus read notification (GR_FUNCTION callback) for Reg1
+   value = 64
+@105 ns /12 (TestMasterDevice):      read value: 64
+
+@130 ns /13 (ReceiverSlaveDevice): disable events for reg 0x01 (current value = 64)
+Finished ReceiverSlaveDevice::main_action
+@155 ns /14 (TestMasterDevice): ---- SC_THREAD Reading reg [0x01]
+@155 ns /14 (show_notification_reg1_PRE_busread_GR): ****** got PRE bus read notification (GR_FUNCTION callback) for Reg1
+   value = 64
+@155 ns /15 (show_notification_reg1_POST_busread_GR): ****** got POST bus read notification (GR_FUNCTION callback) for Reg1
+   value = 64
+@155 ns /16 (TestMasterDevice):      read value: 64
+
+@160 ns /17 (TestMasterDevice): ---- SC_METHOD Reading reg [0x01]
+
+Warning: /GreenSocs/GreenReg: ATTENTION: Pre read notification rules will be skipped because you are calling from within an SC_METHOD! Either disable events for notification rules of this register or use an SC_THREAD to be able to process a wait here!
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register_data/primary_register_data.cpp:182
+In process: TestMasterDevice.send_method @ 160 ns
+@160 ns /17 (show_notification_reg1_POST_busread_GR): ****** got POST bus read notification (GR_FUNCTION callback) for Reg1
+   value = 64
+@160 ns /17 (TestMasterDevice):      read value: 64
+
+
+---------- END simulation ---------- 
+
+TestMasterDevice.master_port.gs_param_base_12: Make secure callbacks and notify event
+TestMasterDevice.master_port.gs_param_base_11: Make secure callbacks and notify event
+TestMasterDevice.master_port.gs_param_base_10: Make secure callbacks and notify event
+TestMasterDevice.master_port.gs_param_base_9: Make secure callbacks and notify event
+TestMasterDevice.master_port.gs_param_base_8: Make secure callbacks and notify event
+TestMasterDevice.master_port.gs_param_base_7: Make secure callbacks and notify event
+TestMasterDevice.master_port.gs_param_base_6: Make secure callbacks and notify event
+TestMasterDevice.master_port.gs_param_base_5: Make secure callbacks and notify event
+TestMasterDevice.master_port.gs_param_base_4: Make secure callbacks and notify event
+TestMasterDevice.master_port.gs_param_base_3: Make secure callbacks and notify event
+TestMasterDevice.master_port.gs_param_base_2: Make secure callbacks and notify event
+TestMasterDevice.master_port.gs_param_base_1: Make secure callbacks and notify event
+TestMasterDevice.master_port.gs_param_base_0: Make secure callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_11: Make secure callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_10: Make secure callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_9: Make secure callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_8: Make secure callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_7: Make secure callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_6: Make secure callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_5: Make secure callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_4: Make secure callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_3: Make secure callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_2: Make secure callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_1: Make secure callbacks and notify event
+ReceiverSlaveDevice.slave_port.gs_param_base_0: Make secure callbacks and notify event
+ReceiverSlaveDevice.gs_param_base_0: Make secure callbacks and notify event
+ReceiverSlaveDevice.gs_param_base_2: Make secure callbacks and notify event
+ReceiverSlaveDevice.gs_param_base_1: Make secure callbacks and notify event

@@ -1,0 +1,16 @@
+include ../Makefile.config
+
+
+SUBDIRS = kernel
+OBJFILES := $(patsubst %.cpp,%.o,$(wildcard *.cpp))
+
+all: myprog
+	@set -e; for i in $(SUBDIRS); do \
+	echo "make all in $$i..."; \
+	$(MAKE) -C $$i all; done
+
+myprog: $(OBJFILES)
+
+%.o: %.cpp
+	$(CC) $(FLAGS) $(INCDIRS) -o $@ $<
+

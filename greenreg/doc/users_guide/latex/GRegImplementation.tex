@@ -1,0 +1,675 @@
+% (c) GreenSocs Ltd
+% author: Christian Schroeder <schroeder@eis.cs.tu-bs.de>
+
+\cleardoublepage
+\chapter{GreenReg}
+\label{GreenReg}
+
+This chapter guides through the enhancements of \GreenReg made to \DRF.
+
+Section \ref{sec:NamespaceAndNamingConventions} clarifies some conventions used in this document and the code. Section \ref{sec:ConceptsAndBackground} shows some background information whereas sections \ref{sec:ModelingStyleWithFunctionsAndNotificationRules} and \ref{sec:WriteMask} are important sections telling how to use the \GreenReg enhancements. Section \ref{sec:ExpandingGreenReg} is for developers enhancing \GreenReg itself. The Notes section \ref{sec:Notes} notes general \GreenReg facts and small features, section \ref{sec:ImplementationCode} points to the code.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Namespace and naming conventions}
+\label{sec:NamespaceAndNamingConventions}
+The \DRF classes of \GreenReg are located within the namespace {\sffamily gs::reg} and {\sffamily gs::reg\_utils}. Some configuration specific classes are in the namespace {\sffamily gs}.
+
+For the correct namespace of the classes used in this document please
+refer to the doxygen generated API reference.
+
+The \GreenReg classes use some abbreviations (prefixes):
+\begin{itemize}
+	\item \emph{I\_} stands for {\em Interface}.
+%	\item \emph{dr\_} stands for {\em \DRF user class}. falsch!
+\end{itemize}
+
+\paragraph{SystemC delimiter} The \GreenReg framework is developed using the dot ({\sffamily .}) as the SystemC delimiter within names, which follows the standard. Contrary to \GreenControl, \GreenReg does not allow to change this delimiter.
+
+\paragraph{GreenReg specific report macros}
+The end user should never use the internal \GreenReg report macros like \lstinline|GR_ERROR|, \lstinline|GR_REPORT_ERROR| etc!
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Quick Start}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Concepts and Background}
+\label{sec:ConceptsAndBackground}
+
+
+
+%%%%%%%%%%%%%%%%%%
+\subsection{Register accesses}
+
+There are two basic \GreenReg ways accessing registers:
+\begin{enumerate}
+	\item Access the register directly from within the register or using the register container
+	\item Access the register from the bus
+\end{enumerate}
+If the register makes a difference between its in and out buffers (e.g. a splitio register) it is important to know the behavior the different accesses:
+
+\noindent
+\begin{tabular}[z]{|p{4cm}|p{5cm}|p{7cm}|}
+	\hline
+	\textsl{Way of access} & \textsl{Accessed buffer} & \textsl{Example} \\ 
+	\hline
+	\hline
+	set function \newline(and operator =) \newline Parameter access & write {\em out buffer} & \lstinline|r[0x01] = 5;| \\
+	\hline
+	get function & read {\em in buffer} & \lstinline|unsigned int val = r[0x01];|\\
+	\hline
+	bus write & write {\em in buffer} & \lstinline|m_master_port->write(0x01, dat, 4);| \newline \lstinline|r.bus_write(data, 0x01, offset);| \\
+	\hline
+	bus read & read {\em out buffer} & \lstinline|cr = m_master_port->read(0x01, 4);| \newline \lstinline|r.bus_read(data, 0x01, offset);|\\
+	\hline
+\end{tabular}
+
+The references {\sffamily i} and {\sffamily o} of class {\sffamily I\_register} can be used to access the buffers explicitly.
+
+
+%%%%%%%%%%%%%%%%%%
+\subsection{Types of configuration utilization}
+\label{sec:TypesConfigUtils}
+\GreenReg internally uses two different ways of connecting \GreenReg data types to the \GreenConfig framework to provide the \GreenReg data types as configurable parameters:
+\begin{enumerate}
+  \item {\bf The internal \GreenReg data storage {\em is} a \GreenConfig parameter.} \newline
+  This is like it's done for {\sffamily dr\_attribute}. This needs no further \GreenReg specific explanation. See the \GreenConfig User's Guide how to use parameters.
+  \item {\bf The parameter API is implemented by the \GreenReg data type to {\em make} it a parameter.} \newline
+  For a guide how to make use of the {\sffamily gs\_param\_drf}-adapter see section \ref{sec:HowToUtilizeParameters}.
+\end{enumerate}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Modeling Style with Functions and Notification Rules}
+\label{sec:ModelingStyleWithFunctionsAndNotificationRules}
+
+This section is about how to model registers and the dependent methods or functions with GreenReg.
+
+The basic modeling concept is that you have registers which can be equipped with different kinds of methods (like SC\_METHODs) or more efficient functions (GR\_FUNCTIONs) to react on register changes.
+
+The procedure is the following:\vspace{-1em}
+\begin{itemize}
+  \item Create a register  \vspace{-.5em}
+  \item Announce a method/function (and implement it) \vspace{-.5em}
+  \item Create a notification rule the method/function is sensitive to and which defines under which conditions the method /function will be notified/called (possibly delayed).
+\end{itemize}
+
+%%%%%%%
+\subsection{Methods/functions and their Characteristics}
+
+The different methods being available for notification rule notification / callbacks are:
+\begin{itemize}
+  \item {\sffamily GR\_FUNCTION}  \vspace{-.5em}
+  \item {\sffamily GR\_FUNCTION\_PARAMS}  \vspace{-.5em}
+  \item {\sffamily GR\_METHOD} {\em (not recommended)}
+  \item {\sffamily SC\_METHOD} {\em (not recommended)}
+\end{itemize}
+
+Please report to the author(s) of this document which methods/functions you use most and which ones are needless in your opinion.
+
+
+%%%
+\paragraph{GR\_FUNCTION} \addcontentsline{toc}{subsubsection}{GR\_FUNCTION}
+A {\sffamily GR\_FUNCTION} is an equivalent to the SystemC {\sffamily SC\_METHOD} with the difference that it is activated by a {\sffamily gr\_event} by callback, not by an {\sffamily sc\_event} notify. This can either happen immediately, with an {\sffamily SC\_ZERO\_TIME} delay (like usual {\sffamily sc\_event}s behave) or with another delay, see the different sensitive macros (\ref{sec:sensitivity}) and the socket-wide delay switch (\ref{sec:DelayedSwitch}).
+
+\WarningSymbol{}{A {\sffamily GR\_FUNCTION} does not need (and even cannot handle) a {\sffamily dont\_initialize()} call.}
+
+\WarningSymbol{}{ A {\sffamily GR\_FUNCTION} is not allowed to use SystemC {\sffamily SC\_METHOD} or {\sffamily SC\_THREAD} specific elements because the function is called by the callback in (potentially) any SystemC context.}
+
+For the callback register any void-void function with the following signature using the {\sffamily GR\_FUNCTION} macro:\vspace{-.5em}
+\begin{lstlisting}
+GR_FUNCTION(class_name, function_name); 
+// will be concatenated to &class_name::function_name
+// which needs to be of type callback_type
+typedef void(class_name::*callback_type)()
+
+// e.g.
+
+void function_name();
+\end{lstlisting}
+
+Example (stripped-down):
+\begin{lstlisting}
+void end_of_elaboration() {
+  GR_FUNCTION(UserDevice, gr_function_callback);
+  GR_SENSITIVE(r[0x01].add_rule(gs::reg::POST_WRITE, "pw1", [...]));
+}
+void gr_function_callback() {
+  cout << "got not delayed post write notification for Reg 0x01" << endl;
+}
+\end{lstlisting}
+
+%%%
+\paragraph{GR\_FUNCTION\_PARAMS} \addcontentsline{toc}{subsubsection}{GR\_FUNCTION\_PARAMS}
+A {\sffamily GR\_FUNCTION\_PARAMS} enhances the {\sffamily GR\_FUNCTION} with arguments. When being called, the callback function gets the transaction which caused the register access (if there was a bus access, otherwise it will get NULL) and the delay the function call had been delayed (if it had been delayed, otherwise it will get {\sffamily SC\_ZERO\_TIME}).
+
+\WarningSymbol{Remark:}{The called function is not able to distinguish between an immediate (not delayed) call and a zero time (delta cycle) delayed call. 
+\newline TODO: The function could get another (bool) parameter showing if the call had been delayed.}
+
+\WarningSymbol{}{A {\sffamily GR\_FUNCTION\_PARAMS} does not need (and even cannot handle) a {\sffamily dont\_initialize()} call.}
+
+\WarningSymbol{}{A {\sffamily GR\_FUNCTION\_PARAMS} is not allowed to use SystemC {\sffamily SC\_METHOD} or {\sffamily SC\_THREAD} specific elements because the function is called by the callback in (potentially) any SystemC context.}
+
+For the callback register a function with the following signature using the {\sffamily GR\_FUNCTION\_PARAMS} macro: \vspace{-.5em}
+\begin{lstlisting}
+GR_FUNCTION_PARAMS(class_name, function_name); 
+// will be concatenated to &class_name::function_name
+// which needs to be of type callback_type
+typedef void(class_name::*callback_type)(gs::reg::transaction_type*&, const sc_core::sc_time&)
+
+// e.g.
+
+void function_name(gs::reg::transaction_type* &tr, 
+                   const sc_core::sc_time& delay);
+\end{lstlisting}
+
+Example (stripped-down):
+\begin{lstlisting}
+void end_of_elaboration() {
+  GR_FUNCTION_PARAMS(UserDevice, gr_function_callback_p);
+  GR_SENSITIVE(r[0x01].add_rule(gs::reg::POST_WRITE, "pw1", [...]));
+}
+void  gr_function_callback_p(gs::reg::transaction_type* &tr, const sc_core::sc_time& delay) {
+  cout << "got not delayed post write notification for Reg 0x01 with params" << endl  << "transaction ID = " << tr->getTransID());
+}
+\end{lstlisting}
+
+
+%%%
+\paragraph{GR\_METHOD} \addcontentsline{toc}{subsubsection}{GR\_METHOD}
+A {\sffamily GR\_METHOD} is a {\sffamily GR\_FUNCTION} which is additionally an {\sffamily SC\_METHOD} internally. It should only be used if special features of the SystemC method are needed. 
+
+\WarningSymbol{}{A {\sffamily GR\_METHOD} {\em does handle} the {\sffamily dont\_initialize()} call. You need to use it to avoid activation during initialization. }
+
+\WarningSymbol{}{ A {\sffamily GR\_METHOD} is not allowed to use SystemC {\sffamily SC\_METHOD} or {\sffamily SC\_THREAD} specific elements because the function is called by the callback in (potentially) any context.}
+
+Example (stripped-down):
+\begin{lstlisting}
+void end_of_elaboration() {
+  GR_METHOD(UserDevice, gr_method_notification);
+  GR_SENSITIVE(r[0x01].add_rule(gs::reg::POST_WRITE, "pw1", [...]));
+  dont_initialize();
+}
+void gr_method_notification() {
+  cout << "got post write notification (callback or notify) for Reg 0x01" << endl;
+}
+\end{lstlisting}
+
+
+The three {\sffamily GR\_} functions/methods all use callbacks to call the user-registered function. This happens either immediately (efficient!) or delayed by an internal payload event queue (inefficient as SystemC methods but with payload if desired).
+
+\Note{Implementation Details}{Why {\sffamily GR\_FUNCTION / METHOD}s?}{
+The {\sffamily GR\_FUNCTION}s have been introduced due to performance reasons:
+The default SystemC way is to use {\sffamily SC\_METHOD}s which are triggered by {\sffamily sc\_event}s. Events are the worst thing for performance because the SystemC kernel needs to do a context switch. The idea of {\sffamily GR\_METHOD}s is using simple callbacks (that's why the macro needs the class name) without the need of the context switch.\newline 
+This has the disadvantage that you do not know in which context the method is called (may be {\sffamily SC\_METHOD}, an {\sffamily SC\_THREAD},...). Accordingly you are not allowed to use specific {\sffamily SC\_METHOD} calls like {\sffamily next\_trigger()}. We cannot bypass this issue following the standard.
+}
+
+%%%
+\paragraph{SC\_METHOD} \addcontentsline{toc}{subsubsection}{SC\_METHOD} 
+An {\sffamily SC\_METHOD} should only be used if special features of the SystemC method are needed.
+
+\WarningSymbol{}{Of course handles an {\sffamily SC\_METHOD} the {\sffamily dont\_initialize()} call.}
+
+When using {\sffamily SC\_METHOD}s you need to enable the notify within the {\sffamily gr\_event} - which may be disabled by default. See section \ref{sec:EventNotificationRules} how to use {\sffamily SC\_METHOD}s with event notification rules and for event switch details see section \ref{sec:EventSwitch}.
+
+
+%%%%%%%
+\subsection{Sensitivity}
+\label{sec:sensitivity}
+
+The three different methods/functions are used in combination with a sensitivity statement: \vspace{-1em}
+\begin{itemize}
+  \item {\sffamily SC\_METHOD}s use the standard SystemC \lstinline|sensitive << notification_rule_event;| \newline
+  whereas
+  \item {\sffamily GR\_FUNCTION}s and {\sffamily GR\_FUNCTION\_PARAMS} can use either 
+    \begin{itemize}
+      \item {\sffamily GR\_SENSITIVE(notification\_rule\_event);} or 
+      \item {\sffamily GR\_DELAYED\_SENSITIVE(notification\_rule\_event, delay\_time);}, 
+    \end{itemize}
+   see examples and details below.
+\end{itemize}
+
+\paragraph{SystemC sensitivity for {\sffamily SC\_METHOD}s}
+It is possible (but not recommended) to use the notification rule's {\sffamily gr\_event} as an input for the usual SystemC {\sffamily SC\_METHOD} sensitivity. See sections \ref{sec:EventNotificationRules} and \ref{sec:EventSwitch} how to use the event switch.
+
+\paragraph{{\sffamily GR\_SENSITIVE}} The macro {\sffamily GR\_SENSITIVE} can be used as a replacement just like the standard sensitive statement. The notification rule's {\sffamily gr\_event} will make an immediate callback to the {\sffamily GR\_FUNCTION} (or {\sffamily GR\_FUNCTION\_PARAMS}) when the notification rule condition matches. 
+
+This callback is independent from the event switch (sec. \ref{sec:EventSwitch})!
+
+\noindent
+\begin{minipage}{\textwidth}
+Macro syntax:
+\vspace{-1ex}
+\begin{lstlisting}
+GR_SENSITIVE(notification_rule);
+\end{lstlisting}
+\end{minipage}
+
+\paragraph{{\sffamily GR\_DELAYED\_SENSITIVE}} The macro {\sffamily GR\_DELAYED\_SENSITIVE} causes a callback similar to the previous one but can delay this callback. The macro gets an additional time parameter which defines the time the callback should be delayed. If the delay is applied can be switched on and off with the {\em delayed switch} (sec. \ref{sec:DelayedSwitch}).
+
+This callback is independent from the event switch (sec. \ref{sec:EventSwitch})!
+
+\WarningSymbol{Remark:}{By default (only) all bus accesses are delayed with the delay time specified in the macro. Direct local access notifications are not delayed. Hence the delayed sensitivity should only be used for bus access notifications. Local accesses to {\sffamily bus\_read} and {\sffamily bus\_write} functions can be delayed by switching the according parameter to {\sffamily true}.}
+
+\noindent
+\begin{minipage}{\textwidth}
+Macro syntax:
+\vspace{-1ex} 
+\begin{lstlisting}
+GR_DELAYED_SENSITIVE(notification_rule, sc_time);
+\end{lstlisting}
+\end{minipage}
+
+See the example \Verzeichnis{greenreg/examples/simple} for a complete example using different types of sensitivities and functions.
+
+%%%%%%%
+\subsection{Notification Rules and Callbacks}
+
+This is only a short introduction to notification rules, what they are for and how to use them. See the \hyperlink{lnk:TutorialSlides}{Tutorial Slides} for more details. This section handles the configurability of notification rules (subsection \ref{sec:NotificationRuleConfiguration}) and the difference between event driven notification rules and callback driven ones (further subsections).
+
+\Note{Implementation Details}{Notification rules}{
+Notification rules are added by calling \lstinline|add_rule| on a register, attribute or bit\_range. This creates an \lstinline|I_notification_rule| (one of its implementations) which owns a \lstinline|dr_event|. This \lstinline|dr_event| is notified when a rule is processed. \newline
+The \lstinline|dr_event| can be switched to use an \lstinline|sc_event| being notified {\em or} to use a callback.
+}
+
+There are two ways the user can get notifications / callbacks from registers. The concept is to keep the notification rules and configuration parameter callbacks separated.
+
+\begin{itemize}
+  \item Use {\em parameter callbacks} for configuration and analysis of your system but {\em not} for modeling.
+  \item Use {\em notification rules} to model your system (they are highly configurable and provide special register features). \newline  Notification rules provide two ways of usage:
+  \begin{itemize}
+    \item Notification rules with events (default, see section \ref{sec:EventNotificationRules}):\newline
+     When the rule is matched, the event which is returned by the \lstinline|add_rule()| call is fired. 
+    \item Notification rules with callbacks (see section \ref{sec:CallbackNotificationRules}): \newline
+     When the rule is matched, the registered callback is called instead of the event being fired. 
+  \end{itemize}
+\end{itemize}
+
+%%%%%%%
+\subsubsection{Configuration of Notification Rules}
+\label{sec:NotificationRuleConfiguration}
+
+See the \hyperlink{lnk:TutorialSlides}{Tutorial Slides} and further (not yet existing) documentation about how to specify notification rules.
+
+%%%%%%%
+\subsubsection{Event-based Notification Rules {\em (not recommended!)}}
+\label{sec:EventNotificationRules}
+
+Event-based notification rules are the default SystemC-like way using \lstinline|SC_METHOD|s being activated by events. The advantage of this way is that the behavior of notifications and method activations is very SystemC-like, so SystemC users get the behavior they expect. The drawback of this way is the lack of efficiency. The notification of the events consume simulation time as well as the {\sffamily wait} statements that are needed allowing pre- and post-notifications on each register change. If no hard requirements conflicts with callbacks, better use callback-based notification rules (see section \ref{sec:CallbackNotificationRules}). 
+
+Whenever you use this way you should ensure the events are enabled by calling {\sffamily enable\_events()} for the register. For legacy code the events can be (are {\em for the current release}) enabled by default (see section \ref{sec:EventSwitch}).
+
+Example usage: 
+
+\noindent
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+void end_of_elaboration() {
+  SC_METHOD( show_notification_reg1_SC_M );
+  sensitive << r[0x01].add_rule(GreenReg::USR_OUT_WRITE, "written_to_reg1", GreenReg::NOTIFY);
+  dont_initialize();
+  r[0x01].enable_events();
+}
+void show_notification_reg1_SC_M() {
+  cout << sc_time_stamp() << "got register notification for Reg1" << endl;
+  cout << "value = 0x" << hex << r[0x01] << dec << endl;
+}
+\end{lstlisting}
+\end{minipage}
+
+%%%%%%%
+\subsubsection{Callback-based Notification Rules}
+\label{sec:CallbackNotificationRules}
+
+The more efficient way of modeling is using callback-based notification rules. They are used in conjunction with \lstinline|GR_FUNCTION|s which do not need kernel context switches and events being fired but uses direct efficient function calls. When having switched off events (see section \ref{sec:EventSwitch}), even the {\sffamily wait} in between the pre- and post-calls is omitted. 
+
+See the following example how to use \lstinline|GR_FUNCTION|s. The macro needs the class the callback needs to be called and common the sc\_sensitive is replaced by a macro:
+ 
+\noindent
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+void end_of_elaboration() {
+  GR_FUNCTION(MyMod, show_notification_reg1_GR_M);
+  GR_SENSITIVE(r[0x01].add_rule( GreenReg::USR_OUT_WRITE, "written_to_reg1", GreenReg::NOTIFY));
+  dont_initialize();
+}
+void show_notification_reg1_GR_M() {
+  cout << "got register notification call for Reg1" << endl;
+  cout << "value = 0x" << hex << r[0x01] << dec << endl;
+}
+\end{lstlisting}
+\end{minipage}
+
+
+%%%%%%%
+\subsubsection{Delayed Switch}
+\label{sec:DelayedSwitch}
+
+The {\em delayed switch} activates and deactivates the delay of pre- and post- write and read notification rules being caused by bus accesses.
+
+The delay activation is applied to the notification rule by the receiving socket (class \mbox{{\sffamily GSGPSOCKET::slave\_base})} on each received register access. Hence there is a switch in the slave socket that can be toggled to enable and disable the delay dynamically during simulation runtime. The switch will apply to all register accesses over this socket.
+
+The interface is the following one:
+\vspace{-1ex}
+\begin{lstlisting}
+/// Disables the delay 
+/// for all notification rule callbacks caused by this socket
+void disable_delay();
+/// Enables the delay
+/// for all notification rule callbacks caused by this socket
+void enable_delay();
+/// Returns if the delay is enabled
+bool delay_enabled();
+\end{lstlisting}
+
+Example:
+\vspace{-1ex}
+\begin{lstlisting}
+class ReceiverSlaveDevice 
+: public gs::reg::gr_device 
+{
+public:
+  // Slave socket with delayed switch
+  gs::reg::greenreg_socket< GSGPSOCKET::generic_slave> m_slave_socket;
+  
+  GC_HAS_CALLBACKS();
+  SC_HAS_PROCESS( ReceiverSlaveDevice );
+	
+  ReceiverSlaveDevice(sc_core::sc_module_name name) 
+  : gr_device(name, gs::reg::INDEXED_ADDRESS, 2, NULL)
+  , m_slave_spcket( "slave_socket", r, 0x0, 0xFFFFFFFF) // Slave socket
+  { [...] }
+  // SC_THREAD which demonstrates how the delayed switch can be switched
+  void delayed_switch_demo() {
+    wait(11, sc_core::SC_NS);
+    m_slave_port.disable_delay();
+    wait(10, sc_core::SC_NS);
+    m_slave_port.enable_delay(); 
+  }
+}
+\end{lstlisting}
+
+%%%%%%%
+\subsubsection{Order Notification Rules}
+\label{sec:OrderNotificationRules}
+
+In order to create dependencies between several notification rules there is the option to order the existing rules:
+
+Notification rules are stored in an ordered vector (in the {\sffamily notification\_rule\_container}). The order can be manipulated using the functions \lstinline|move_rule_to_front| and \lstinline|move_rule_to_back| both moving the notification rule specified by name to the desired position.
+
+Example:
+
+\vspace{-1ex}
+\noindent
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+DR_METHOD(MyMod, show_notification_reg0_DR_1);
+DR_SENSITIVE(r[0x00].add_rule(
+  DRF::USR_OUT_WRITE, "written_to_reg0_DR_1", DRF::NOTIFY));
+dont_initialize();
+
+[...]
+
+r[0x00].get_user_obuf_write_rules(). move_rule_to_back("written_to_reg0_DR_1");
+\end{lstlisting}
+\end{minipage}
+
+
+%%%%%%%
+\subsection{Use cases}
+\label{sec:UseCases}
+
+This section gives a short overview over some use cases and suggestions how to model.
+
+\noindent
+\begin{minipage}{\textwidth}
+\ZwischenUberschrift{Efficient standard case}
+{\bf Case:} Standard case: You want to model a more efficient {\sffamily SC\_METHOD}-like function without using inefficient events.\\
+{\bf Suggestion:} Use an {\sffamily GR\_FUNCTION} with the {\sffamily GR\_SENSITIVE} sensitivity. The function will be called each time the notification rule matches, immediately (without using any delay).
+\end{minipage}
+
+\noindent
+\begin{minipage}{\textwidth}
+\ZwischenUberschrift{Callback gets transaction}
+{\bf Case:} Modification: you want to get the transaction having caused the register access.\\
+{\bf Suggestion:} Use the {\sffamily GR\_FUNCTION\_PARAMS} instead of the {\sffamily GR\_FUNCTION}.
+\end{minipage}
+
+\noindent
+\begin{minipage}{\textwidth}
+\ZwischenUberschrift{Delay callback}
+{\bf Case:} Special use case: You want to delay the call of the function for a specific (fixed) delay.\\
+{\bf Suggestion:} Use the {\sffamily GR\_DELAYED\_SENSITIVE} sensitivity instead of the {\sffamily GR\_SENSITIVE}. This will cause the notification rule to delay its call for the specified time. This delay may be {\sffamily SC\_ZERO\_TIME} -- which will lead to the well-known {\sffamily SC\_METHOD}-bahavior but with the ability to get parameters (transaction, delay). Combine this sensitivity with {\sffamily GR\_FUNCTION} or {\sffamily GR\_DELAYED\_FUNCTION}.
+\end{minipage}
+
+\noindent
+\begin{minipage}{\textwidth}
+\ZwischenUberschrift{Switch delayed / immediate}
+{\bf Case:} Special use case: You want to switch between delayed / immediate call dynamically.\\
+{\bf Suggestion:} Use the {\sffamily GR\_DELAYED\_SENSITIVE} sensitivity and use the socket-wide {\em delayed switch} (see section \ref{sec:DelayedSwitch}) to enable or disable delay. 
+\end{minipage}
+
+
+%%%%%%%
+\subsection{Switch Event Behavior}
+\label{sec:EventSwitch}
+
+For a register a switch can be toggled to switch off all events being notified by notification rules.
+Under the precondition that all notification rules are connected to {\sffamily GR\_FUNCTION}s - and no {\sffamily SC\_METHOD}s - a register should be switched to process the rules not using events due to performance reasons.
+
+\WarningSymbol{}{Note that a notification rule (or a {\sffamily gr\_event}) having registered a callback will never notify its event, so don't use the event being returned by the notification rule!}
+
+\paragraph{For the current release:} By default the switch is enabled for legacy code support reason, so that no confusion appears when using {\sffamily SC\_METHOD}s with notification rules. {\em For now} the recommended way is to disable this switch for each register and only use \lstinline|GR_FUNCTION|s. In the future the default will be the disabled switch, so prepare your code to enable the switch where needed, too. % TODO
+
+\begin{lstlisting}
+r.create_register( "Reg1", "Test Register1", 0x01, [...] ); // shortened
+r[0x01].disable_events();
+\end{lstlisting}
+
+\begin{lstlisting}
+// maybe you want later enable events again:
+r[0x01].enable_events();
+\end{lstlisting}
+
+The following itemization illustrates the behavior when a register change causes notification rule actions, depending on the event switch:
+\begin{itemize}
+
+  \item In the case of {\em events being {\bf \em en}abled},
+  \begin{itemize}
+    \item all callbacks and events concerning the pre-rules are notified,
+    \item then a \lstinline|wait(SC_ZERO_TIME)| is called
+    \item then the value is set (after all event having started the \lstinline|SC_METHOD|s),
+    \item then the post-rules are performed by performing callbacks and notifying the events.
+  \end{itemize}
+  When having enabled the event switch: Due to the need of calling wait in between, the user may only cause register changes within SC\_THREADs, {\em never within SC\_METHODs} which do not allow waits being called in their context.
+
+  \item In the case of {\em events being {\bf \em dis}abled},
+  \begin{itemize}
+    \item all callbacks concerning the pre-rules are performed (notification rules only having events will not notify anything),
+    \item then the value is set,
+    \item then the post-rules are performed by calling the functions.
+  \end{itemize}
+  All this is done without calling any wait. Since the called functions are \lstinline|GR_FUNCTION|s, they are not allowed to wait as well.
+  
+\end{itemize}
+
+Note that all \lstinline|GR_FUNCTION|s are called before all \lstinline|SC_METHOD|s.
+
+\Note{Implementation Details}{Event switch hack}{
+\lstinline|GR_FUNCTION|s are internally registered as \lstinline|SC_METHOD|s without ever being notified but directly called. Hence it will work to register a notification rule callback to a user created \lstinline|SC_METHOD|.
+}
+
+\Note{Implementation Details}{Default switch state}{
+The default for the event switch is defined in the file \Datei{gr\_settings.h} with the macro {\sffamily GR\_DEFAULT\_EVENT\_BEHAVIOR}.
+}
+
+
+%%%%%%%
+\subsection{Notes}
+
+\begin{itemize}
+  \item The set function of the register data calls all notification rules of the register and of all bit ranges of this register. Hence all notifications are performed if the register is accessed.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Write Mask, read-only}
+\label{sec:WriteMask}
+
+The write mask for a register defines which bits are allowed to be written to -- and which ones are read-only. A write mask can be 
+\begin{itemize}
+  \item specified during construction or 
+  \item modified by calling \lstinline|set_write_mask|.
+\end{itemize}
+
+The write mask is applied on every bus write and direct user write (set).
+Any write to read-only bits is ignored, the other bits are applied (just as one would expect hardware to react).
+
+\noindent
+Basically a warning is shown when 
+\begin{itemize}
+  \item a bus write to write protected bits is performed or
+  \item a direct user write (set) accesses protected bits.
+\end{itemize}
+
+\noindent
+Two different types of warnings can be chosen by configuring the two report handlers. By default both warning are enabled, the user should disable at least one of them.
+\begin{itemize}
+  \item The {\sffamily unequal current} warning type warns if any write protected bit is written with a value different from the current one.
+  \item The {\sffamily unequal zero} warning type warns if any write protected bit is written with a value different from zero (0).
+\end{itemize}
+
+\begin{lstlisting}
+sc_core::sc_report_handler::set_actions( "/GreenSocs/GreenReg/write_protected/unequal_current", sc_core::SC_DISPLAY);
+sc_core::sc_report_handler::set_actions( "/GreenSocs/GreenReg/write_protected/unequal_zero", sc_core:: SC_DO_NOTHING );
+\end{lstlisting}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Configurable Registers}
+\label{sec:ConfigurableRegisters}
+
+All registers in \GreenReg are automatically configurable using the \GreenConfig configuration mechanism. The registers are presented as \GreenConfig parameters and can be written and read.
+
+\Note{Implementation Details}{Configuration registers}{
+There are two ways the \GreenReg constructs are presented as \GreenConfig parameters: All register types derive from a \GreenReg specific parameter class (\lstinline|gs_param_greenreg|) and implement some additionally required functions. Rarely (e.g. \lstinline|gr_attribute|) \lstinline|gs_param|s are directly used within the \GreenReg code.
+}
+
+%%%%%%%%%%%%%%%%%%
+\subsection{Register's parameter attributes}
+\label{sec:ParamAttributes}
+All \GreenReg registers automatically get some \GreenConfig \lstinline|param_attributes|. 
+
+As a replacement for the \GreenConfig wrapper class \lstinline|gs_state| which can be used for static code analysis, tools can search for the \lstinline|gs_param_greenreg| base class which automatically adds the attribute \lstinline|gs::cnf::param_attributes::state|.
+
+\noindent
+\begin{tabular}{|p{5cm}|p{10cm}|}
+  \hline
+  & \\
+  \textbf{\GreenReg register type} & \textbf{\GreenConfig parameter attributes} \\
+  & \\
+  \hline
+  \lstinline|gr_register_sharedio| & \lstinline|gs::cnf::param_attributes::gr_register|, \lstinline|gs::cnf::param_attributes::gr_sharedio_register|, \lstinline|gs::cnf::param_attributes::state| \\
+  \hline
+  \lstinline|gr_register_splitio| & \lstinline|gs::cnf::param_attributes::gr_register|, \lstinline|gs::cnf::param_attributes::gr_splitio_register|, \lstinline|gs::cnf::param_attributes::state| \\
+  \hline
+  \lstinline|sharedio_bit_range| & \lstinline|gs::cnf::param_attributes::gr_bit_range|, \lstinline|gs::cnf::param_attributes::state| \\
+  \hline
+  \lstinline|splitio_bit_range| & \lstinline|gs::cnf::param_attributes::gr_bit_range|, \lstinline|gs::cnf::param_attributes::state| \\
+  \hline
+\end{tabular}
+
+\Note{Implementation Details}{Parameter attribute state}{
+The parameter attribute \lstinline|gs::cnf::param_attributes::state| is appied automatically to the registers because their base class \lstinline|gs_param_greenreg| adds this attribute during construction.
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Expanding GreenReg}
+\label{sec:ExpandingGreenReg}
+
+This section is for developers expanding \GreenReg with new register types.
+
+%%%%%%%%%%%%%%%%%%
+\subsection{How to add a new register type and utilize it with parameters}
+\label{sec:HowToUtilizeParameters}
+Follow these rules to utilize a drf register or other data type with a \GreenConfig parameter adapter (see way 2 of section \ref{sec:TypesConfigUtils}).
+\begin{itemize}
+  \item Include \lstinline|gs_param_greenreg.h|
+  \item Derive the utilized class from \lstinline|public gs::gs_param_greenreg<datatype>|\newline
+    The class needs to implement the \lstinline|add_rule(...)| function to let the drf parameter class register notification rules that will be mapped to parameter callbacks.
+  \item Call \lstinline|init_param()| from the {\em lowest} constructor in hierarchy (when the object is fully completed).
+  \item In the constructor set the desired parameter attributes. E.g.:\newline
+\begin{lstlisting}
+add_param_attribute(gs::cnf::param_attributes::drf_register);
+add_param_attribute(gs::cnf::param_attributes::drf_splitio_register);
+\end{lstlisting}
+  \item Implement the two virtual functions \lstinline|set_drf_value()| and \lstinline|get_drf_value()| to give the drf parameter access to the data.
+  \item Implement the function \lstinline|std::vector<std::string> add_post_read_param_rules()|.\newline
+  This function shall add all notification rules needed for (post read) parameter callback mapping. The functions returns all names of the added notification rules.
+  \item Implement the function \lstinline|std::vector<gs::reg::dr_notification_rule_container*> get_param_rules()|.\newline
+  This function shall return at least all the notification rule container(s) which contain(s) the rule(s) being 
+   added by \lstinline|add_post_read_param_rules|.
+  \item Follow the rules in section \ref{sec:HowToEventSwitch}.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%
+\subsection{How to equip classes with the notification rule event switch}
+\label{sec:HowToEventSwitch}
+Follow these rules to equip a \GreenReg register or other data type with a switch enabling/disabling the events of the managed notification rules. This switch is needed for all classes/data types that manage different notification rules within notification rule containers and which need to decide if to call \lstinline|wait()| or not. Details on the switch can be found in section \ref{sec:EventSwitch}.
+
+\begin{itemize}
+  \item Include \lstinline|I_event_switch.h| (e.g. see \Datei{I\_register.h}).
+  \item Derive the utilized class from \lstinline|public I_event_switch| (e.g. see \Datei{I\_register.h}).
+  \item Implement the virtual functions \lstinline|disable_events()| and \lstinline|enable_events()| handling/performing the notification rule switch. \newline \newline
+  Within the implementation of both functions
+  \begin{itemize}
+    \item first call the base function, e.g. \lstinline|I_event_switch::disable_events()| which will update the stored state (bool variable).
+    \item forward the enable/disable call to all notification rule containers of this data type.
+  \end{itemize}
+   Example implementation (e.g. see \Datei{I\_register.cpp}):
+\begin{lstlisting}
+void I_register::disable_events() {
+  I_event_switch::disable_events(); // updated the state bool
+  // switch all owned notification rule containers
+  get_pre_write_rules().disable_events();
+  get_post_write_rules().disable_events();
+  get_pre_read_rules().disable_events();
+  get_post_read_rules().disable_events();
+  get_user_ibuf_write_rules().disable_events();
+  get_user_obuf_write_rules().disable_events();
+}
+\end{lstlisting}
+  \item Insert to the function which is adding any new notification rule (function \lstinline|add_rule(...)|) a reset of the currently added rule to the current status of the switch. (E.g. call one of the enable/disable events functions switching all owned rules, e.g. see \Datei{register.cpp}.)
+  \item Make use of the switch state information where it is needed to check if to call wait (if events are enabled) or not (e.g. see \Datei{primary\_register\_data.h}).
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Notes}
+\label{sec:Notes}
+
+\begin{itemize}
+	\item A read or write bus access to not existing registers causes a warning by default. \newline
+	Use the following report handler setting to suppress the warning:
+\begin{lstlisting}
+sc_report_handler::set_actions(
+  "/GreenSocs/GreenReg/wrong_register_access", SC_DO_NOTHING);
+\end{lstlisting}
+
+  \item A {\em splitio register} is a special register type having two different independent buffers for input and output.
+The user needs to synchronize the buffers manually.
+
+
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Implementation Code}
+\label{sec:ImplementationCode}
+
+Visit the GreenSocs web page to get the newest revision of the \GreenReg framework:\\
+\href{http://www.greensocs.com/projects/GreenReg}{http://www.greensocs.com/projects/GreenReg}

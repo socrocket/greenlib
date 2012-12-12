@@ -1,0 +1,108 @@
+
+             SystemC 2.2.0 --- Jul  9 2007 11:52:11
+        Copyright (c) 1996-2006 by all Contributors
+                    ALL RIGHTS RESERVED
+Please specify the flag to test one of the following three conditions (and rerun)
+	 (1) register_block are properly created and accessible in the INDEXED_ADDRESS mode of device,
+	 (2) Proper error message is given out when the type of register is skipped while creation,
+	 (3) Proper error message is given out when bus read fail due to incorrect offset,
+	 (4) Proper error message is given out when bus write fail due to incorrect offset.
+Please specify one of (1 2 3 4), as command line argument
+
+
+
+
+             SystemC 2.2.0 --- Jul  9 2007 11:52:11
+        Copyright (c) 1996-2006 by all Contributors
+                    ALL RIGHTS RESERVED
+You gave 1
+Created two register blocks of size 7 each and type SINGLE and SPLIT
+
+Entering sc_start : simulation starting
+
+Entered newMod::end_of_elaboration..
+value of r[0xd] 0xfab
+value of r[0x0] 0xcab
+
+Exiting newMod::end_of_elaboration..
+
+Entered newMod::main_action..
+value of r[0x0] 0x5
+Value of r[0xd] 0xfab
+Setting values at various registers
+
+Exiting newMod::main_action..
+Exited sc_start : simulation finished
+
+
+
+
+
+             SystemC 2.2.0 --- Jul  9 2007 11:52:11
+        Copyright (c) 1996-2006 by all Contributors
+                    ALL RIGHTS RESERVED
+You gave 2
+Trying to create a register without specifying the type bit..
+
+Error: /GreenSocs/GreenReg//Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/framework/registers/gr_register_container.cpp:87 : ERROR: Invalid Register Type is specified. Failed to create register Reg0 in newMod.default_registers
+
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/framework/registers/gr_register_container.cpp:87
+
+Debugger stopped.
+Program exited with status value:0.
+[Session started at 2009-02-13 11:58:09 +0100.]
+
+             SystemC 2.2.0 --- Jul  9 2007 11:52:11
+        Copyright (c) 1996-2006 by all Contributors
+                    ALL RIGHTS RESERVED
+You gave 3
+Created a single register of type SPLIT_IO
+
+Entering sc_start : simulation starting
+
+Entered newMod::end_of_elaboration..
+value of r[0x0] 0xabc
+
+Exiting newMod::end_of_elaboration..
+
+Entered newMod::main_action..
+value of r[0x0] 0xabc
+Bus read success at offset 0x0, 5
+
+Warning: /GreenSocs/GreenReg/wrong_register_access: WARNING: invalid register offset: 0x1 in newMod.default_registers, BUS: unknown, RD (forced), D: 0x5, returned default data: 0xffffffff
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register/register_container.cpp:117
+In process: newMod.main_action @ 5 ns
+Bus read success at offset 0x1, 4294967295
+
+Exiting newMod::main_action..
+Exited sc_start : simulation finished
+
+
+
+
+
+             SystemC 2.2.0 --- Jul  9 2007 11:52:11
+        Copyright (c) 1996-2006 by all Contributors
+                    ALL RIGHTS RESERVED
+You gave 4
+Created a single register of type SPLIT_IO
+
+Entering sc_start : simulation starting
+
+Entered newMod::end_of_elaboration..
+value of r[0x0] 0xabc
+
+Exiting newMod::end_of_elaboration..
+
+Entered newMod::main_action..
+value of r[0x0] 0xabc
+Bus write success at offset 0x0 14
+
+Warning: /GreenSocs/GreenReg/wrong_register_access: WARNING: invalid register offset: 0x1 in newMod.default_registers, BUS: unknown, WR (ignored), D: 0xe
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register/register_container.cpp:145
+In process: newMod.main_action @ 5 ns
+Bus write success at offset 0x114
+
+Exiting newMod::main_action..
+Exited sc_start : simulation finished
+

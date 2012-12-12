@@ -1,0 +1,79 @@
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.0' to '1'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.1' to 'true'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.2' to '0'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.3' to 'false'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.30' to '44'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.31' to '-44'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.33' to '0'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.8' to 'true'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.a' to '0'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg01.2' to '0'
+
+Warning: deserialize: Conversion error: '44'
+In file: /Users/schroede/mydev/greensocs_greencontrol/greencontrol/gcnf/apis/gs_param/gs_param_native.hpp:307
+
+Warning: deserialize: Conversion error: '-44'
+In file: /Users/schroede/mydev/greensocs_greencontrol/greencontrol/gcnf/apis/gs_param/gs_param_native.hpp:307
+
+Warning: /GreenSocs/GreenReg: Could not assign the value, as the bit index 33 exceeds register width (32)
+In file: /Users/schroede/mydev/greensocs_greenreg/greenreg/internal/registers/register/register.h:270
+
+Warning: /GreenSocs/GreenReg: Could not assign the value, as bit index 'a' is invalid (has non-numeric characters)
+In file: /Users/schroede/mydev/greensocs_greenreg/greenreg/internal/registers/register/register.h:276
+created sharedio register Reg0 = 0xbb3
+created splitio register Reg1 = 0xab
+
+Entering sc_start : simulation starting
+
+Entered MyMod::end_of_elaboration..
+..Finished MyMod::end_of_elaboration
+
+Entered MyMod::main_action..0 s
+
+action r[0x01] = 12
+
+Warning: /GreenSocs/GreenReg: DEPRECATED WARNING: You are using events in notification rules! 
+Due to performance reasons you should use GR_FUNCTIONs not SC_METHODs 
+and disable the event switch register-wise.
+This warning will only occur one time!
+In file: /Users/schroede/mydev/greensocs_greenreg/greenreg/sysc_ext/kernel/gr_event.h:166
+In process: MyMod.main_action @ 0 s
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 12
+0 s ****** got register notification for Reg1 (SC)  value = 0xc
+
+action r[0x01] = 0
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 0
+5 ns ****** got register notification for Reg1 (SC)  value = 0x0
+
+action set bit 5 of r[0x01] to true
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 32
+10 ns ****** got register notification for Reg1 (SC)  value = 0x20
+
+action set bit 4 of r[0x01] to 1
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 48
+15 ns ****** got register notification for Reg1 (SC)  value = 0x30
+
+action set bit 3 of r[0x01] to true
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 56
+20 ns ****** got register notification for Reg1 (SC)  value = 0x38
+
+action set bit 2 of r[0x01] to 1
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 60
+25 ns ****** got register notification for Reg1 (SC)  value = 0x3c
+
+action set bit 5 of r[0x01] to 0
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 28
+30 ns ****** got register notification for Reg1 (SC)  value = 0x1c
+
+action set bit 4 of r[0x01] to false
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 12
+35 ns ****** got register notification for Reg1 (SC)  value = 0xc
+
+action set bit 3 of r[0x01] to 0
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 4
+..Finished MyMod::main_action 40 ns
+40 ns ****** got register notification for Reg1 (SC)  value = 0x4
+Exited sc_start : simulation finished
+
+config_callback for MyMod.default_registers.Reg0 of type gs_param_greenreg<T> - Is just being destructed!
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - Is just being destructed!

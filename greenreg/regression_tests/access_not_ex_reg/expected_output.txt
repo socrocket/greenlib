@@ -1,0 +1,37 @@
+
+             SystemC 2.2.0 --- Jul  9 2007 11:52:11
+        Copyright (c) 1996-2006 by all Contributors
+                    ALL RIGHTS RESERVED
+created splitio register Reg1 = 0xab
+
+
+
+--------- START simulation ---------
+
+Entered ReceiverSlaveDevice::end_of_elaboration
+register GR_FUNCTION usr_out notification rule
+register GR_FUNCTION POST bus read notification rule
+
+Finished ReceiverSlaveDevice::end_of_elaboration
+
+
+Entered ReceiverSlaveDevice::main_action_THREAD:
+Finished ReceiverSlaveDevice::main_action
+
+@100 ns /1 (TestMasterDevice): Start sending bus register accesses
+@100 ns /1 (TestMasterDevice): ---- SC_THREAD Reading reg [0x01]
+@100 ns /2 (show_notification_reg1_POST_busread_GR): ****** got register notification (GR_FUNCTION callback) for Reg1 bus access
+   value = 171=0xab
+@100 ns /3 (TestMasterDevice):      read value: 171
+
+@105 ns /4 (TestMasterDevice): ---- SC_THREAD Reading not existing reg [0x33]
+
+Warning: /GreenSocs/GreenReg/wrong_register_access: WARNING: invalid register offset: 0x33 in ReceiverSlaveDevice.default_registers, BUS: unknown, RD (forced), D: 0xab, returned default data: 0xffffffff
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register/register_container.cpp:117
+In process: TestMasterDevice.send_thread @ 105 ns
+@105 ns /4 (TestMasterDevice):      Should have caused a warning
+@105 ns /4 (TestMasterDevice):      read value: 4294967295
+
+
+---------- END simulation ---------- 
+

@@ -1,0 +1,218 @@
+
+             SystemC 2.2.0 --- Jul  9 2007 11:52:11
+        Copyright (c) 1996-2006 by all Contributors
+                    ALL RIGHTS RESERVED
+created singleio register Reg1 = 0xaa
+
+created splitio register Reg2 = 0xbb
+
+bit range bit_range_2_5 = 0xa
+bit range bit_range_0_3 = 0xa
+bit range bit_range_4_7 = 0xa
+created single IO register Reg5 = 0xaaaaaaaa
+
+
+
+--------- START simulation ---------
+
+Entered ReceiverSlaveDevice::end_of_elaboration
+register GR_FUNCTION POST bus write notification rule
+register GR_FUNCTION POST write notification rule
+
+------------------------------------------------------------------------------------------
+@0 s /0 (ReceiverSlaveDevice): current value reg 0x01: 170=0xaa
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 0xff to reg [0x01]
+
+Warning: /GreenSocs/GreenReg/write_protected/unequal_current: User write to write protected pri_reg_dat area/bits detected (written with bits different from current ones)! Will be ignored for the protected bits.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register_data/primary_register_data.cpp:88
+@0 s /0 (ReceiverSlaveDevice):      new value: 175=0xaf
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 0xc to reg [0x01]
+
+Warning: /GreenSocs/GreenReg/write_protected/unequal_current: User write to write protected pri_reg_dat area/bits detected (written with bits different from current ones)! Will be ignored for the protected bits.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register_data/primary_register_data.cpp:88
+@0 s /0 (ReceiverSlaveDevice):      new value: 172=0xac
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 0xaa to reg [0x01]
+@0 s /0 (ReceiverSlaveDevice):      new value: 170=0xaa
+
+------------------------------------------------------------------------------------------
+@0 s /0 (ReceiverSlaveDevice): current value reg 0x02: 187=0xbb
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 0xff to reg [0x02]
+
+Warning: /GreenSocs/GreenReg/write_protected/unequal_current: User write to write protected pri_reg_dat area/bits detected (written with bits different from current ones)! Will be ignored for the protected bits.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register_data/primary_register_data.cpp:88
+@0 s /0 (ReceiverSlaveDevice):      new value: 187=0xbb
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 0xc to reg [0x02]
+
+Warning: /GreenSocs/GreenReg/write_protected/unequal_current: User write to write protected pri_reg_dat area/bits detected (written with bits different from current ones)! Will be ignored for the protected bits.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register_data/primary_register_data.cpp:88
+@0 s /0 (ReceiverSlaveDevice):      new value: 187=0xbb
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 0xba to reg [0x02]
+@0 s /0 (ReceiverSlaveDevice):      new value: 187=0xbb
+
+------------------------------------------------------------------------------------------
+@0 s /0 (ReceiverSlaveDevice): current value reg 0x05: 2863311530=0xaaaaaaaa
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Set bit 3 (allowed) of reg r[0x05] to 0
+@0 s /0 (ReceiverSlaveDevice):      new value: 2863311522=0xaaaaaaa2
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Set bit 17 (NOT allowed) of reg r[0x05] to 0
+
+Warning: /GreenSocs/GreenReg/write_protected/bit_access: User write to write protected bit detected! Will be ignored.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/bit/bit_data.cpp:74
+@0 s /0 (ReceiverSlaveDevice):      new value: 2863311522=0xaaaaaaa2
+
+------------------------------------------------------------------------------------------
+@0 s /0 (ReceiverSlaveDevice): ---- Local Set (allowed) bit range r[0x05].br("bit_range_4_15") to 0xff
+@0 s /0 (ReceiverSlaveDevice):      new value: 2863271922=0xaaaa0ff2
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Set (NOT allowed) bit range r[0x05].br("bit_range_14_23") to 0xff
+
+Warning: /GreenSocs/GreenReg/write_protected/bit_range_access: User write to write protected bit_range detected! Will be ignored for protected bits.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/bit_range/bit_range_data.cpp:84
+@0 s /0 (ReceiverSlaveDevice):      new value: 2863321074=0xaaaacff2
+
+------------------------------------------------------------------------------------------
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 0xf to reg bit_range [0x01].br[bit_range_2_5]
+
+Warning: /GreenSocs/GreenReg/write_protected/bit_range_access: User write to write protected bit_range detected! Will be ignored for protected bits.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/bit_range/bit_range_data.cpp:84
+@0 s /0 (ReceiverSlaveDevice):      new value: 0xae
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 0xf to reg bit_range [0x01].br[bit_range_0_3]
+@0 s /0 (ReceiverSlaveDevice):      new value: 0xaf
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 0xf to reg bit_range [0x01].br[bit_range_4_7]
+
+Warning: /GreenSocs/GreenReg/write_protected/bit_range_access: User write to write protected bit_range detected! Will be ignored for protected bits.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/bit_range/bit_range_data.cpp:84
+@0 s /0 (ReceiverSlaveDevice):      new value: 0xaf
+
+------------------------------------------------------------------------------------------
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 1 to reg bit [0x01].b[0]
+@0 s /0 (ReceiverSlaveDevice):      new value: 0xaf
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 1 to reg bit [0x01].b[7]
+
+Warning: /GreenSocs/GreenReg/write_protected/bit_access: User write to write protected bit detected! Will be ignored.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/bit/bit_data.cpp:74
+@0 s /0 (ReceiverSlaveDevice):      new value: 0xaf
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 1 to reg bit [0x01].b[6]
+
+Warning: /GreenSocs/GreenReg/write_protected/bit_access: User write to write protected bit detected! Will be ignored.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/bit/bit_data.cpp:74
+@0 s /0 (ReceiverSlaveDevice):      new value: 0xaf
+
+------------------------------------------------------------------------------------------
+
+Finished ReceiverSlaveDevice::end_of_elaboration
+
+
+Entered ReceiverSlaveDevice::main_action_THREAD:
+Finished ReceiverSlaveDevice::main_action
+
+@100 ns /1 (TestMasterDevice): Start sending bus register accesses
+------------------------------------------------------------------------------------------
+@100 ns /1 (TestMasterDevice): ---- SC_THREAD Bus Read current value reg 0x01
+@100 ns /3 (TestMasterDevice):      read value: 175=0xaf
+
+
+
+@100 ns /3 (TestMasterDevice): ---- SC_THREAD Bus Write 0xff to reg [0x01]
+
+Warning: /GreenSocs/GreenReg/write_protected/unequal_current: User write to write protected pri_reg_dat area/bits detected (written with bits different from current ones)! Will be ignored for the protected bits.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register_data/primary_register_data.cpp:88
+In process: TestMasterDevice.send_thread @ 100 ns
+@100 ns /4 (show_notification_reg1_POST_buswrite_GR): ****** got register notification (GR_FUNCTION callback) for Reg1 bus write access
+   value = 175=0xaf
+@100 ns /5 (TestMasterDevice): ---- SC_THREAD Read back value
+@100 ns /7 (TestMasterDevice):      read value: 175=0xaf
+
+
+
+@100 ns /7 (TestMasterDevice): ---- SC_THREAD Bus Write 0xad to reg [0x01]
+@100 ns /8 (show_notification_reg1_POST_buswrite_GR): ****** got register notification (GR_FUNCTION callback) for Reg1 bus write access
+   value = 173=0xad
+@100 ns /9 (TestMasterDevice): ---- SC_THREAD Read back value
+@100 ns /11 (TestMasterDevice):      read value: 173=0xad
+
+
+
+@100 ns /11 (TestMasterDevice): ---- SC_THREAD Bus Write 0xf0 to reg [0x01]
+
+Warning: /GreenSocs/GreenReg/write_protected/unequal_current: User write to write protected pri_reg_dat area/bits detected (written with bits different from current ones)! Will be ignored for the protected bits.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register_data/primary_register_data.cpp:88
+In process: TestMasterDevice.send_thread @ 100 ns
+@100 ns /12 (show_notification_reg1_POST_buswrite_GR): ****** got register notification (GR_FUNCTION callback) for Reg1 bus write access
+   value = 160=0xa0
+@100 ns /13 (TestMasterDevice): ---- SC_THREAD Read back value
+@100 ns /15 (TestMasterDevice):      read value: 160=0xa0
+
+
+
+------------------------------------------------------------------------------------------
+@100 ns /15 (TestMasterDevice): ---- SC_THREAD Bus Read current value reg 0x02
+@100 ns /17 (TestMasterDevice):      read value: 186=0xba
+
+
+
+@100 ns /17 (TestMasterDevice): ---- SC_THREAD Bus Write 0xff to reg [0x02]
+
+Warning: /GreenSocs/GreenReg/write_protected/unequal_current: User write to write protected pri_reg_dat area/bits detected (written with bits different from current ones)! Will be ignored for the protected bits.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register_data/standard_register_data.cpp:58
+In process: TestMasterDevice.send_thread @ 100 ns
+sync bus reg2
+@100 ns /19 (TestMasterDevice): ---- SC_THREAD Read back value
+@100 ns /21 (TestMasterDevice):      read value: 191=0xbf
+
+
+
+@100 ns /21 (TestMasterDevice): ---- SC_THREAD Bus Write 0xbd to reg [0x02]
+sync bus reg2
+@100 ns /23 (TestMasterDevice): ---- SC_THREAD Read back value
+@100 ns /25 (TestMasterDevice):      read value: 189=0xbd
+
+
+
+@100 ns /25 (TestMasterDevice): ---- SC_THREAD Bus Write 0xf0 to reg [0x02]
+
+Warning: /GreenSocs/GreenReg/write_protected/unequal_current: User write to write protected pri_reg_dat area/bits detected (written with bits different from current ones)! Will be ignored for the protected bits.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register_data/standard_register_data.cpp:58
+In process: TestMasterDevice.send_thread @ 100 ns
+sync bus reg2
+@100 ns /27 (TestMasterDevice): ---- SC_THREAD Read back value
+@100 ns /29 (TestMasterDevice):      read value: 176=0xb0
+
+
+
+------------------------------------------------------------------------------------------
+@100 ns /29 (TestMasterDevice): ---- SC_THREAD Bus Write 0xd to reg [0x01]
+@100 ns /30 (show_notification_reg1_POST_buswrite_GR): ****** got register notification (GR_FUNCTION callback) for Reg1 bus write access
+   value = 173=0xad
+@100 ns /31 (TestMasterDevice): ---- SC_THREAD Read back value
+@100 ns /33 (TestMasterDevice):      read value: 173=0xad
+
+
+
+@100 ns /33 (TestMasterDevice): ---- SC_THREAD Bus Write 0xae to reg [0x01]
+
+Warning: /GreenSocs/GreenReg/write_protected/unequal_zero: User write to write protected pri_reg_dat area/bits detected (written with bits different from zero)! Will be ignored for the protected bits.
+In file: /Users/schroede/mydev/greensocs_greenreg/greendevlib/../greenreg/internal/registers/register_data/primary_register_data.cpp:91
+In process: TestMasterDevice.send_thread @ 100 ns
+@100 ns /34 (show_notification_reg1_POST_buswrite_GR): ****** got register notification (GR_FUNCTION callback) for Reg1 bus write access
+   value = 174=0xae
+@100 ns /35 (TestMasterDevice): ---- SC_THREAD Read back value
+@100 ns /37 (TestMasterDevice):      read value: 174=0xae
+
+
+
+------------------------------------------------------------------------------------------
+
+---------- END simulation ---------- 
+

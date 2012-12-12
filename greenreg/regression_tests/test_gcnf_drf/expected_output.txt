@@ -1,0 +1,68 @@
+created sharedio register Reg0 = 0xabc
+created splitio register Reg1 = 0xab
+bit range bit_range_4_6 = 2
+
+found the reg0Param MyMod.default_registers.Reg0	0xabc
+new value of reg0Param 0x400
+newer value of reg0Param 0x800
+updated value of reg0Param 0xab
+again value of reg0Param 0xab
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0' to '256'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg1' to '256'
+found the reg0Param 0x100
+found the reg1Param 0xab
+
+Entering sc_start : simulation starting
+Entered MyMod::end_of_elaboration..
+..Finished MyMod::end_of_elaboration
+
+Entered MyMod::main_action..
+
+action r[0x01] = 5
+
+Warning: /GreenSocs/GreenReg: DEPRECATED WARNING: You are using events in notification rules! 
+Due to performance reasons you should use GR_FUNCTIONs not SC_METHODs 
+and disable the event switch register-wise.
+This warning will only occur one time!
+In file: /Users/schroede/mydev/greensocs_greenreg/greenreg/sysc_ext/kernel/gr_event.h:166
+In process: MyMod.main_action @ 5 ns
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T>
+Changed to (decimal) value: 171 = 0xab
+5 ns****** got register notification for Reg1
+   value = 171
+CHANGED MyMod.default_registers.Reg1, notified by event
+
+action r[0x01].br["bit_range_4_6"] = 1
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T>
+Changed to (decimal) value: 171 = 0xab
+10 ns****** got register notification for Reg1
+   value = 171
+CHANGED MyMod.default_registers.Reg1, notified by event
+
+action r[0x01].b[31] = true
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T>
+Changed to (decimal) value: 171 = 0xab
+15 ns****** got register notification for Reg1
+   value = 171
+CHANGED MyMod.default_registers.Reg1, notified by event
+value register Reg1 = 171
+
+action r[0x00] = 16
+config_callback for MyMod.default_registers.Reg0 of type gs_param_greenreg<T>
+Changed to (decimal) value: 16 = 0x10
+..Finished MyMod::main_action
+25 ns****** got register notification for Reg0
+   value = 171
+CHANGED MyMod.default_registers.Reg0, notified by event
+Exited sc_start : simulation finished
+
+config_callback for MyMod.default_registers.Reg0 of type gs_param_greenreg<T>
+Changed to (decimal) value: 256 = 0x100
+config_callback for MyMod.default_registers.Reg0 of type gs_param_greenreg<T>
+Changed to (decimal) value: 256 = 0x100
+All parameters in the GreenConfig database:
+  Number of parameters: 3
+   gs_param_greenreg<T>: MyMod.default_registers.Reg0 = 256, 2 attributes: gr_register, gr_sharedio_register
+   gs_param_greenreg<T>: MyMod.default_registers.Reg1 = 171, 2 attributes: gr_register, gr_splitio_register
+   gs_param_greenreg<T>: MyMod.default_registers.Reg1.bit_range_4_6 = 1, 1 attributes: gr_bit_range
+

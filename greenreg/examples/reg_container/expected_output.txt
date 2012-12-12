@@ -1,0 +1,5 @@
+created single IO register Reg1 = 0x1 in std container RegisterDevice.default_registers
+
+created single IO register Reg2 = 0xaaaaaaaa in RegisterDevice.additional_register_container
+
+

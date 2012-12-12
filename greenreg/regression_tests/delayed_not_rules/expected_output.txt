@@ -1,0 +1,100 @@
+
+             SystemC 2.2.0 --- Feb 11 2009 13:12:10
+        Copyright (c) 1996-2006 by all Contributors
+                    ALL RIGHTS RESERVED
+created single IO register Reg5 = 0xaaaaaaaa
+
+created splitio register Reg2 = 0xbb
+
+
+
+--------- START simulation ---------
+
+Entered ReceiverSlaveDevice::end_of_elaboration
+register not delayed GR_FUNCTION without params for post write
+register delayed GR_FUNCTION without params for post write
+register not delayed GR_FUNCTION with params for post write
+register delayed GR_FUNCTION with params for post write
+
+------------------------------------------------------------------------------------------
+@0 s /0 (ReceiverSlaveDevice): current value reg 0x01: 2863311530=0xaaaaaaaa
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 0xff to reg [0x01]
+@0 s /0 (ReceiverSlaveDevice):      new value: 255=0xff
+
+------------------------------------------------------------------------------------------
+@0 s /0 (ReceiverSlaveDevice): current value reg 0x02: 187=0xbb
+
+@0 s /0 (ReceiverSlaveDevice): ---- Local Write 0xff to reg [0x02]
+@0 s /0 (ReceiverSlaveDevice):      new value: 187=0xbb
+
+------------------------------------------------------------------------------------------
+
+Finished ReceiverSlaveDevice::end_of_elaboration
+
+
+Entered ReceiverSlaveDevice::main_action_THREAD:
+Finished ReceiverSlaveDevice::main_action
+
+@100 ns /1 (TestMasterDevice): Start sending bus register accesses
+------------------------------------------------------------------------------------------
+@100 ns /1 (TestMasterDevice): ---- SC_THREAD Bus Read current value reg 0x01
+@100 ns /3 (TestMasterDevice):      read value: 255=0xff
+
+
+
+@100 ns /3 (TestMasterDevice): ---- SC_THREAD Bus Write 0xff to reg [0x01]
+@100 ns /4 (show_notification_reg1_not_delayed_no_params): ****** got NOT DELAYED register notification (GR_FUNCTION callback) for Reg1 post write
+   value = 255=0xff
+@100 ns /4 (show_notification_reg1_not_delayed_params): ****** got NOT DELAYED (transaction, delay) register notification (GR_FUNCTION callback) for Reg1 post write
+@100 ns /4 (show_notification_reg1_not_delayed_params):        transaction ID = 0x1
+   value = ff=0xff
+@100 ns /5 (TestMasterDevice): ---- SC_THREAD Read back value
+@100 ns /7 (TestMasterDevice):      read value: 255=0xff
+
+
+
+@100 ns /7 (TestMasterDevice): ---- SC_THREAD Bus Write 0xd to reg [0x01]
+@100 ns /8 (show_notification_reg1_not_delayed_no_params): ****** got NOT DELAYED register notification (GR_FUNCTION callback) for Reg1 post write
+   value = 13=0xd
+@100 ns /8 (show_notification_reg1_not_delayed_params): ****** got NOT DELAYED (transaction, delay) register notification (GR_FUNCTION callback) for Reg1 post write
+@100 ns /8 (show_notification_reg1_not_delayed_params):        transaction ID = 0x3
+   value = d=0xd
+@100 ns /9 (TestMasterDevice): ---- SC_THREAD Read back value
+@100 ns /11 (TestMasterDevice):      read value: 13=0xd
+
+
+
+------------------------------------------------------------------------------------------
+@100 ns /11 (TestMasterDevice): ---- SC_THREAD Bus Read current value reg 0x02
+@100 ns /13 (TestMasterDevice):      read value: 255=0xff
+
+
+
+@100 ns /13 (TestMasterDevice): ---- SC_THREAD Bus Write 0xff to reg [0x02]
+@100 ns /15 (TestMasterDevice): ---- SC_THREAD Read back value
+@100 ns /17 (TestMasterDevice):      read value: 255=0xff
+
+
+
+@100 ns /17 (TestMasterDevice): ---- SC_THREAD Bus Write 0xd to reg [0x02]
+@100 ns /19 (TestMasterDevice): ---- SC_THREAD Read back value
+@100 ns /21 (TestMasterDevice):      read value: 255=0xff
+
+
+
+------------------------------------------------------------------------------------------
+@110 ns /22 (show_notification_reg1_delayed_params): ****** got DELAYED (transaction, delay) register notification (GR_FUNCTION callback) for Reg1 post write
+@110 ns /22 (show_notification_reg1_delayed_params):        delayed for 10 ns
+@110 ns /22 (show_notification_reg1_not_delayed_params):        transaction ID = 0x1
+   value = d=0xd
+@110 ns /22 (show_notification_reg1_delayed_params): ****** got DELAYED (transaction, delay) register notification (GR_FUNCTION callback) for Reg1 post write
+@110 ns /22 (show_notification_reg1_delayed_params):        delayed for 10 ns
+@110 ns /22 (show_notification_reg1_not_delayed_params):        transaction ID = 0x3
+   value = d=0xd
+@120 ns /23 (show_notification_reg1_delayed_no_params): ****** got DELAYED register notification (GR_FUNCTION callback) for Reg1 post write
+   value = 13=0xd
+@120 ns /23 (show_notification_reg1_delayed_no_params): ****** got DELAYED register notification (GR_FUNCTION callback) for Reg1 post write
+   value = 13=0xd
+
+---------- END simulation ---------- 

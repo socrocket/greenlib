@@ -1,0 +1,72 @@
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.0' to '1'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.1' to 'true'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.2' to '0'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.3' to 'false'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.30' to '44'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.31' to '-44'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.33' to '0'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.8' to 'true'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg0.a' to '0'
+ConfigFile_Api: Applying value of param 'MyMod.default_registers.Reg01.2' to '0'
+
+Warning: deserialize: Conversion error: '44'
+In file: /Users/schroede/mydev/greensocs_greencontrol/greencontrol/gcnf/apis/gs_param/gs_param_native.hpp:307
+
+Warning: deserialize: Conversion error: '-44'
+In file: /Users/schroede/mydev/greensocs_greencontrol/greencontrol/gcnf/apis/gs_param/gs_param_native.hpp:307
+
+Warning: /GreenSocs/GreenReg: Could not assign the value, as the bit index 33 exceeds register width (32)
+In file: /Users/schroede/mydev/greensocs_greenreg/greenreg/internal/registers/register/register.h:270
+
+Warning: /GreenSocs/GreenReg: Could not assign the value, as bit index 'a' is invalid (has non-numeric characters)
+In file: /Users/schroede/mydev/greensocs_greenreg/greenreg/internal/registers/register/register.h:276
+created sharedio register Reg0 = 0xbb3
+created splitio register Reg1 = 0xab
+
+Entering sc_start : simulation starting
+
+Entered MyMod::end_of_elaboration..
+..Finished MyMod::end_of_elaboration
+
+Entered MyMod::main_action..0 s
+
+action r[0x01] = 12
+0 s ****** got register notification for Reg1 (DR)  value = 0xc
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 12
+
+action r[0x01] = 0
+5 ns ****** got register notification for Reg1 (DR)  value = 0x0
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 0
+
+action set bit 5 of r[0x01] to true
+10 ns ****** got register notification for Reg1 (DR)  value = 0x20
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 32
+
+action set bit 4 of r[0x01] to 1
+15 ns ****** got register notification for Reg1 (DR)  value = 0x30
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 48
+
+action set bit 3 of r[0x01] to true
+20 ns ****** got register notification for Reg1 (DR)  value = 0x38
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 56
+
+action set bit 2 of r[0x01] to 1
+25 ns ****** got register notification for Reg1 (DR)  value = 0x3c
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 60
+
+action set bit 5 of r[0x01] to 0
+30 ns ****** got register notification for Reg1 (DR)  value = 0x1c
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 28
+
+action set bit 4 of r[0x01] to false
+35 ns ****** got register notification for Reg1 (DR)  value = 0xc
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 12
+
+action set bit 3 of r[0x01] to 0
+40 ns ****** got register notification for Reg1 (DR)  value = 0x4
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - new value: 4
+..Finished MyMod::main_action 40 ns
+Exited sc_start : simulation finished
+
+config_callback for MyMod.default_registers.Reg0 of type gs_param_greenreg<T> - Is just being destructed!
+config_callback for MyMod.default_registers.Reg1 of type gs_param_greenreg<T> - Is just being destructed!
