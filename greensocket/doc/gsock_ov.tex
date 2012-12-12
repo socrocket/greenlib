@@ -1,0 +1,634 @@
+\documentclass[a4paper,10pt]{article}          % LaTeX 2e 
+%, twocolumn
+
+\usepackage{ae}
+\usepackage{multicol}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2.5cm]{geometry}
+
+%\usepackage[german]{babel}
+
+\usepackage[T1]{fontenc}
+
+\usepackage{ifthen}
+\usepackage{graphicx}
+\usepackage{longtable}
+
+\usepackage{enumitem}
+
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000 
+
+
+\def\textfraction{0.01}
+\def\topfraction{0.99}
+\def\figscale{0.6}
+
+\renewcommand{\baselinestretch}{.98 }
+
+\pagestyle{empty}
+
+\title{GreenSocket - Overview}
+
+\author{\sffamily{Robert G\"unzel (GreenSocs)}}
+
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\thispagestyle{empty}
+
+%\begin{abstract}
+%This document contains the initial specification for the OCP-IP OSCI alignment project. It is derived from the summary of the OCP-IP SLD WG face to face meeting in Nice, France on the 3rd/4th of April 2008.
+%\end{abstract}
+
+\begin{abstract}
+\noindent
+\emph{GreenSocket is a TLM2.0 convenience socket that tries to improve the interoperability offered by TLM2.0 and that provides automatic memory management of transactions and extensions for the user.This document will explain how we believe GreenSocket is able to provide those features.
+For a detailed description of the API and examples, please refer to the User's guide.
+}
+\end{abstract}
+
+\tableofcontents
+
+\section{Aiming on Improved Interoperability}
+This section tries to explain why we thin the basic interoperability offered by TLM2.0 can still be further improved and how we want to achieve this.
+
+\vspace{4mm}
+\subsection{TLM2.0 extensions and their impact on interoperability}
+\vspace{4mm}
+
+TLM2.0 allows for using two different types of extensions, ignorable ones and non-ignorable ones. Ignorable ones may be added to the extension array of the generic payload by initiators and in case the target does not care about this extension, the communication is not negatively effected.
+
+Non-ignorable ones are added by the initiator as well, but this time the target has to make use of it otherwise the communication will fail or significantly misbehave.
+
+When using a non-ignorable extensions the user has to define his own traits class on which the socket has to be templated, so that it cannot be bound to sockets that have been templated on a the TLM2.0 standard traits class.
+
+\medskip
+\hrule
+\medskip
+
+\noindent
+\textbf{Example}
+
+Assume the user will use an extension that defines the priority of a request. Moreover the initiator setting this extension relies on the target dealing with the extension. The extension will be added as a \verb|tlm_extension| to the transaction, so the type of transaction to be used still will be \verb|tlm_generic_payload|. The user will only use the generic protocol (GP) phases, so the used phase type will be \verb|tlm_phase|. So basically the user is using the normal types, but as he insists that the the extension is understood, he defines:
+
+\begin{verbatim}
+  struct priority_extended_gp{
+    typedef tlm::tlm_generic_payload tlm_payload_type;
+    typedef tlm::tlm_phase  tlm_phase_type;
+  };
+\end{verbatim}
+
+And templates his sockets on that struct. By doing this only sockets that use the same type for their sockets can be bound. So the type implicitly states that the other understands the extension.
+
+\medskip
+\hrule
+\medskip
+
+There are a some potential catches with this approach. First of all, the traits class does not identify the actual extensions used. So it adds a level of indirection to find out about a module. Take the example above. What does  \verb|priority_extended_gp| tell you? What extensions are used? What are the types of the content of the extensions, etc...
+
+Secondly, we believe that you cannot always draw a straight line between ignorable and non-ignorable.  Again, let's take the example above. It is pretty simple to think of initiators whose correct function relies on the fact that the priorities are correctly evaluated by the interconnect, while others might just use the priority as some kind of hint to the interconnect. From a TLM2.0 point of view you will have to template the former on the priority traits class (see example above), but what about the one that is using the priority just as a hint? If you template it on the special traits class, you cannot connect it to GP interconnects anymore, although it would be no problem from a functional point of view. But if you template it on the standard TLM2.0 traits class, it cannot be connected to an interconnect that is templated on the special class. So either way around you loose interoperability with a family of interconnects or targets with which you basically are interoperable.
+
+Net result: The priority extension cannot be defined as ignorable or non-ignorable a priory. It depends on the use case. 
+
+Moreover, it is conceivable to have modules that make use of a certain extension if the communication partner can handle it. This is not possible when using the traits classes, as they either say that you have an extension and you insist on using it, or that you have an extension that you actually do not care very much about. To enable such a switch in the use of extensions, runtime information is needed.
+
+Another disadvantage of the traits class approach is, that it is pretty hard to develop generic modules. Imagine a class that shall represent a pretty abstract module that is simply delaying a transaction, regardless of phase or extensions. It just implements the transport functions and adds a delay to them that's all. Now the socket of this module will have to be templated on a traits class, by that outlawing connecting modules that use extensions that are not ignorable from their point of view, although the module would correctly forwards priority extended transactions as well as normal GP transactions.
+
+Of course, this problem could be solved by templating the generic module on the traits class it is about to use, but this will prohibit the binary distribution of such modules.
+
+\vspace{4mm}
+\subsection{The GreenSocket approach to extensions}
+\vspace{4mm}
+
+As described above sometimes the nature of extensions WRT interoperability can only be defined at runtime. So when using GreenSocket we propose to configure the socket before the simulation starts with the extensions that shall be used with this socket. This information will include whether an extensions can be ignored or whether it is mandatory or optional for or even rejected by the module.
+
+The following table summarizes the different bindability levels of extensions:
+
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{|c|c|l|}
+\hline
+\textbf{Level} & \textbf{Description} & \textbf{Bindability Rules} \\
+\hline
+\hline
+Mandatory & The extension is vital for the & If the other socket is rejecting the extension, the bind\\
+& correct operation of the module. &  attempt will fail.  If the other socket treats the extension as\\ 
+&&optional or mandatory the bind attempt will succeed and \\
+&&the extension will become mandatory for both ends. \\
+\hline
+Optional & The module can operate correctly & The bind attempt will always succeed. If the other socket\\
+& with or without the extension, &  is rejecting the extension, the extension will become rejected \\
+& but needs to know whether&for both ends. If the other socket mandates the \\
+& it is understood by the other &use of  the extension, it will become mandatory for\\
+& side or not.& both ends. If the other socket also treats the extension as\\
+&& optional, the extension stays optional and the module\\
+&& will decide/has to detect whether to use the extension\\
+&& or not (also see a note section \textbf{Data extensions!}).\\
+\hline
+Rejected & The module will misbehave & If the other socket mandates the use of the extension\\
+& when dealing with the extension. &  the bind attempt will fail. If the other socket treats the \\
+&&extension as optional the bind attempt will succeed\\
+&& and the extension will become rejected for both ends.\\
+&& If both ends reject the extension, the bind attempt will\\
+&& succeed and the extension will remain rejected.\\
+\hline
+TLM-2.0 & The module emits/receives &The extension is not part of the interface (and bind-\\
+ignorable& this extension in a way as &  ability checks), since it is truly ignorable. \\
+& defined as 'ignorable' by the&\\
+& TLM-2.0 manual&\\
+\hline
+\end{tabular}
+\end{center}
+\label{default}
+\end{table}%
+
+
+Before simulation starts, two connected GreenSockets will inform each other what extensions they use and check whether their configuration matches. Afterwards they will inform the user of the socket about the set of optional extensions that were present in both configurations. By that the user may then pull some runtime switches to turn off the use of some extensions that are not used by its connected socket.
+Using this information, a module designed for a protocol far richer than the GP could even switch to a GP fallback mode if its GreenSocket tells it that the other socket is mere GP.
+
+Additionally, a GreenSocket can be told to be generic, by simple treating each extension as optional. That means the socket will simply adopt each mandatory extension used by the other socket, so that they are interoperable. This allows e.g. for the creation of such abstract delay modules as mentioned in the previous section.
+
+Finally, the GreenSocket configuration will also include the phases used by a module, so that this information can be taken into account when interoperability is checked. 
+
+The back bone of this approach is that there is a common understanding of extensions. There is no gain in this approach if e.g. two sockets use plain GP with a priority extensions, but both defining their own extension class for that. Even if both mark the extension as ignorable, GreenSocket could not identify that they both have the same semantic. 
+
+For that we need a centralized and growing extensions library, from which protocol and module designer can pick the ones they need. So if designer A wants a protocol that is GP+priority and designer B wants a protocol that is GP+priority both should pick the same extension to express the priority, and they are interoperable.
+
+\section{Memory management (MM) of extensions}
+GreenSocket will provide memory management of extensions for the user. However, GreenSocket does not know the type of extensions used at compile time and so an extension pool would have to operator with virtual functions. This of course is a definite no-go for pooling, as pools have to be as fast as possible. Basically, efficient pooling of types not know to the pool owner is not possible. So we have to find a way to avoid pooling. To this end let's have a look at the nature of extensions. Afterwards we'll see that there is no need for extension pooling.
+
+\vspace{4mm}
+\subsection{Extension use cases and MM}
+\vspace{4mm}
+
+\begin{enumerate}
+\item \textbf{Guard extensions}
+
+There are extensions whose mere existence is the only information they carry, they do not have members. That means, they are basically like a boolean variable. If they are part of the transaction they represent a boolean \emph{true} while their absence represents \emph{false}. An example would be a extension called \verb|cachable|.
+If it is there the transaction is cachable, if it is not there the transaction is not cachable. 
+
+If transactions are reused it is important that such guards are removed when the transaction is done, otherwise when a transaction is reused and travels another path some module could see the extension and behave as if someone added the extensions which would be wrong, as no one did this time.
+
+\item \textbf{Data extensions}
+
+We refer to such extension as pseudo transaction members. Such extension always carry data members. Once added they stay in the transaction (they are sticky from the TLM2.0 point of view). An example may be an extension called \verb|priority| containing an integer which is only valid if a phase called \verb|BEGIN_REQ_WITH_PRIO| is send (it would never be valid within b\_transport). Whoever initiates that phase (an initiator or an interconnect) will just set the value of the extension. If it is already in the transaction the content will just be overridden, otherwise it will be added. Such extensions do not have to be removed from transactions, as they do not mean any harm if the transaction is reused and travels a path without the special \verb|BEGIN_REQ_WITH_PRIO| phase. If it will travel a path with \verb|BEGIN_REQ_WITH_PRIO| when it is reused, the one starting the phase will override the existing value and again there will be no harm to the correct function.
+
+\textbf{Important Note:}
+
+If two connected GreenSockets treat a data extension as optional, after binding (see table above) it will stay optional. However, there is no chance of determining whether a data extension is valid or not, if there isn't a special mechanism for that (like the phase based approach as described above). So without such a mechanism, when receiving a transaction a module cannot know whether to use the extension or not. So when defining a data extension, make sure to either forbid treating it as optional, provide a mechanism to detect the validity, or specify a default (use/no use) in case the extension remained optional.
+
+\item \textbf{Guarded data extensions}
+
+Finally, there are extensions that carry data and when present means the data inside is valid. An example could be an extension called \verb|priority| containing an integer which is valid during the GP phase \verb|BEGIN_REQ|. Whoever, gets \verb|BEGIN_REQ| and knows about \verb|priority| would test if it is there, and if it is check the value inside the extension. Just like simple guards, such extensions will have to be removed to avoid misbehavior when the transaction travels another path when being reused.
+\end{enumerate}
+
+Now what about there memory management? Well, guard extension can be allocated statically and each transaction that has the guard enabled could point to the same extension, as the extension itself is not of interest. The information is just encoded in the fact that the entry in the \verb|tlm_array| of the transaction is not \verb|NULL|. When cloned, the extension will just return a pointer to itself. So there is no need for pooling guard extensions.
+
+Data extensions are added sticky. Assuming transaction reuse, they are just \verb|new|-ed when a transaction is not carrying it, but needs to. After some simulation runtime, the probability that a transaction carries the needed data extension is pretty high. So again there is no need to pool those extensions.
+
+Finally what about guarded data extensions? Those shall be split into two extensions: one guard extension and one data extensions. The rule is that the data can only be considered valid, if the guard is present. Since we do not need to pool guard extensions or data extensions, we will not need to pool guarded data extensions as well.
+
+%\section{GreenSocket extension implementation}
+
+%As shown above, GreenSocket will need to support three different types of extensions. Those extensions  must know if they are ignorable and/or sticky, so they need a common base class: \verb|gs_extension_base|. This will also allow GreenSocket to hold a single container of all supported extension types. To relief the user from some typing the following macros are provided:
+
+%\begin{enumerate}
+%\item
+%\begin{verbatim}
+%GS_GUARD_ONLY_EXTENSION(name)
+%\end{verbatim}
+
+%This macro defines a simple guard extension. Since it does not contain any members, and the behavior of \verb|clone|, \verb|copy_from| and \verb|free| are independent of the extension, the user will not have to provide anything else but the name.
+
+%Example:
+%\begin{verbatim}
+%GS_GUARD_ONLY_EXTENSION(my_guard);
+%\end{verbatim}
+
+%This will define a guard extension named \verb|my_guard|.
+
+%\item
+%\begin{verbatim}
+%GS_DATA_ONLY_EXTENSION(name)
+%\end{verbatim}
+
+%This macro defines a simple data extension. Since it contains members the user will have to provide the body of the extensions, including the definition of \verb|clone| and \verb|copy_from|. Being a sticky extension, an implementation of \verb|free| is not needed, since it will only be called when a transaction is deleted. Additional requirements to data extensions are the existence of an empty constructor and a function named \verb|construct| that shall return a pointer to a \verb|gs_extension_base| object. The \verb|construct| call is needed to allow GreenSocket to create an extension through its virtual base \verb|gs_extension_base|. Note that \verb|clone| could have been used for that, but some extension will not allow to be cloned and so return a \verb|NULL| pointer from \verb|clone|. However, \verb|construct| must always return a valid pointer.
+
+%Example:
+%\begin{verbatim}
+%GS_DATA_ONLY_EXTENSION(my_data_only){
+%  void copy_from(tlm::tlm_extension_base const & ext){
+%  }
+%  tlm::tlm_extension_base* clone() const {
+%    return NULL;
+%  }
+%  gs_extension_base* construct() const{return new my_data_only();}
+%  
+%  int content1;
+%  unsigned char content2;
+%}
+%\end{verbatim}
+
+%This will define a data extension named \verb|my_data_only|. You can see how \verb|copy_from| and \verb|clone| have been implemented, so that this extension does not support cloning. You can also see the \verb|construct| function that just creates a new extension object.
+
+%\item
+%\begin{verbatim}
+%GS_GUARDED_DATA_EXTENSION(name)
+%\end{verbatim}
+
+%This macro defines a guarded data extension. Under the hood of this macro the guard extension is created, so the user will only need to provide the body of the data extensions, including the definition of \verb|clone| and \verb|copy_from| just like for a simple data extension.
+
+%Example:
+%\begin{verbatim}
+%GS_GUARDED_DATA_EXTENSION(my_guarded_data){
+%  void copy_from(tlm::tlm_extension_base const & ext){
+%    const my_guarded_data* tmp=dynamic_cast<const my_guarded_data*>(&ext);
+%    if (!tmp) {
+%      std::cerr<<"Cast into extension class failed!"<<std::endl;
+%      exit(1);
+%    }
+%    content1=tmp->content1;
+%    content2=tmp->content2;
+%  }
+%  
+%  tlm::tlm_extension_base* clone() const {
+%    my_guarded_data tmp=new my_guarded_data();
+%    tmp->content1=content1;
+%    tmp->content2=content2;
+%    return tmp;
+%  }
+%  gs_extension_base* construct() const{return new my_guarded_data();}
+%  
+%  int content1;
+%  unsigned char content2;
+%}
+%\end{verbatim}
+
+%This will define a guarded data extension named \verb|my_guarded_data|. You can see how \verb|copy_from| and \verb|clone| have been implemented, so that this extension supports cloning. You can also see the \verb|construct| function that just creates a new extension object.
+
+%
+%\end{enumerate}
+
+\section{GreenSocket services}
+
+This section will now illustrate what services GreenSocket will provide. It describes the most important services how they work.
+
+\vspace{4mm}
+\subsection{Configuration}
+\vspace{4mm}
+
+After creation a GreenSocket will virgin, i.e. not configured.
+%be set to be \emph{generic}. As soon as the configuration gets updated (see API below) it will switch to \emph{non-generic}. 
+It shall be an error if a GreenSocket did not get a valid configuration until the start of the simulation.
+
+To configure GreenSocket WRT the used extensions and phases, one will instantiate a special GreenSocket configuration object, and tell it which extensions/phases are mandatory, optional or rejected. By default the configuration will treat unknown extensions (=extensions that are not part of the configuration) as rejected, but the user may change that to treat unknown extensions as optional.
+Afterwards, the configuration shall be provided to the socket. After the bindability check has been performed  (before\_end\_of\_elaboration) the GreenSocket will carry the resulting configuration (=the largest possible intersection of the configuration of the two connected sockets)
+
+To create a generic GreenSocket that can adopt any configuration, just tell its config to treat unknown extensions as optional and nothing else. The resulting configuration will then contain all mandatory extension of the other socket as mandatory and all optional extensions as optional.
+
+%the following functions are offered:
+%\begin{enumerate}
+%\item
+%\begin{verbatim}
+%template <typename T>
+%void use_mandatory_extension();
+%\end{verbatim}
+
+%This function shall be used to inform GreenSocket that the extension of type \verb|T| is mandatory when connecting to this socket. Example: \verb|socket.use_mandatory_extension<myExt>();|
+
+%\item
+%\begin{verbatim}
+%template <typename T>
+%void use_ignorable_extension();
+%\end{verbatim}
+
+%This function shall be used to inform GreenSocket that the extension of type \verb|T| is ignorable when connecting to this socket. Example: \verb|socket. use_ignorable_extension <myExt>();|
+
+%\item
+% \begin{verbatim}
+%void use_mandatory_phases(unsigned int ph1, ...);
+%\end{verbatim}
+
+%This function shall be used to inform GreenSocket that the phases provided as arguments to this function are  mandatory when connecting to this socket. 
+
+%Example: \verb|socket.use_mandatory_phases(BEGIN_REQ,END_REQ,BEGIN_RESP,END_RESP,PHASE(my_phase),0);|
+
+%Note the macro \verb|PHASE| around the extended phase \verb|my_phase|. It is needed since functions with a variable number of arguments do only work with POD types and do not support implicit casts to POD types. Also note that the list has to be terminated by a \verb|0|;
+
+%\item
+%\begin{verbatim}
+%void use_mandatory_phase(unsigned int ph1);
+%\end{verbatim}
+
+%This function shall be used to inform GreenSocket that the phase provided as an argument function is  mandatory when connecting to this socket. 
+
+%Example: \verb|socket.use_mandatory_phase(my_phase);|
+
+%\item
+%\begin{verbatim}
+%void use_ignorable_phases(unsigned int ph1, ...);
+%\end{verbatim}
+
+%This function shall be used to inform GreenSocket that the phases provided as arguments to this function are  ignorable when connecting to this socket. 
+
+%Example: \verb|socket.use_ignorable_phases(BEGIN_REQ,END_REQ,BEGIN_RESP,END_RESP,PHASE(my_phase),0);|
+
+%Note the macro \verb|PHASE| around the extended phase \verb|my_phase|. It is needed since functions with a variable number of arguments do only work with POD types and do not support implicit casts to POD types. Also note that the list has to be terminated by a \verb|0|;
+
+%\item
+%\begin{verbatim}
+%void use_ignorable_phase(unsigned int ph1, ...);
+%\end{verbatim}
+
+%This function shall be used to inform GreenSocket that the phase provided as an argument function is  ignorable when connecting to this socket. 
+
+%Example: \verb|socket.use_ignorable_phase(my_phase);|
+
+%\item
+%\begin{verbatim}
+%void set_generic(bool);
+%\end{verbatim}
+
+%This function enables/disables the generic mode of the socket. After construction the socket is in generic mode and as soon as one of the functions above is called, it switches to non-generic mode. However, it is conceivable that a socket requires a certain extension, and in case this extension is there it can adopt all others. In this case one would add a mandatory extension and then set the socket back to generic mode.
+
+%\item
+%\begin{verbatim}
+%bool get_generic();
+%\end{verbatim}
+
+%This function returns true if the socket is in generic mode and false otherwise.
+
+%\item
+%\begin{verbatim}
+%green_socket_config get_config();
+%\end{verbatim}
+
+%This function returns the configuration of the socket (see further below for a description of the data type).
+
+%\end{enumerate}
+
+\vspace{4mm}
+\subsection{Bindability check}
+\vspace{4mm}
+
+Before end of elaboration GreenSocket will determine, whether its connected socket is actually bindable or not. During this the socket will provide some calls into a derived socket to enable advanced bindability rules.
+
+A plain GreenSocket will therefore not provide such callbacks into the owner, but at start\_of\_simulation the owner can safely check the resulting configuration of its GreenSocket.
+
+%The bindability check is based on the following data type:
+%\begin{verbatim}
+%struct green_socket_config{
+%  const tlm::tlm_array<gs_extension_base*>* used_extensions;
+%  const std::map<std::string, bool>*        used_phases;
+%  const std::string *                       type_string;
+%  void*                                     custom_data;
+%  bool                                      generic;
+%};
+%\end{verbatim}
+
+%The configuration contains a \verb|tlm_array| of extension called \verb|used_extensions|. Non-null entries mark extensions being used by the socket. The map \verb|used_phases| contains all phases that are used by the socket, where the keys are the phase names, while the values mark whether the phase is ignorable (true) or not.
+
+%Furthermore there is a pointer to a string that defines the type of the socket. Right now two types have been defined \emph{plain\_osci} and \emph{basic\_green\_socket}. The former string is set when a GreenSocket is connected to a standard GP socket, the latter when the GreenSocket has not been extended. The basic idea is, that extended sockets shall only check whether the string matches their own one (then they are allowed to make assumptions on the other socket, e.g. cast it or something) or whether it is plain\_osci (to switch to a fall back mode).
+
+%The \verb|custom_data| can be used to transmit socket type specific information. The receiver can cast that into the correct type if the type\_string has the correct value.
+
+%Finally there is a bool indicating whether the socket is generic or not.
+
+The basic bindability check is as follows:
+\begin{enumerate}
+
+\item
+The socket checks whether it is currently in the process of checking its bindability. If that is the case it will abort this recursive check.
+
+\item
+The socket checks whether it has a valid configuration. If not it assumes it will get one out of a before\_end\_of\_elaboration callback or as a result of another socket that just got its configuration.
+Consequently, it will abort the check for now, and will redo it as soon as it gets a configuration.
+
+\item
+The socket checks if its connected socket is a GreenSocket. If not GreenSocket assumes to be connected to a GP compliant socket. It assembles a GP compliant configuration. If it is connected to another GreenSocket, it will get the configuration from that one. That 'getting' of the configuration will start the other sockets bindability check (Note that this will lead to getting the config from the current socket but that is guarded by the very first check point).
+
+\item
+The configuration created/acquired in the previous step is checked against the socket's configuration. If the binding fails, the simulation will abort reporting which binding failed for what reason. If the binding succeeds, the resulting configuration will become the socket's configuration.
+
+\item
+The socket calls \verb|bound_to| on itself. This call is virtual and may be overridden by derived sockets, so that they can react on the resulting configuration. The call provides a pointer to the bound socket, a string that identifies the type of the socket, and the index of the binding of the socket (for simple sockets that can only be bound once, the index will always b 0).
+
+\end{enumerate}
+
+\vspace{4mm}
+\subsection{Transaction memory management}
+\vspace{4mm}
+
+GreenSocket (the initiator and bidirectional variants only) contains a pool of transactions. The transactions carry all simple data extensions and the data parts of guarded data extensions that were configured to be used by this socket, when they come out of the pool. Since the pool is build before simulation starts, \verb|new|-ing of extensions will never take place, when an initiator access the sticky extensions he configured its socket to use.
+
+When a transaction is taken from the pool, and after some time is not of use any more, it must actively be put back into the pool. If one wants to reuse directly, he must check the reference count of the transaction and may only reuse if it is equal to one, if not he must return it to the pool and get a new one from the pool.
+
+Still the user can choose to use his own external pool, or heap or stack allocate transactions as needed. GreenSocket does depend on getting a transaction out of its own pool (although this might improve performance).
+
+%The functions provided here are \verb|get_transaction()| and \verb|release_transaction()|. The former returns a pointer to a memory managed \verb|tlm_generic_payload| (that is already acquired), the latter shall be called when the transaction is done. Note that the former function may only be called at \verb|start_of_simulation| or during runtime, because the socket configuration is determined only at end of elaboration, and so the pool is also constructed at end of elaboration (as it has to know which sticky extensions shall be stuffed into the transactions when the pool is build).
+
+%If an initiator uses those function it has to be aware of the fact that the transaction is memory managed, so if it using it with \verb|b_transport| it will have to check the refc ount on return of the transport call, and it may only reuse it if it is one. Otherwise it will have to release it and get a new transaction from the pool.
+
+%In case the user wants to use non memory managed transactions in \verb|b_transport| it can alloacte a transaction manually, but to make GreenSocket operate correctly the user has to allow GreenSocket to initialize the transaction as if it came from the pool.
+
+%This can be achieved by a simple line of code, as shown in the following code.
+
+%\vspace{4mm}
+%\subsubsection{Module member transactions}
+%\vspace{4mm}
+
+%\begin{verbatim}
+%SC_MODULE(example_mod){
+%  green_socket<example_mod> socket;
+%  
+%  SC_CTOR(example_mod): socket("socket"){
+%    socket.register_nb_transport(...);
+%    socket.use_ignorable_extension<my_guarded_data>();
+%    socket.use_mandatory_extension<my_data>();
+%    socket.use_mandatory_phases(BEGIN_REQ,BEGIN_RESP,END_REQ,END_RESP,0);
+%    SC_THREAD(run);
+%  }
+%  
+%  void start_of_simulation(){
+%    //this line does the job
+%    socket.fill_transaction(p);
+%  }
+%  
+%  void run(){
+%    setup(p);
+%    socket.b_transport(p, time);
+%    ...
+%  }
+%  
+%  tlm_generic_payload p;
+%};
+%\end{verbatim}
+
+%\vspace{4mm}
+%\subsubsection{Stack allocated transactions}
+%\vspace{4mm}
+
+%\begin{verbatim}
+%SC_MODULE(example_mod){
+%  green_socket<example_mod> socket;
+%  
+%  SC_CTOR(example_mod): socket("socket"){
+%    socket.register_nb_transport(...);
+%    socket.use_ignorable_extension<my_guarded_data>();
+%    socket.use_mandatory_extension<my_data>();
+%    socket.use_mandatory_phases(BEGIN_REQ,BEGIN_RESP,END_REQ,END_RESP,0);
+%    SC_THREAD(run);
+%  }
+%  
+%  void run(){
+%    tlm_generic_payload p;
+%    //the following line does the job
+%    socket.fill_transaction(p);
+%    while(1){    
+%      fill(p);
+%      socket.b_transport(p, time);
+%      ...
+%    }
+%  }
+%};
+%\end{verbatim}
+
+\vspace{4mm}
+\subsection{GVI Extension access}
+\vspace{4mm}
+
+GreenSocket does also offer simple functions to access extensions, although they still may be accessed manually through the transaction. Using the functions provided by GreenSocket the user can be sure that the semantics of guard, data and guarded data extensions are respected.
+
+Moreover, via those access functions GreenSocket makes sure that an extension is never added twice to a transaction as an auto\_extension (see the TLM-2 manual about set\_auto\_extension). Inexperienced users might do this when directly accessing the TLM-2 generic payload, which (in the worst case) will lead to a buffer overflow in an generic payload internal structure.
+
+The access function will allow to
+\begin{enumerate}
+\item 
+Get extensions from a transaction, just like the TLM-2 \verb|get_extension| function. However the functions will make sure that, when accessing sticky extensions (data extensions or the data parts of guarded data extensions) you always get a valid extension handle, and you do not need to protect yourself against NULL pointers or some such.
+
+\item 
+Validating extensions in a transaction. That means activating the guard of a guard only or a guarded data extension. The functions hide as many memory management as possible from the user, like using \verb|set_auto_extension| or \verb|set_extension|, and like preventing buffer overflows (see above).
+
+Additionally, the validation functions return information, whether the user will have to remove the extensions manually (if there was no memory manager present) or if that will happen automatically. This allows for writing code that can easily operate in both memory managed and non memory managed environments.
+
+\item
+Invalidating extensions in a transaction. That means deactivating the guard of guard only or a guarded data extension. This will have an immediate effect, since you either call that function because you are in a non memory managed world and you have to remove extensions manually, or because you wanna change the state of a transaction \textbf{now} and not at a later time.
+
+\end{enumerate}
+
+This simple get-validate-invalidate (GVI) scheme is as powerful as the set-set\_auto-get-clear-release scheme, but is by far simpler.
+
+\textbf{Note:} The GVI scheme is built on top of the set-set\_auto-get-clear-release scheme. It does not modify or disrespect the TLM-2 standard.
+
+%In the following we will show how to use those functions
+
+%\vspace{4mm}
+%\subsubsection{Guard extension access}
+%\vspace{4mm}
+
+%\begin{verbatim}
+%//the GreenSocket is called socket
+%//the tlm_generic_payload is called txn
+%//the guard extension is called my_guard
+
+%//test for a guard
+%if (socket.get_extension<my_guard>(txn)) do_stuff();
+
+%//set a guard
+%socket.validate_extension<my_guard>(txn);
+%\end{verbatim}
+
+%You can see in this example that the actual extension instance is of no interest when dealing with guards.
+
+%\vspace{4mm}
+%\subsubsection{Data only extension access}
+%\vspace{4mm}
+
+%\begin{verbatim}
+%//the GreenSocket is called socket
+%//the tlm_generic_payload is called txn
+%//the data only extension is called my_data
+
+%//access data only extension
+%my_data* md=socket.get_extension<my_data>(txn);
+%do_stuff_with_md();
+
+%\end{verbatim}
+
+%You can see that data only extensions only need to be taken from the transaction.
+%Afterwards they can be modified, and since they are pointed to that will have an immediate effect on the transaction. Calling \verb|validate_extension| on a data only extension has no effect. A data only extension \emph{has} to be taken from the transaction, before working with it.
+
+%\vspace{4mm}
+%\subsubsection{Guarded data extension access}
+%\vspace{4mm}
+
+%\begin{verbatim}
+%//the GreenSocket is called socket
+%//the tlm_generic_payload is called txn
+%//the guarded data extension is called my_guared_data
+
+%//interconnects will do
+%my_guarded_data* mgd;
+%if (socket.get_extension<my_guarded_data>(mgd, txn)){
+%  //do what has to be done when extension was valid
+%  mgd->...;
+%}
+%else{
+%  //do what has to be done when extension was not valid
+%  mgd->...;
+%  socket.validate_extension<my_guarded_data>(txn);
+%};
+
+%//initiators will do
+%my_guarded_data* mgd;
+%socket.get_extension<my_guarded_data>(mgd, txn);
+%mgd->...;
+%socket.validate_extension<my_guarded_data>(txn);
+%\end{verbatim}
+
+%You can see that guarded data extensions have to be taken from the transaction.
+%Afterwards they can be modified, and since they are pointed to that will have an immediate effect on the transaction. Calling \verb|validate_extension| on a guarded data only extension will set the guard of the guarded data extension. Just as data only extension guarded data extensions \emph{have} to be taken from the transaction, before working with it.
+
+%\vspace{4mm}
+%\subsubsection{Unified extension access}
+%\vspace{4mm}
+
+%\begin{verbatim}
+%//the GreenSocket is called socket
+%//the tlm_generic_payload is called txn
+%//the extension is called my_ext
+
+%my_ext* ext;
+%if (socket.get_extension< my_ext >(ext, txn)){
+%  //do what has to be done when extension was valid
+%}
+%else{
+%  //do what has to be done when extension was not valid
+%  socket.validate_extension< my_ext >(txn);
+%};
+%\end{verbatim}
+
+%You can see here, how you can work with an extension regardless of its actual type. If it was a data only extension \verb|validate_extension| will have no effect.
+
+\vspace{4mm}
+\subsubsection{Usage with blocking and non blocking transport} 
+\label{sec:usage}
+\vspace{4mm}
+
+Just as normal for TLM2.0 if the user validates an extension before calling \verb|b_transport| he has to invalidate it afterwards.
+In case of \verb|nb_transport| the user will just validate.
+
+There is a corner case, when a transaction comes into a bridge with an extension validated, and it shall go downstream without the extension (or vice versa). If the mutability rule for the extension allows it to be removed (so it is only valid with the very first phase you send), you can just invalidate the extension. If the mutability rules do not allow that, a transaction copy will have to take place.
+
+\vspace{4mm}
+\subsection{Communication interface}
+\vspace{4mm}
+
+The communication interface is equivalent to the passthrough sockets of the TLM2.0 kit. You can register callbacks for any of the TLM2.0 interface methods. No automatic blocking to non-blocking (and vice versa) conversion is performed. This task shall be left to sockets that are build on top of GreenSocket.
+\end{document}
+ 

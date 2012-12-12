@@ -1,0 +1,23 @@
+This example shows how to use the GreenSocs quantum keeper to keep
+track of the temporal decoupled time in each instant of the
+simulation.
+
+The gs_quantumkeeper class should be used both in the master and the
+slave to be more precise.
+
+To show how easy it is to change an existing module, we use the
+original file ExplicitLTTarget.h from TLM2 distribuition with only 3
+minor modifications to use the GreenSocs Quantum Keeper.
+
+1) #include <greensocket/generic/gs_quantumkeeper.h>
+2) change the name of myBTransport second argument from t to time_arg
+3) declare a gs_quantumkeeper to replace the original sc_time t argument
+
+A global temporal decoupled time is stored for each SystemC
+process. The method gs_quantumkeeper::getTD() returns the time for the
+current executing thread.
+
+This example use the GreenAV output plugin TXT_TD_FILE_OUT, which is a
+variation of the TXT_FILE_OUT that recognizes and outputs the temporal
+decoupled time along with the current simulation time when printing
+parameters.

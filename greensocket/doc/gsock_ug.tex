@@ -1,0 +1,2009 @@
+\documentclass[a4paper,10pt]{article}          % LaTeX 2e 
+%, twocolumn
+
+\usepackage{ae}
+\usepackage{multicol}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2.5cm]{geometry}
+
+%\usepackage[german]{babel}
+
+\usepackage[T1]{fontenc}
+
+\usepackage{ifthen}
+\usepackage{graphicx}
+\usepackage{longtable}
+
+\usepackage{enumitem}
+
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000 
+
+
+\def\textfraction{0.01}
+\def\topfraction{0.99}
+\def\figscale{0.6}
+
+\renewcommand{\baselinestretch}{.98 }
+
+\pagestyle{headings}
+
+\title{GreenSocket - Overview}
+
+\author{\sffamily{Robert G\"unzel (GreenSocs)}}
+
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\thispagestyle{empty}
+
+%\begin{abstract}
+%This document contains the initial specification for the OCP-IP OSCI alignment project. It is derived from the summary of the OCP-IP SLD WG face to face meeting in Nice, France on the 3rd/4th of April 2008.
+%\end{abstract}
+
+\begin{abstract}
+\noindent
+\emph{GreenSocket is intended to be the base for more advanced and customized sockets. It offers memory management facilities for transactions and extensions, based on the configuration of the socket, as well as a callback registration for the interface method calls of TLM2.0.
+During runtime two connected GreenSockets exchange configuration information to determine the largest possible intersection of used extensions and phases. Afterwards the socket calls virtual functions on '''itself''' to indicate a successful binding. Sockets derived from GreenSocket can override those functions to e.g. inform the owning modules about the configuration intersection or to perform additional bindability checks.}
+
+\emph{
+Hence, a plain (un-derived) GreenSocket will not provide this information to the owning modules. However, modules can actively get the resolved configuration at start\_of\_simulation or later.}
+
+\emph{
+Together with GreenSocket comes a special TLM-2.0 compliant, non-restricting extension type philosophy (See chapter 2 of the GreenSocket Overview for details) as well as a TLM-2.0 compliant, non-restricting extension access philosophy (namely} GVI\emph{, see chapter 3.4 of the GreenSocket Overview for details).
+}
+\end{abstract}
+
+\pagenumbering{arabic}
+
+\tableofcontents\newpage
+\section{Preface}
+
+This document gives a detailed overview over the API of GreenSocket. It can either be read from top to bottom, or can be read in a use case based way. That means, you should find your use case in section \emph{Inclusions and namespaces}, read about it there and follow the links from there to more detailed information about your use case. Whenever you find things missing in the user guide, please contact the author.
+
+GreenSocket comes in three flavors: once as an initiator socket and once as a target socket and once as a bidirectional socket, which is a unification of the former two sockets. The initiator socket allows for using the TLM2.0 forward interface and for registering callbacks for the TLM2.0 backwards interface. The target socket does the same but the other way around. Finally the bidirectional socket allows for both.
+
+\textbf{In the Pipe:} Upcoming versions of this document will contain
+\begin{itemize}
+\item Information on how to monitor GreenSocket connections.
+\item Information on how to customize GreenSocket monitoring.
+\item A sophisticated example.
+\end{itemize}
+
+
+\section{Inclusions and namespaces}
+Greensocket is distributed as a header only release, so after getting it from GreenSocs you only have to include the correct files to start using it. There are a number of files within the package, but only few are meant to be used directly. This section lists the most important ones and are sorted by use cases. If you find your use case missing in this list, please contact the author of this document.
+
+Note that inclusions with larger major enumeration numbers include all the files with lower major enumeration numbers.
+
+\begin{enumerate}
+\item 
+Defining own extensions:
+
+When defining your extensions you will need to include 
+
+\verb|#include "greensocket/generic/gs_extension.h"|
+
+Afterwards you will have access to all members of namespace \verb|gs::ext| and the extensions definition macros, as mentioned in section \emph{Defining your Extensions} below.
+
+\item 
+Working with GreenSocket configurations:
+
+When working with configurations for GreenSocket you will have to include
+
+\verb|#include "greensocket/generic/green_socket_config.h"|
+
+Afterwards you will have access to the class \verb|config| in namespace \verb|gs::socket|, as described in section \emph{Working with Configurations} below.
+
+\item 
+Using or extending a basic GreenSocket:
+
+You have the choice of including one, two or all three flavors of GreenSocket.
+\begin{enumerate}
+\item 
+Initiator socket that can be bound to exactly one target:
+
+\verb|#include "greensocket/initiator/single_socket.h"|
+
+Afterwards you will have access to the class \verb|initiator_socket| in namespace \verb|gs::socket|, as described in section \emph{Working with Initiator Sockets} below.
+
+Initiator socket that can be bound to many targets:
+
+\verb|#include "greensocket/initiator/multi_socket.h"|
+
+Afterwards you will have access to the class \verb|initiator_multi_socket| in namespace \verb|gs::socket|, as described in section \emph{Working with Initiator Sockets} below.
+
+\item 
+Target socket that can be bound to exactly one initiator:
+
+\verb|#include "greensocket/target/single_socket.h"|
+
+Afterwards you will have access to the class \verb|target_socket| in namespace \verb|gs::socket|, as described in section \emph{Working with Target Sockets} below.
+
+Target socket that can be bound to many initiators:
+
+\verb|#include "greensocket/target/multi_socket.h"|
+
+Afterwards you will have access to the class \verb|target_multi_socket| in namespace \verb|gs::socket|, as described in section \emph{Working with Target Sockets} below.
+
+\item 
+Bidirectional socket that can be bound to exactly one bidirectional socket:
+
+\verb|#include "greensocket/bidirectional/single_socket.h"|
+
+Afterwards you will have access to the class \verb| bidirectional_socket| in namespace \verb|gs::socket|, as described in section \emph{Working with Bidirectional Sockets} below.
+
+Bidirectional socket that can be bound to many bidirectional sockets:
+
+\verb|#include "greensocket/bidirectional/multi_socket.h"|
+
+Afterwards you will have access to the class \verb| bidirectional_multi_socket| in namespace \verb|gs::socket|, as described in section \emph{Working with Bidirectional Sockets} below.
+
+\end{enumerate}
+
+%\item Monitoring GreenSocket connections:
+
+%You may attach a monitor to a GreenSocket connection, who can feed the TLM-2.0 traffic of the link into the GreenAV framework. To do so include
+
+%\verb|#include "green_socket/monitor/green_socket_monitor.h"|
+
+%Afterwards you will have access to the class \verb|monitor| in namespace \verb|gs::socket|, as described in section \emph{Working with Monitors} below.
+% There are some restrictions concerning the supported output plugins, but that is explained in more detail in the same section.
+
+%\item Defining special GreenSocket monitor plugins
+
+%You may write your own GreenSocket monitor plugins for \verb|tlm::base_protocol_types| based protocols by including
+
+%\verb|#include "green_socket/monitor/green_socket_observer_base.h"|
+
+%Afterwards you will have access to the class \verb|gp_observer_base| in namespace \verb|gs::socket|, as described in section \emph{Writing Custom Protocol Observers} below.
+
+\end{enumerate}
+
+\section{Defining your Extensions}
+
+First of all it is important to mention that the GreenSockets can only exploit their runtime bindability check capabilities if all extensions come from a single shared extension repository. When defining your GreenSocket configuration you should first visit such a repository and look if there already is an extension that matches your needs. Only if you do not find what you need, you should define a new one, and submit it together with a description back into the repository. Otherwise we might end up having a \verb|foo_priority| and a \verb|bar_priority| extension which are functionally equivalent but will fail to bind because GreenSocket bind checks are type based, and the types differ.
+
+\subsection{Guard Only Extensions}
+To define a guard only extension use the macro \verb|GS_GUARD_ONLY_EXTENSION(name)|.
+
+For example \verb|GS_GUARD_ONLY_EXTENSION(cacheable);| will define a guard extension type named cacheable.
+
+\subsection{Data Only Extensions}
+To define a data only extension use the macro \verb|GS_DATA_ONLY_EXTENSION(name)|.
+As you can see there is no terminating \verb|;| because this time you will have to provide the body for the extension.
+
+The things you have to provide are:
+
+\begin{enumerate}
+\item 
+\verb|void copy_from(tlm::tlm_extension_base const & ext)|
+
+Within this function you will have to copy the data members of function argument \verb|ext| into the local members of this extension.
+
+\item 
+\verb|tlm::tlm_extension_base* clone() const|
+
+Within this function you will have to create a new instance of this extension, copy the local members of this extension into the new instance and return the pinter to this instance.
+
+\item
+\verb|gs_extension_base* construct() const|
+
+Within this function you shall create an fresh and new instance of this extension and return the pointer to it.
+
+\item
+\verb|std::string dump() const|
+
+Within this function you shall dump the current state of the extension. This has to be done in a special format, so that it matches the complete transaction format when printed e.g. into a debug file.
+
+The format is
+
+\begin{verbatim}
+</extension name="typename" type="data" 
+	member1="value_of_member1_as_string" 
+	member2="value_of_member2_as_string" 
+	member3="value_of_member3_as_string" 
+	...
+>
+\end{verbatim}
+
+Note that the line feeds are only there to make the format fit into this document. The actual returned string must not contain newlines, and that the type is fixed. For example if your extension was called \verb|baz| and it has two members \verb|int j;| and \verb|char c;| the returned string should be 
+
+\verb|</extension name="baz" type="data" j="2" c="a">|
+
+Given that j is 2 and c is 'a' at the time \verb|dump| is called.
+\end{enumerate}
+
+Example: Defining a data only extension for priority:
+
+\begin{small}
+\begin{verbatim}
+   GS_DATA_ONLY_EXTENSION(priority){
+      void copy_from(tlm::tlm_extension_base const & ext){
+        const priority* tmp=static_cast<const priority*>(&ext);
+        this->prio=tmp->prio;
+      }
+      tlm::tlm_extension_base* clone() const {
+        priority* tmp=new priority(); 
+        tmp->prio=this->prio; 
+        return tmp;
+      }
+      gs_extension_base* construct() const{
+        return new priority();
+      }
+      std::string dump() const{
+        std::stringstream s;
+        s<<"</extension name=\"priority\" type=\"data\" prio=\""<<prio<<"\">";
+        return s.str();
+      }
+      unsigned int prio;
+    };
+\end{verbatim}
+\end{small}
+
+Since in the majority of cases extensions carry just a single member, we also provide the macro \linebreak\verb|SINGLE_MEMBER_DATA(name, type);|, which will set up a data only extension with name \verb|name| and a single member of type \verb|type|. The member's name will be \verb|value|. Note that only types are supported for which \linebreak\verb|std::ostream& operator<<(std::ostream &, const type &)| is available.
+
+For example \verb|SINGLE_MEMBER_DATA(priority, unsigned int);| would define a priority extension just like in the example above, but as mentioned before the actual member of the extension would be called \verb|value|.
+
+\subsection{Guarded Data Extensions}
+Guarded data extensions are defined exactly like data only extensions, however the macro to use is \linebreak\verb|GS_GUARDED_DATA_EXTENSION(name)|, and the type that is part of the dump format is \verb|guarded_data|.
+
+Example: Defining a data only extension for burst sequence:
+\begin{small}
+\begin{verbatim}
+   GS_GUARDED_DATA_EXTENSION(burstsequence){
+      void copy_from(tlm::tlm_extension_base const & ext){
+        const burstsequence* tmp=static_cast<const burstsequence*>(&ext);
+        this->seq=tmp->seq;
+      }
+      tlm::tlm_extension_base* clone() const {
+        burstsequence* tmp=new burstsequence(); 
+        tmp->seq=this->seq; 
+        return tmp;
+      }
+      gs_extension_base* construct() const{
+        return new burstsequence();
+      }
+      std::string dump() const{
+        std::stringstream s;
+        s<<"</extension name=\"burstsequence\" type=\"guarded_data\" seq=\""<<seq<<"\">";
+        return s.str();
+      }
+      unsigned int seq;
+    };
+\end{verbatim}
+\end{small}
+
+Since in the majority of cases extensions carry just a single member, we also provide the macro \linebreak\verb|SINGLE_MEMBER_GUARDED_DATA(name, type);|, which will set up a guardeddata extension with name \verb|name| and a single member of type \verb|type|. The member's name will be \verb|value|. Note that only types are supported for which \linebreak\verb|std::ostream& operator<<(std::ostream &, const type &)| is available.
+
+For example \verb|SINGLE_MEMBER_GUARDED_DATA(burstsequence, unsigned int);| would define a burst sequence extension just like in the example above, but as mentioned before the actual member of the extension would be called \verb|value|.
+
+\subsection{Bindability enum}
+
+Together with the macros a enumerated type is defined that defines the possible bindability states of extensions (see the GreenSocket Overview for details): \verb|gs::ext::gs_extension_bindability_enum;|.
+
+The enumerated values are: 
+
+\verb|gs_optional=0, gs_mandatory=1, gs_reject=2|
+
+%*********************************CONFIG************************************
+\section{Working with Configurations}
+
+All GreenSockets share the same configuration facility. It allows for configuring the socket, with respect to the used extensions and phases. 
+The configuration of a GreenSocket is an object that shall be instantiated by the user, be set up according to the users needs, and then shall be assigned to the socket. Whenever two GreenSockets are bound they compare their configurations, try to find the largest possible working intersection of their configurations, and if they succeed, they will change their configurations to represent the intersection.
+
+The user can then read the configuration back from the socket, to investigate the resulting intersection.
+
+The class name is \verb|template<typename TRAITS> gs::socket::config|. The template argument shall be the traits class (e.g. \verb|tlm::base_protocol_types|) used by the socket to which the configuration shall be applied.
+
+\subsection{Construction}
+
+The provided constructor does not take any arguments \verb|config()|. For example creating a GreenSocket configuration named \verb|cfg| on the stack would be done by 
+
+\verb|gs::socket::config<tlm::base_protocol_types> cfg;|
+
+\noindent while the construction on the heap would be done by
+
+\verb|gs::socket::config<tlm::base_protocol_types>* cfg=|
+
+\verb|              new gs::socket::config<tlm::base_protocol_types>();|
+
+\noindent Also a copy constructor is available: \verb|config(const config&)|.
+
+\subsection{Configuring Use of Extensions}
+
+Note that GreenSocket configurations only support extensions defined by the macros mentioned in the chapter above.
+The functions provided to configure the use of extensions are
+
+\begin{enumerate}
+\item 
+\verb|template <typename T> void use_mandatory_extension();|
+
+This function will add extension type T as mandatory to the configuration. Example: Add extension type \verb|cacheable| as mandatory to the configuration.
+
+\begin{small}
+\begin{verbatim}
+gs::socket::config<tlm::base_protocol_types> conf;
+conf.use_mandatory_extension<cacheable>();
+\end{verbatim}
+\end{small}
+
+\item 
+\verb|template <typename T> void use_optional_extension();|
+
+This function will add extension type T as optional to the configuration. Example: Add extension type \verb|cacheable| as optional to the configuration.
+
+\begin{small}
+\begin{verbatim}
+gs::socket::config<tlm::base_protocol_types> conf;
+conf.use_optional_extension<cacheable>();
+\end{verbatim}
+\end{small}
+
+\item 
+\verb|template <typename T> void reject_extension();|
+
+This function will add extension type T as rejected to the configuration. Example: Add extension type \verb|cacheable| as rejected to the configuration.
+
+\begin{small}
+\begin{verbatim}
+gs::socket::config<tlm::base_protocol_types> conf;
+conf.reject_extension<cacheable>();
+\end{verbatim}
+\end{small}
+
+\item 
+\verb|template <typename T> void remove_extension();|
+
+This function will remove extension type T from the configuration. Example: Remove extension type \verb|cacheable| from the configuration.
+
+\begin{small}
+\begin{verbatim}
+gs::socket::config<tlm::base_protocol_types> conf;
+conf.remove_extension<cacheable>();
+\end{verbatim}
+\end{small}
+
+\item
+\verb|template <typename T> gs::ext::gs_extension_bindability_enum has_extension() const;|
+
+This function will return how the configuration treats the extension type T. That might be helpful to find out if a certain extension can be used or not after binding has completed. Example: Find out how the configuration deals with extension type \verb|cacheable|
+
+\begin{small}
+\begin{verbatim}
+switch(conf.has_extension<cacheable>()){
+  case gs::ext::gs_optional: std::cout<<"It's up to me to"; break;
+  case gs::ext::gs_mandatory: std::cout<<"I'll have to"; break;
+  case gs::ext::gs_reject: std::cout<<"I must not"; break;
+}
+std::cout<<" use the cacheable extension."<<std::endl;
+\end{verbatim}
+\end{small}
+
+Note: If you use this function with a TLM-2 ignorable extension (i.e. it is not part of the bindability checks and configs) you will get back the treatment value for unknown extension (see section \emph{Configuring How to Handle Unknown Phases or Extension}).
+
+\end{enumerate}
+
+
+\subsection{Configuring Use of Phases}
+
+The functions provided to configure the use of phases (both TLM base protocol phases or additional phases that were created using the TLM macro \verb|DECLARE_EXTENDED_PHASE|) are
+
+\begin{enumerate}
+\item 
+\verb|void use_mandatory_phase(unsigned int ph1)|
+
+This function will add phase \verb|ph1| as mandatory to the configuration. Example: Add phase \verb|BEGIN_REQ| as mandatory to the configuration.
+
+\begin{small}
+\begin{verbatim}
+gs::socket::config<tlm::base_protocol_types> conf;
+conf.use_mandatory_phase(tlm::BEGIN_REQ);
+\end{verbatim}
+\end{small}
+
+\item 
+\verb|void use_optional_phase(unsigned int ph1)|
+
+This function will add phase \verb|ph1| as optional to the configuration. Example: Add phase \verb|BEGIN_REQ| as optional to the configuration.
+
+\begin{small}
+\begin{verbatim}
+gs::socket::config<tlm::base_protocol_types> conf;
+conf.use_otpional_phase(tlm::BEGIN_REQ);
+\end{verbatim}
+\end{small}
+
+\item 
+\verb|void reject_phase(unsigned int ph1)|
+
+This function will add phase \verb|ph1| as rejected to the configuration. Example: Add phase \verb|BEGIN_REQ| as rejected to the configuration.
+
+\begin{small}
+\begin{verbatim}
+gs::socket::config<tlm::base_protocol_types> conf;
+conf.reject_phase(tlm::BEGIN_REQ);
+\end{verbatim}
+\end{small}
+
+\item 
+\verb|void remove_phase(unsigned int ph1)|
+
+This function will remove phase \verb|ph1| from the configuration. Example: Remove phase \verb|BEGIN_REQ| from the configuration.
+
+\begin{small}
+\begin{verbatim}
+gs::socket::config<tlm::base_protocol_types> conf;
+conf.remove_phase(tlm::BEGIN_REQ);
+\end{verbatim}
+\end{small}
+
+\item
+\verb|gs::ext::gs_extension_bindability_enum has_phase(unsigned int ph) const;|
+
+This function will return how the configuration treats phase \verb|ph|. That might be helpful to find out if a certain phase can be used or not after binding has completed. Example: Find out how the configuration deals with phase \verb|BEGIN_REQ|
+
+\begin{small}
+\begin{verbatim}
+switch(conf.has_phase<tlm::BEGIN_REQ>()){
+  case gs::ext::gs_optional: std::cout<<"It's up to me to"; break;
+  case gs::ext::gs_mandatory: std::cout<<"I'll have to"; break;
+  case gs::ext::gs_reject: std::cout<<"I must not"; break;
+}
+std::cout<<" use phase BEGIN_REQ."<<std::endl;
+\end{verbatim}
+\end{small}
+
+Note: If you use this function with a TLM-2 ignorable phase (i.e. it is not part of the bindability checks and configs) you will get back the treatment value for unknown phases. (see section \emph{Configuring How to Handle Unknown Phases or Extension}).
+
+
+\end{enumerate}
+
+\subsection{Configuring How to Handle Unknown Phases or Extension}
+
+When GreenSockets are bound to each other, it may happen that one socket knows about extensions/phases the other socket doesn't know about. You can tell the configuration what to do in this case.
+
+\begin{enumerate}
+\item 
+\verb|void treat_unknown_as_optional();|
+
+This function will tell the configuration to treat unknown extensions/phases as optional, when being compared during the bindability check. Example:
+
+\begin{small}
+\begin{verbatim}
+gs::socket::config<tlm::base_protocol_types> conf;
+conf.treat_unknown_as_optional();
+\end{verbatim}
+\end{small}
+
+\item 
+\verb|void treat_unknown_as_rejected();|
+
+This function will tell the configuration to treat unknown extensions/phases as rejected, when being compared during the bindability check. Example:
+
+\begin{small}
+\begin{verbatim}
+gs::socket::config<tlm::base_protocol_types> conf;
+conf.treat_unknown_as_rejected();
+\end{verbatim}
+\end{small}
+
+\item 
+\verb|bool unknowns_are_optional();|
+
+This function will return true if unknowns are treated as optional, and false if they are treated as rejected.
+
+\end{enumerate}
+
+\subsection{Auxiliary functions}
+Some functions are in place to help working with configurations.
+
+\begin{enumerate}
+\item 
+\verb|config& operator=(const config&);|
+
+Copies of configurations are allowed.
+
+\item
+\verb|std::string to_string() const;|
+
+This function will return a string representation of the configuration. It might be helpful for debugging and analysis.
+
+Example:
+
+\begin{small}
+\begin{verbatim}
+#include "greensocket/generic/green_socket_config.h"
+
+GS_GUARD_ONLY_EXTENSION(foo);
+SINGLE_MEMBER_GUARDED_DATA(bar, int);
+SINGLE_MEMBER_DATA(baz, int);
+
+DECLARE_EXTENDED_PHASE(ZOO);
+DECLARE_EXTENDED_PHASE(GOO);
+DECLARE_EXTENDED_PHASE(BOO);
+
+int main(int, char**){
+  gs::socket::config<tlm::tlm_base_protocol_types> cfg;
+  cfg.use_mandatory_extension<foo>(); 
+  cfg.use_optional_extension<bar>();
+  cfg.reject_extension<baz>();
+  cfg.use_mandatory_phase(ZOO);
+  cfg.use_optional_phase(GOO);
+  cfg.reject_phase(BOO);
+  cfg.treat_unknown_as_optional();
+   
+  std::cout<<cfg.to_string()<<std::endl;
+}
+\end{verbatim}
+\end{small}
+
+The output will be
+
+\begin{small}
+\begin{verbatim}
+ Note: Unassigned configuration.
+  Treats unknown as optional.
+  Used extensions:
+    foo used as mandatory.
+    bar used as optional.
+    baz used as rejected.
+    bar_guard used as optional.
+  Used phases:
+    BOO used as rejected.
+    GOO used as optional.
+    ZOO used as mandatory.
+\end{verbatim}
+\end{small}
+
+Note that the configuration has detected that it has not been assigned to a socket yet, and that there is an extension \verb|bar| and an extension \verb|bar_guard|. The former is the data part of the guarded data extension \verb|bar|, while the latter is its guard. Don't be scared! That is the only time you will explicitly notice the split personality of a guarded data extension. 
+\end{enumerate}
+
+\subsection{Advanced functions}
+
+Some functions are provided for advanced users, especially for those who want to develop sockets on top of GreenSocket.
+
+\begin{enumerate}
+\item 
+\verb|void set_force_reeval(bool val);|
+
+When a configuration is assigned to socket after it was previously configured, the socket will reevaluate the binding only if the new configuration differs from one that is already in the socket.
+However, customized sockets may use the callbacks that are generated due to a bindability check to trigger certain activities in the other socket.
+In this case you can use this function to enforce GreenSocket to reevaluate the binding and to trigger all callbacks again, even if the GreenSocket configuration did not change.
+
+\item
+\verb|bool merge_with(const char*, const char*, config&, bool abort_at_mismatch=true);|
+
+This function 'merges' a configuration with another. The function is used by GreenSocket to do the bindability check, but it might be useful for users that want to determine the largest possible intersection of two configurations.
+The first const char* shall identify the owner of the configuration on which the function is called, the second const char* shall identify the owner of the configuration that is passed as the third argument (these const chars* will be used in the error messages in case the two configurations are not bindable).
+The final boolean value determines whether to abort the simulation in case of a mismatch or not. The return value will return true if there was a mismatch and false if the merge succeeded.
+
+The merge \verb|A.merge_with("A","B", B)| will only be successful if
+\begin{itemize}
+\item all mandatory extension and phases of A are mandatory or optional in B
+\item no rejected extension or phase of A is mandatory in B
+\item A treats unknown extensions/phases as rejected but there are no unknown extension/phases in B
+\end{itemize}
+
+After the merge configuration A changes:
+\begin{itemize}
+\item mandatory extensions stay mandatory (no change)
+\item rejected extensions stay rejected (no change)
+\item optional extensions that were rejected in B become rejected in A
+\item optional extension that were mandatory in B are now mandatory in A
+\item optional extension that are optional in B stay optional
+\item if B treats unknowns as rejected, optionals unknown to B become rejected in A
+\item if B treats unknowns as optional, optionals unknown to B stay optional in A
+\item if A treats unknowns as optional, unknowns in B are added like the are in B to A
+\item all the above points for phases
+\item if B treats unknowns as rejected A will do so now
+\end{itemize}
+\end{enumerate}
+
+\newpage
+\section{Working with Initiator Sockets}
+
+The two flavors of initiator sockets (single or multi socket) will be described in this section. The single socket class is defined as 
+
+\verb|template <unsigned int BUSWIDTH=32,typename TRAITS=tlm::tlm_base_protocol_types>|
+
+\verb|  class initiator_socket;|
+
+\noindent and the multi socket is defined as
+
+\verb|template <unsigned int BUSWIDTH=32,typename TRAITS=tlm::tlm_base_protocol_types>|
+
+\verb|  class initiator_multi_socket;|
+
+\noindent both reside in namespace \verb|gs::socket|. The former must be bound to exactly one target socket, while the latter may be bound to an unlimited number of target sockets, but at least one.
+
+For those who have had a look into the code: There are more template arguments than the ones listed here, but those should not be touched. Never.
+
+Throughout this chapter, differences between the two flavors will be mentioned explicitly, otherwise the single socket will be used in examples.
+
+\subsection{Construction}
+The provided constructors for the sockets do not differ in their signatures:
+
+\verb|initiator_socket(const char* name, |
+
+\verb|    gs::socket::allocation_scheme alloc_scheme=gs::socket::GS_TXN_ONLY);|
+
+\verb|initiator_mutli_socket(const char* name, |
+
+\verb|    gs::socket::allocation_scheme alloc_scheme=gs::socket::GS_TXN_ONLY);|
+
+The first argument shall be the name of the socket, just as known from naming \verb|sc_ports|, while the latter will define what the socket's pool will be doing. The options are:
+\begin{enumerate}
+\item \verb|gs::socket::GS_TXN_ONLY|
+
+The socket will just pool allocate the transactions of the type specified in the traits class (see the TLM-2.0 reference manual to understand what the traits class is).
+
+\item \verb|gs::socket::GS_TXN_WITH_DATA|
+
+The socket will pool allocate the transactions of the type specified in the traits class, and in addition will prepare to pool allocate data arrays if needed.
+
+\item \verb|gs::socket::GS_TXN_WITH_BE|
+
+The socket will pool allocate the transactions of the type specified in the traits class, and in addition will prepare to pool allocate byte enable arrays if needed.
+
+\item \verb|gs::socket::GS_TXN_WITH_BE_AND_DATA|
+
+The socket will pool allocate the transactions of the type specified in the traits class, and in addition will prepare to pool allocate byte enable arrays and data arrays if needed.
+
+\end{enumerate}
+
+See this chapter's subsection \emph{Using the Transaction Memory Management} for more details on how to deal with the transaction pool.
+
+Example: A module that instantiates an initiator socket with its pool being able to pool transactions, data arrays and byte enable arrays.
+
+\begin{small}
+\begin{verbatim}
+#include "greensocket/initiator/single_socket.h"
+
+SC_MODULE(foo){
+  gs::socket::initiator_socket i_socket;
+  
+  SC_CTOR(foo) : i_socket("i_socket", gs::socket::GS_TXN_WITH_BE_AND_DATA)
+  {
+  ...
+  }
+  ...
+};
+\end{verbatim}
+\end{small}
+
+\subsection{Public Type Definitions}
+
+The sockets make some type definitions publicly available. They are:
+
+\begin{enumerate}
+\item 
+\verb|typedef TRAITS traits_type;|
+
+This type definition matches what was passed as the template argument \verb|TRAITS| to the socket.
+
+Example: A module that gets a complete socket as a template argument and instantiates a potentially different socket with the same traits class.
+
+\begin{small}
+\begin{verbatim}
+template <typename FIRSTSOCKET>
+class foo : public sc_core::sc_module
+{
+public:
+  FIRSTSOCKET sock1;
+  gs::socket::initiator_socket<32, typename FIRSTSOCKET::traits_type> sock2;
+
+  foo(sc_core::sc_module_name name)
+    : sc_core::sc_module(name)
+    , sock1("sock1", gs::socket::GS_TXN_ONLY)
+    , sock2("sock2", gs::socket::GS_TXN_ONLY)
+  {
+  }
+};
+
+int main(int, char**){
+  //instantiate a foo module with a multi socket and a single socket
+  foo<gs::socket::initiator_multi_socket<32, tlm::tlm_base_protocol_types> > my_foo1("my_foo1");
+  
+  //instantiate a foo module with two single sockets
+  foo<gs::socket::initiator_socket<32, tlm::tlm_base_protocol_types> > my_foo2("my_foo2");
+
+}
+\end{verbatim}
+\end{small}
+
+\item
+\verb|typedef typename TRAITS::tlm_payload_type payload_type;|
+
+This type definition allows to get the type of payload that is going over a socket.
+
+Example: A module templated on a traits class that it will pass on to its socket and that instantiates a transaction of the correct type for its socket.
+
+\begin{small}
+\begin{verbatim}
+template <typename TRAITS>
+class foo : public sc_core::sc_module
+{
+public:
+  gs::socket::initiator_socket<32, TRAITS> sock;
+
+  foo(sc_core::sc_module_name name)
+    : sc_core::sc_module(name)
+    , sock("sock", gs::socket::GS_TXN_ONLY)
+  {
+  }
+  
+  //instantiate a transaction that fits socket 'sock'
+  typename gs::socket::initiator_socket<32, TRAITS>::payload_type m_txn;
+};
+\end{verbatim}
+\end{small}
+
+\item
+\verb|typedef typename TRAITS::tlm_phase_type phase_type;|
+
+This type definition allows to get the type of phase that is going over a socket.
+
+Example: A module templated on a traits class that it will pass on to its socket and that instantiates a phase of the correct type for its socket.
+
+\begin{small}
+\begin{verbatim}
+template <typename TRAITS>
+class foo : public sc_core::sc_module
+{
+public:
+  gs::socket::initiator_socket<32, TRAITS> sock;
+
+  foo(sc_core::sc_module_name name)
+    : sc_core::sc_module(name)
+    , sock("sock", gs::socket::GS_TXN_ONLY)
+  {
+  }
+  
+  //instantiate a phase that fits socket 'sock'
+  typename gs::socket::initiator_socket<32, TRAITS>::phase_type m_ph;
+};
+\end{verbatim}
+\end{small}
+
+\end{enumerate}
+
+\subsection{Determining the Number of Binding}
+
+To determine the number of bindings of a multi socket \verb|unsigned int size();|
+will return the number of bindings. Note that this will only return a reliable value after construction time (just as for \verb|sc_port|s). Calling it on a single socket will always return one after the socket has been bound and zero otherwise.
+
+\subsection{Getting the Name of a Socket}
+
+\verb|const char* get_name();| will return the hierarchical name of the socket.
+
+\subsection{Getting the Bus Width of a Socket}
+
+\verb|unsigned int get_bus_width();| will return the bus width that was passed as a template argument to the socket.
+
+\subsection{Getting the Connected Socket}
+
+After \verb|end_of_elaboration| has been called on a socket, the function 
+
+\verb|gs::socket::bindability_base<TRAITS>* get_other_side(int a, int& b);| 
+
+will return the pointer to the socket that is bound at index \verb|a|. The integer that has to be provided by reference as argument \verb|b| will be set to the index at which the socket is bound on the other side.
+
+The \verb|bindability_base| offers some functions that may be of help and shall be listed here:
+
+\begin{itemize}
+\item 
+\verb|const char* get_name();|
+
+This function returns the hierarchical name of the connected socket.
+
+\item 
+\verb|sc_core::sc_object* get_parent();|
+
+This function returns the \verb|sc_object| that is the owner of the GreenSocket.
+
+\end{itemize}
+
+
+\subsection{Configuring the Socket}
+
+A GreenSocket has to have a configuration before the \verb|end_of_elaboration| callback of SystemC. However, you may still modify the configuration of a socket from within the \verb|end_of_elaboration| callback or in response to the completion of another binding (which is also at \verb|end_of_elaboration|). You may not change the configuration later on.
+
+A single socket can only have a single configuration, while a multi socket has a configuration per bound target socket.
+
+The functions provided for configuration are:
+
+\begin{enumerate}
+\item 
+\verb|void set_config(const gs::socket::config<TRAITS>& cfg);|
+
+When called during construction time this functions assigns the initial configuration to both single and multi sockets. When called after construction time (i.e. the number of bindings of a multi sockets is known at this time) it overrides the configuration of a single socket, and it overrides the configurations of \textbf{all} bindings of a multi socket.
+
+\item 
+\verb|void set_config(const gs::socket::config<TRAITS>& cfg, unsigned int index);|
+
+This function overrides the configuration of binding \verb|index| of a multi socket. Consequently it may only be used after the number of bindings is known. 
+Calling it on a single socket, with an index out of the bounds of a multi socket or it during construction time is considered an error.
+
+\item
+\verb|gs::socket::config<TRAITS>& get_recent_config();|
+
+This function returns the configuration of a single socket. For multi sockets it returns the initial configuration during construction time, and the configuration of binding zero after construction time.
+
+\item
+\verb|gs::socket::config<TRAITS>& get_recent_config(unsigned int index);|
+
+This function returns the configuration of binding \verb|index| of a multi socket. Consequently it may only be called, after construction time, when the number of bindings has been settled.
+
+\end{enumerate}
+
+Example: Assigning an initial configuration to a multi socket and a single socket, and investigating the bind results for the multi socket at \verb|start_of_simulation|.
+
+\begin{small}
+\begin{verbatim}
+GS_GUARD_ONLY_EXTENSION(compressed);
+
+class foo : public sc_core::sc_module
+{
+public:
+  typedef gs::socket::initiator_socket<> single_socket_type;
+  typedef gs::socket::initiator_multi_socket<> mutli_socket_type;
+  single_socket_type sock;
+  mutli_socket_type mul_sock;
+  
+  SC_HAS_PROCESS(foo);
+
+  foo(sc_core::sc_module_name name)
+    : sc_core::sc_module(name)
+    , sock("sock", gs::socket::GS_TXN_ONLY)
+    , mul_sock("mul_sock", gs::socket::GS_TXN_ONLY)
+  {
+    gs::socket::config<single_socket_type::traits_type> cfg;
+    
+    //a tlm base protocol only configuration
+    cfg.use_mandatory_phase(tlm::BEGIN_REQ);
+    cfg.use_mandatory_phase(tlm::END_REQ);
+    cfg.use_mandatory_phase(tlm::BEGIN_RESP);
+    cfg.use_mandatory_phase(tlm::END_RESP);
+    cfg.treat_unknown_as_rejected();
+  
+    //the single socket can only talk OSCI BP
+    sock.set_config(cfg);
+    
+    //OSCI BP + one extension
+    cfg.use_optional_extension<compressed>();
+  
+    //the multi socket could issue compressed transfers
+    mul_sock.set_config(cfg);
+  
+    SC_THREAD(run);
+  }
+  
+  void start_of_simulation(){
+    //if we reach this point without aborting the
+    // simulation, all targets had fitting configurations
+    // now let's see which one of them supports compression
+    m_can_do_compression.resize(mul_sock.size());
+    for (unsigned int i=0; i<mul_sock.size(); i++)
+      m_can_do_compression[i]=mul_sock.get_recent_config(i).has_extension<compressed>()!=gs::ext::gs_reject;
+    //now during simulation we have very quick access to
+    // the info at which link we can send compressed data
+    // and on which we have to send uncompressed data
+  }
+  
+  void run(){...}
+
+  std::vector<bool> m_can_do_compression;
+};
+\end{verbatim}
+\end{small}
+
+\subsection{Using the Transaction Memory Management}
+
+The initiator sockets provide memory management facilities to the user. However, the user is not forced to use them. He may also choose to use its own pools and memory managers, to stack or to heap allocate transactions. 
+The functions offered by the socket are:
+
+\begin{enumerate}
+\item 
+\verb|payload_type* get_transaction();|
+
+This function will get a transaction from the socket's pool, with it's reference count being at \textbf{one}. That means, initiators do not have to acquire a transaction, as the socket did it for them already.
+
+Note that no reset is performed on the payload object, so you will have to set each member of it by hand. The only known fact is that all no guard or guarded data extensions set.
+
+An example can be found when looking a the \verb|release_transaction| function.
+
+\item 
+\verb|void release_transaction(payload_type* txn);|
+
+This function will reduce the reference count of the given payload object by one. Effectively the same can be achieved by calling \verb|txn->release()|, but only one or the other should be done. The main reason for the existence of the function is symmetry: If I need to do a call on the socket to get a transaction, there should be a call to 'return' the transaction to the socket.
+
+Example: Getting a transaction from the socket, working with it and releasing it.
+
+\begin{small}
+\begin{verbatim}
+class foo : public sc_core::sc_module
+{
+public:
+  typedef gs::socket::initiator_socket<> socket_type;
+  socket_type sock;
+  
+  SC_HAS_PROCESS(foo);
+
+  foo(sc_core::sc_module_name name)
+    : sc_core::sc_module(name)
+    , sock("sock", gs::socket::GS_TXN_ONLY)
+  {
+    SC_THREAD(run);
+  }
+  
+  void run(){
+    socket_type::payload_type* txn=sock.get_transaction();
+    do_fancy_communication(txn);
+    sock.release_transaction(txn);
+  }
+  
+  void do_fancy_communication(socket_type::payload_type* txn){
+    ...
+  }
+};
+\end{verbatim}
+\end{small}
+
+\item 
+\verb|void reserve_data_size(payload_type& txn, unsigned int bytes);|
+
+This function reserves at least \verb|bytes| bytes for the data array of \verb|txn|. This includes setting the data pointer and data length inside the payload object.
+
+The reservation is persistent, i.e. when the payload object comes out of the pool again, it will still have the same data size reservation. Subsequent calls to this function will always set up the data length and data pointer, but memory allocation will only be necessary when \verb|bytes| is larger than what was reserved previously.
+
+Note that this function will only operate correctly when the socket was constructed with \linebreak\verb|gs::socket::GS_TXN_WITH_DATA| or \verb|gs::socket::GS_TXN_WITH_BE_AND_DATA|. This is guarded by assertions, so will be easily detectable in debug compilations.
+
+Note that you can still set your own data pointer and data length if desired. You are never forced to use the memory reservation mechanism.
+
+You will find an example for this function in the description of the \verb|reserve_be_size| function.
+
+\item 
+\verb|void reserve_be_size(payload_type&, unsigned int);|
+
+This function reserves at least \verb|bytes| bytes for the byte enable array of \verb|txn|. This includes setting the byte enable pointer and byte enable length inside the payload object.
+
+The reservation is persistent, i.e. when the payload object comes out of the pool again, it will still have the same byte enable size reservation. Subsequent calls to this function will always set up the byte enable length and byte enable pointer, but memory allocation will only be necessary when \verb|bytes| is larger than what was reserved previously.
+
+Note that this function will only operate correctly when the socket was constructed with \linebreak\verb|gs::socket::GS_TXN_WITH_BE| or \verb|gs::socket::GS_TXN_WITH_BE_AND_DATA|. This is guarded by assertions, so will be easily detectable in debug compilations.
+
+Note that you can still set your own byte enable pointer and byte enable length if desired. You are never forced to use the memory reservation mechanism.
+
+Example: Reserving data and byte enable sizes.
+
+\begin{small}
+\begin{verbatim}
+class foo : public sc_core::sc_module
+{
+public:
+  typedef gs::socket::initiator_socket<> socket_type;
+  socket_type sock;
+  
+  SC_HAS_PROCESS(foo);
+
+  foo(sc_core::sc_module_name name)
+    : sc_core::sc_module(name)
+    , sock("sock", gs::socket::GS_TXN_WIDTH_BE_AND_DATA)
+  {
+    SC_THREAD(run);
+  }
+  
+  void run(){
+    socket_type::payload_type* txn=sock.get_transaction();
+    do_fancy_communication(txn);
+    sock.release_transaction(txn);
+  }
+  
+  void do_fancy_communication(socket_type::payload_type* txn){
+    //make space for 10 bytes of data
+    sock.reserve_data_size(*txn, 10); 
+    fill_data(txn, 10);
+    //we wanna disable every second byte
+    sock.reserve_be_size(*txn, 2); 
+    txn->get_byte_enable_ptr()[0]=TLM_BYTE_ENABLED;
+    txn->get_byte_enable_ptr()[1]=TLM_BYTE_DISABLED;
+  }
+  
+  void fill_data(socket_type::payload_type*, unsigned int){
+  }
+};
+\end{verbatim}
+\end{small}
+\item 
+\verb|unsigned int get_reserved_data_size(payload_type&);|
+
+This function returns the currently reserved data size. It may be used to find out if a call to \verb|reserve_data_size| is required, but then you will have to set the data length and data pointer manually, when you did not call \verb|reserve_data_size|.
+
+\item 
+\verb|unsigned int get_reserved_be_size(payload_type&);|
+
+This function returns the currently reserved byte enable size. It may be used to find out if a call to \verb|reserve_be_size| is required, but then you will have to set the byte enable length and byte enable pointer manually, when you did not call \verb|reserve_be_size|.
+
+\end{enumerate}
+
+\subsection{Registering Callbacks}
+You may register callbacks for all interface method calls of the TLM-2.0 backwards interface:
+
+\begin{enumerate}
+\item 
+\verb|template<typename MODULE> void register_nb_transport_bw(MODULE* mod,|\emph{nb\_cb} \verb|cb)|
+
+This function allows to register a callback for \verb|nb_transport_bw|. The type of \emph{nb\_cb} differs between single and multi sockets.
+
+For single sockets it is 
+
+\verb|  tlm::tlm_sync_enum (MODULE::*)(transaction_type&, phase_type&, sc_core::sc_time&)|
+
+and for multi sockets it is
+
+\verb|  tlm::tlm_sync_enum (MODULE::*)(unsigned int, transaction_type&, phase_type&, sc_core::sc_time&)|
+
+There is no need to explain the three parameter and the return value of the first signature, as this is done by the TLM-2.0 reference manual. The \verb|unsigned int| in the multi socket signature will carry the index of the binding over which the call came in, so that the callers can be distinguished.
+
+\item 
+\verb|template<typename MODULE> void register_invalidate_direct_mem_ptr(MODULE* mod,|\emph {inval\_dmi\_cb} \verb|cb)|
+
+This function allows to register a callback for \verb|invalidate_direct_mem_ptr|. The type of \emph{inval\_dmi\_cb} differs between single and multi sockets.
+
+For single sockets it is 
+
+\verb|  void (MODULE::*)(sc_dt::uint64, sc_dt::uint64)|
+
+and for multi sockets it is
+
+\verb|  void (MODULE::*)(unsigned int, sc_dt::uint64, sc_dt::uint64)|
+
+There is no need to explain the two parameter of the first signature, as this is done by the TLM-2.0 reference manual. The \verb|unsigned int| in the multi socket signature will carry the index of the binding over which the call came in, so that the callers can be distinguished.
+
+\end{enumerate}
+
+Example: Registering callback for \verb|nb_transport_bw| for both a multi and a single socket
+
+\begin{small}
+\begin{verbatim}
+class foo : public sc_core::sc_module
+{
+public:
+  typedef gs::socket::initiator_socket<> single_socket_type;
+  typedef gs::socket::initiator_multi_socket<> mutli_socket_type;
+  single_socket_type sock;
+  mutli_socket_type mul_sock;
+  
+  SC_HAS_PROCESS(foo);
+
+  foo(sc_core::sc_module_name name)
+    : sc_core::sc_module(name)
+    , sock("sock", gs::socket::GS_TXN_ONLY)
+    , mul_sock("mul_sock", gs::socket::GS_TXN_ONLY)
+  {
+    sock.register_nb_transport_bw(this, &foo::my_single_socket_nb_transport_bw);
+    mul_sock.register_nb_transport_bw(this, &foo::my_multi_socket_nb_transport_bw);
+  }
+  
+  tlm::tlm_sync_enum my_single_socket_nb_transport_bw(
+    single_socket_type::payload_type& txn,
+    single_socket_type::phase_type&   ph,
+    sc_core::sc_time&                 t)
+  {
+    return tlm::TLM_ACCEPTED;
+  }
+
+  tlm::tlm_sync_enum my_multi_socket_nb_transport_bw(
+    unsigned int                      index,
+    single_socket_type::payload_type& txn,
+    single_socket_type::phase_type&   ph,
+    sc_core::sc_time&                 t)
+  {
+    return tlm::TLM_ACCEPTED;
+  }
+};
+\end{verbatim}
+\end{small}
+
+
+\subsection{Calling Transport Functions}
+
+The initiator sockets allow for calling the functions of the TLM-2.0 forward interface, just like 'normal' TLM-2.0 sockets.
+
+\begin{enumerate}
+\item 
+\verb|tlm::tlm_sync_enum nb_transport_fw(payload_type&,phase_type&,sc_core::sc_time&)|
+\item 
+\verb|void b_transport(payload_type&,sc_core::sc_time&)|
+\item 
+\verb|bool get_direct_mem_ptr(payload_type&,tlm::tlm_dmi&)|
+\item 
+\verb|unsigned int transport_dbg(payload_type&)|
+\end{enumerate}
+
+
+Single socket shall use the \verb|->| operator to call the functions, while multi sockets shall use the \verb|[]| operator in conjunction with the \verb|->| operator.
+When the \verb|->| is used without the \verb|[]| operator by a multi socket, the call will be performed on binding zero.
+
+Example: Calling \verb|b_transport| on a single and a multi socket.
+
+\begin{small}
+\begin{verbatim}
+class foo : public sc_core::sc_module
+{
+public:
+  typedef gs::socket::initiator_socket<> single_socket_type;
+  typedef gs::socket::initiator_multi_socket<> mutli_socket_type;
+  single_socket_type sock;
+  mutli_socket_type mul_sock;
+  
+  SC_HAS_PROCESS(foo);
+
+  foo(sc_core::sc_module_name name)
+    : sc_core::sc_module(name)
+    , sock("sock", gs::socket::GS_TXN_ONLY)
+    , mul_sock("mul_sock", gs::socket::GS_TXN_ONLY)
+  {
+    SC_THREAD(run);
+    configure_sockets();
+  }
+  
+  void run(){
+    //we stack allocate a non memory managed txn
+    //for b_transport
+    //we will use it both for the single and the
+    //multi socket, since both payload types 
+    //are the same
+    single_socket_type::payload_type txn;
+    sc_core::sc_time t=sc_core::SC_ZERO_TIME;
+    
+    //first the single socket
+    setup_txn(txn);
+    sock->b_transport(txn,t);
+    check_results(txn);
+    
+    //now the multi socket (one transfer per link)
+    for (unsigned int i=0; i<mul_sock.size(); i++){
+      t=sc_core::SC_ZERO_TIME;
+      setup_txn(txn);
+      sock[i]->b_transport(txn,t);
+      check_results(txn);
+    }
+  }
+  
+  void configure_sockets(){...}
+  void setup_txn(single_socket_type::payload_type& txn){...}
+  void check_results(single_socket_type::payload_type& txn){...}
+};
+\end{verbatim}
+\end{small}
+
+\subsection{Accessing Extension}
+
+As mentioned in the GreenSocket Overview the GreenSockets use s smaller and simpler set of functions to access extensions. This is only possible when operating with guard, data or guarded data extensions only. When using other extensions than GreenSocket extension (which is of course possible) you are responsible for their memory management, and to set and release/clear them properly, by using the member functions of the payload object directly.
+
+The functions that operator with GreenSocket extensions are:
+
+\begin{enumerate}
+\item 
+\verb|template <typename T> bool get_extension(T*& ptr, payload_type& txn);|
+
+Use this function to get an extension from a transaction and it can be used for all types of extensions (guard, data, guarded data).
+The return value shows if the extension was present or not.
+
+For guards the \verb|ptr| argument is just used to determine the type
+but it should not be used after the call.
+
+For data extensions the return value will always be true, because their validity state cannot be determined. \verb|ptr| will always point to a valid extension, and you can directly access it after the call of \verb|get_extension|.
+
+For guarded data extensions, the return value shows if the extension is valid or not, but in either case \verb|ptr| will point to a ready-to-use extension after the call. If the return value was true, the content of \verb|ptr| can be considered valid, otherwise the content will have no meaning.
+
+Example: Code snippets per type.
+
+\begin{small}
+\begin{verbatim}
+//Example guard extension
+my_guard_extension* tmp;  //just used to determine the type
+if (socket.get_extension(tmp, txn) guard_was_set_action();
+else guard_was_not_set_action();
+
+//Example data extension:
+my_data_extension* tmp;
+socket.get_extension(tmp, txn);  //return value ignored
+tmp->value=33; //set the data of the extension
+
+//Example guarded data extension:
+my_guarded_data_extension* tmp;
+if (socket.get_extension(tmp, txn)){
+  //extension was already set
+  work_with_provided_data_action(tmp->value);
+}
+else {
+  //extension was not set, so we set it now
+  socket.validate_extension<my_guarded_data_extension>(txn);
+  tmp->value=33; //set the data of the extension
+}
+\end{verbatim}
+\end{small}
+
+\item 
+\verb|template <typename T> T* get_extension(payload_type& txn);|  
+
+This function can only be used for data only and guard extensions.
+It provides simplified access, where the former call would introduce avoidable overhead.
+
+\begin{small}
+\begin{verbatim}
+//Example guard extension:
+if (socket.get_extension<my_guard_extension>(txn)) guard_was_set_action();
+else guard_was_not_set_action();
+
+//Example data extension:
+socket.get_extension<my_data_extension>(txn)->value=42; //just set the data
+\end{verbatim}
+\end{small}
+
+\item
+\verb|template <typename T> bool validate_extension(payload_type& txn, unsigned int index=0);|
+
+This function immediately validates a guard or a guard of a guarded data extension.
+It returns true if there was memory management and false if there wasn't
+The return value is only of value within \verb|b_transport| (because within \verb|nb_transport| there is always memory management).
+If there was memory management, the memory manager will clean off the extension when the reference count hits zero, if not, it has to be removed after a \verb|b_transport| call returned.
+
+Example: Code snippets per type, and on how to use the return value
+
+\begin{small}
+\begin{verbatim}
+//Example guard extension nb_transport:
+socket.validate_extension<my_guard_extension>(txn); //set the guard
+
+//Example guarded data extension nb_transport:
+socket.validate_extension<my_guarded_data_extension>(txn); //set the guard of the guarded data
+
+//Example b_transport:
+void b_transport(txn, ...){
+  bool needs_invalidate=!socket.validate<my_guard_extension>(txn);
+  out_socket->b_transport(txn, ...);
+  if (needs_invalidate) socket.invalidate<my_guard_extension>(txn);
+}
+\end{verbatim}
+\end{small}
+
+\item
+\verb|template <typename T> bool invalidate_extension(payload_type& txn, unsigned int index=0);|
+
+Example: Code snippets per type, and on how to use the return value
+
+\begin{small}
+\begin{verbatim}
+//Example guard extension:
+socket.invalidate_extension<my_guard_extension>(txn); //set the guard
+
+//Example guarded data extension:
+socket.invalidate_extension<my_guarded_data_extension>(txn); //set the guard of the guarded data
+\end{verbatim}
+\end{small}
+
+\end{enumerate}
+
+%For more sophisticated examples on the use of extensions see section
+
+\subsection{Deriving from the Socket}
+
+GreenSocket is intended to form the base of protocol specific sockets. Such derived sockets should provide the configuration to the underlying GreenSocket, ensure that access rights to transaction members are respected, and they may support the user with time management (e.g. protocol specific PEQs). Design guide lines on how to build a protocol socket on top of GreenSocket can be found in the GreenSocket methodology documentation (still to come...).
+
+This section will only describe what has to be done technically to derive from GreenSocket.
+
+\begin{enumerate}
+\item 
+Derive publicly.
+
+The GreenSocket has to be a public base of the socket to allow the compiler to do implicit type conversions into GreenSocket. If that is not possible binding the derived socket to another GreenSocket will be impossible. If it is absolutely necessary to make the GreenSocket a protected or private base, you will have to provide a type conversion operator into GreenSocket (which would actually render the protected/private derivation useless).
+
+\item
+Override mandatory virtual function \verb|const std::string& get_type_string();|
+
+There is one virtual function that you have to override to make your derived socket work properly. This function returns the type string of your socket. That string shall uniquely identify the type of your socket (see function \verb|bound_to| for the meaning of that string). E.g. if your socket's class definition is
+
+\begin{small}
+\begin{verbatim}
+//a derived socket for OSCI BP traits class only
+template< unsigned int BUSWIDTH>
+class my_protocol_initiator_socket
+	: public gs::socket::initiator_socket<BUSWIDTH>
+{
+	...
+};
+\end{verbatim}
+\end{small}
+
+then \verb|get_type_string| should return \verb|"my_protocol_initiator_socket"|.
+
+\item
+Choose which optional virtual functions to override.
+
+There are a number of virtual functions you may choose to override, or that you have to override in certain cases. Check the following list to find out which ones you want to/have to override.
+
+
+\begin{enumerate}
+\item 
+\verb|void bound_to(const std::string&, gs::socket::bindability_base<TRAITS>*, unsigned int);|
+
+This function is called by the socket as soon as it has successfully passed the bindability check with its connected socket. The string argument is the type string of the other side, the second argument is a pointer to the socket that has just been bound and the third argument is the index of the binding that has just passed the bindability check.
+
+The string can be used to guide the cast on the second argument. E.g. if the type string is a know type, the second argument can be statically casted into the appropriate type.
+
+The pointer to the other side is of type \verb|gs::socket::bindabiliy_base<TRAITS>|, where \verb|TRAITS| matches the traits class of the connection. It will be \verb|NULL| if the socket was bound to a non-GreenSocket TLM-socket. If it was not \verb|NULL| it may be casted into a derived socket type, either trying dynamic casts or using the string argument of the call to perform static casts. 
+Finally the third argument is always zero for single sockets, and it carries the index of the binding for multi sockets.
+
+The \verb|bound_to| callback could be used to e.g. inform the connected module about the resolved configuration via a callback, to perform some special data exchange with sockets whose types are known and could be casted into some derived sockets, and so on.
+
+Call the base implementation of this call before doing anything else in your own implementation.
+\end{enumerate}
+
+\item
+\verb|void before_end_of_elaboration();|
+
+This is the standard SystemC callback. If you choose to use it in your derived socket you have to call the base implementation to make your socket work properly. Ideally you call the base implementation before doing anything else in the call.
+
+\item
+\verb|void end_of_elaboration();|
+
+This is the standard SystemC callback. If you choose to use it in your derived socket you have to call the base implementation to make your socket work properly. Ideally you call the base implementation before doing anything else in the call.
+
+\item
+\verb|void start_of_simulation();|
+
+This is the standard SystemC callback. If you choose to use it in your derived socket you have to call the base implementation to make your socket work properly. Ideally you call the base implementation before doing anything else in the call.
+
+\item
+\verb|void free(payload_type* txn);|
+
+This function gets called when the reference count of a transaction hits zero. You have to call the base implementation of the function, ideally at the end of the function because it returns the transaction back to the pool.
+
+You might want to override this function to do some pool profiling in your derived socket, or to trigger an event/callback towards the owner of the socket.
+
+\item
+\verb|sc_core::sc_object*  get_parent();|
+
+The default implementation of \verb|get_parent| casts the socket into an \verb|sc_object| and returns the parent of this object. If this will fail for the object hierarchy you built for your derived socket, you will have to override this function and return the pointer to the \verb|sc_object| that really is the owner of your socket.
+
+\end{enumerate}
+
+
+%$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+\section{Working with Target Sockets}
+
+The two flavors of target sockets (single or multi socket) will be described in this section. The single socket class is defined as 
+
+\verb|template <unsigned int BUSWIDTH=32,typename TRAITS=tlm::tlm_base_protocol_types>|
+
+\verb|  class target_socket;|
+
+\noindent and the multi socket is defined as
+
+\verb|template <unsigned int BUSWIDTH=32,typename TRAITS=tlm::tlm_base_protocol_types>|
+
+\verb|  class target_multi_socket;|
+
+\noindent both reside in namespace \verb|gs::socket|. The former must be bound to exactly one initiator socket, while the latter may be bound to an unlimited number of initiator sockets, but at least one.
+
+Throughout this chapter, differences between the two flavors will be mentioned explicitly, otherwise the single socket will be used in examples.
+
+\subsection{Construction}
+The provided constructors for the sockets do not differ in their signatures:
+
+\verb|target_socket(const char* name);|
+
+\verb|target_mutli_socket(const char* name);|
+
+The only argument shall be the name of the socket, just as known from naming \verb|sc_ports|.
+
+Example: A module that instantiates a target socket.
+
+\begin{small}
+\begin{verbatim}
+#include "greensocket/target/single_socket.h"
+
+SC_MODULE(foo){
+  gs::socket::target_socket t_socket;
+  
+  SC_CTOR(foo) : t_socket("t_socket")
+  {
+  ...
+  }
+  ...
+};
+\end{verbatim}
+\end{small}
+
+\subsection{Public Type Definitions}
+
+The public type definitions match the ones from the initiator socket.
+
+\subsection{Determining the Number of Binding}
+
+This is the same like for initiator socket.
+
+\subsection{Getting the Name of a Socket}
+
+This is the same like for initiator socket.
+
+\subsection{Getting the Bus Width of a Socket}
+
+This is the same like for initiator socket.
+
+\subsection{Getting the Connected Socket}
+
+This is the same like for initiator socket.
+
+\subsection{Configuring the Socket}
+
+This is the same like for initiator socket.
+
+\subsection{Registering Callbacks}
+You may register callbacks for all interface method calls of the TLM-2.0 forward interface:
+
+\begin{enumerate}
+\item 
+\verb|template<typename MODULE> void register_nb_transport_fw(MODULE* mod,|\emph{nb\_cb} \verb|cb)|
+
+This function allows to register a callback for \verb|nb_transport_fw|. The type of \emph{nb\_cb} differs between single and multi sockets.
+
+For single sockets it is 
+
+\verb|  tlm::tlm_sync_enum (MODULE::*)(transaction_type&, phase_type&, sc_core::sc_time&)|
+
+and for multi sockets it is
+
+\verb|  tlm::tlm_sync_enum (MODULE::*)(unsigned int, transaction_type&, phase_type&, sc_core::sc_time&)|
+
+There is no need to explain the three parameters and the return value of the first signature, as this is done by the TLM-2.0 reference manual. The \verb|unsigned int| in the multi socket signature will carry the index of the binding over which the call came in, so that the callers can be distinguished.
+
+\item 
+\verb|template<typename MODULE> void register_b_transport(MODULE* mod,|\emph{b\_cb} \verb|cb)|
+
+This function allows to register a callback for \verb|b_transport|. The type of \emph{b\_cb} differs between single and multi sockets.
+
+For single sockets it is 
+
+\verb|  void (MODULE::*)(transaction_type&, sc_core::sc_time&)|
+
+and for multi sockets it is
+
+\verb|  void (MODULE::*)(unsigned int, transaction_type&, sc_core::sc_time&)|
+
+There is no need to explain the two parameters of the first signature, as this is done by the TLM-2.0 reference manual. The \verb|unsigned int| in the multi socket signature will carry the index of the binding over which the call came in, so that the callers can be distinguished.
+
+\item 
+\verb|template<typename MODULE> void register_transport_dbg(MODULE* mod,|\emph{dbg\_cb} \verb|cb)|
+
+This function allows to register a callback for \verb|b_transport|. The type of \emph{dbg\_cb} differs between single and multi sockets.
+
+For single sockets it is 
+
+\verb|  unsigned int (MODULE::*)(transaction_type&)|
+
+and for multi sockets it is
+
+\verb|  unsigned int (MODULE::*)(unsigned int, transaction_type&)|
+
+There is no need to explain the parameter and the return value of the first signature, as this is done by the TLM-2.0 reference manual. The \verb|unsigned int| in the multi socket signature will carry the index of the binding over which the call came in, so that the callers can be distinguished.
+
+
+\item 
+\verb|template<typename MODULE> void register_get_direct_mem_ptr(MODULE* mod,|\emph {get\_dmi\_cb} \verb|cb)|
+
+This function allows to register a callback for \verb|invalidate_direct_mem_ptr|. The type of \emph{get\_dmi\_cb} differs between single and multi sockets.
+
+For single sockets it is 
+
+\verb|  bool (MODULE::*)(transaction_type&, tlm::tlm_dmi&)|
+
+and for multi sockets it is
+
+\verb|  bool (MODULE::*)(unsigned int, transaction_type&, tlm::tlm_dmi&)|
+
+There is no need to explain the two parameter and the return value of the first signature, as this is done by the TLM-2.0 reference manual. The \verb|unsigned int| in the multi socket signature will carry the index of the binding over which the call came in, so that the callers can be distinguished.
+
+\end{enumerate}
+
+An example on how to register callbacks can be found in the initiator socket's appropriate section.
+
+\subsection{Calling Transport Functions}
+
+The target sockets allow for calling the functions of the TLM-2.0 forward interface, just like 'normal' TLM-2.0 sockets.
+
+\begin{enumerate}
+\item 
+\verb|tlm::tlm_sync_enum nb_transport_bw(payload_type&,phase_type&,sc_core::sc_time&)|
+\item 
+\verb|void invalidate_direct_mem_ptr(sc_dt::uint64, sc_dt::uint64)|
+\end{enumerate}
+
+
+Single socket shall use the \verb|->| operator to call the functions, while multi sockets shall use the \verb|[]| operator in conjunction with the \verb|->| operator.
+When the \verb|->| is used without the \verb|[]| operator by a multi socket, the call will be performed on binding zero.
+
+An example for calling transport functions can be found in the appropriate initiator socket section,
+
+\subsection{Accessing Extension}
+
+That is the same like for initiator sockets.
+
+\subsection{Deriving from the Socket}
+
+This is the same like for initiator sockets, but you do not have the option to override \verb|free()|, as the target sockets do not provide memory management of transactions.
+
+\section{Working with Bidirectional Sockets}
+
+The two flavors of bidirectional sockets (single or multi socket) will be described in this section. The single socket class is defined as 
+
+\verb|template <unsigned int BUSWIDTH=32,typename TRAITS=tlm::tlm_base_protocol_types>|
+
+\verb|  class bidirectional_socket;|
+
+\noindent and the multi socket is defined as
+
+\verb|template <unsigned int BUSWIDTH=32,typename TRAITS=tlm::tlm_base_protocol_types>|
+
+\verb|  class bidirectional_multi_socket;|
+
+\noindent both reside in namespace \verb|gs::socket|. The former must be bound to exactly one bidirectional socket, while the latter may be bound to an unlimited number of bidirectional sockets, but at least one.
+
+For those who have had a look into the code: There are more template arguments than the ones listed here, but those should not be touched. Never.
+
+Throughout this chapter, differences between the two flavors will be mentioned explicitly, otherwise the single socket will be used in examples.
+
+Bidirectional sockets are basically a unification of the initiator and the target socket. They are intended to be used for packet based communication, where each module is both target and initiator.
+
+\subsection{Construction}
+The provided constructors for the sockets do not differ in their signatures:
+
+\verb|bidirectional_socket(const char* name, |
+
+\verb|    gs::socket::allocation_scheme alloc_scheme=gs::socket::GS_TXN_ONLY);|
+
+\verb|bidirectional_mutli_socket(const char* name, |
+
+\verb|    gs::socket::allocation_scheme alloc_scheme=gs::socket::GS_TXN_ONLY);|
+
+The first argument shall be the name of the socket, just as known from naming \verb|sc_ports|, while the latter will define what the socket's pool will be doing. This is just the same as for initiator sockets.
+
+\subsection{Public Type Definitions}
+
+This is just the same like for initiator sockets.
+
+\subsection{Determining the Number of Binding}
+
+This is just the same like for initiator sockets.
+
+\subsection{Getting the Name of a Socket}
+
+This is just the same like for initiator sockets.
+
+\subsection{Getting the Bus Width of a Socket}
+
+This is just the same like for initiator sockets.
+
+\subsection{Getting the Connected Socket}
+
+This is just the same like for initiator sockets.
+
+\subsection{Configuring the Socket}
+
+This is just the same like for initiator sockets.
+
+\subsection{Using the Transaction Memory Management}
+
+This is just the same like for initiator sockets.
+
+\subsection{Registering Callbacks}
+You may register callbacks for all interface method calls of the TLM-2.0 backwards and forward interface.
+
+See in the appropriate initiator/target sections for how to register callbacks for the interface method calls.
+\subsection{Calling Transport Functions}
+
+The initiator sockets allow for calling the functions of the TLM-2.0 forward and backwards interface.
+To distinguish between the forward and backward call, prefix the \verb|->| or \verb|[]| operators with either \verb|.bw| or \verb|.fw|.
+
+Single socket shall use the \verb|->| operator to call the functions, while multi sockets shall use the \verb|[]| operator in conjunction with the \verb|->| operator.
+When the \verb|->| is used without the \verb|[]| operator by a multi socket, the call will be performed on binding zero.
+
+Example: Calling \verb|b_transport| on a single and a multi socket.
+
+\begin{small}
+\begin{verbatim}
+class foo : public sc_core::sc_module
+{
+public:
+  typedef gs::socket::bidirectional_socket<> single_socket_type;
+  typedef gs::socket::bidirectional_multi_socket<> mutli_socket_type;
+  single_socket_type sock;
+  mutli_socket_type mul_sock;
+  
+  SC_HAS_PROCESS(foo);
+
+  foo(sc_core::sc_module_name name)
+    : sc_core::sc_module(name)
+    , sock("sock", gs::socket::GS_TXN_ONLY)
+    , mul_sock("mul_sock", gs::socket::GS_TXN_ONLY)
+  {
+    SC_THREAD(run);
+    configure_sockets();
+  }
+  
+  void run(){
+    //we stack allocate a non memory managed txn
+    //for b_transport
+    //we will use it both for the single and the
+    //multi socket, since both payload types 
+    //are the same
+    single_socket_type::payload_type txn;
+    sc_core::sc_time t=sc_core::SC_ZERO_TIME;
+    
+    //first the single socket
+    setup_txn(txn);
+    sock.fw->b_transport(txn,t);
+    check_results(txn);
+    
+    //now the multi socket (one transfer per link)
+    for (unsigned int i=0; i<mul_sock.size(); i++){
+      t=sc_core::SC_ZERO_TIME;
+      setup_txn(txn);
+      sock.fw[i]->b_transport(txn,t);
+      check_results(txn);
+    }
+  }
+  
+  void configure_sockets(){...}
+  void setup_txn(single_socket_type::payload_type& txn){...}
+  void check_results(single_socket_type::payload_type& txn){...}
+};
+\end{verbatim}
+\end{small}
+
+
+\subsection{Accessing Extension}
+
+This is the same like for initiator sockets.
+
+\subsection{Deriving from the Socket}
+
+This is the same like for initiator sockets.
+
+
+%\section{Sophisticated Example: An interconnect}
+%\section{Working with Monitors}
+%\section{Writing Custom Protocol Observers}
+%extensions: compressed (guard extension), interconn_access_count (data only, gs_param<int>) crc (guarded data, unsigned int).
+
+%interconnect uses both b and nb.
+%defines interconn_access_count in its own header file, because its specific to this class
+%increases count whenever txn comes in for profiling
+
+%checks compressed guard, and if out supports compression
+%will deepcopy txn in case of mismatch and compress/decompress
+
+%checks crc, and if out support crc
+%will deepcopy txn in case of mismatch detach/attach crc
+
+%if deepcopy already took place, no need for second deep copy.
+
+%//indicate whether data is compressed or nit
+%GS_GUARD_ONLY_EXTENSION(compressed);
+
+%//a truly TLM-2.0 ignorable extension, just for logging
+%SINGLE_MEMBER_DATA(foo_interconn_access_count, unsigned int);
+
+%//indicate if the transaction data contains 
+%// a crc and the bitwidth of the crc
+%SINGLE_MEMBER_GUARDED_DATA(crc, unsigned int);
+
+%class foo_interconn : public sc_core::sc_module
+%{
+%public:
+%  typedef gs::socket::initiator_socket<> i_socket_type;
+%  typedef gs::socket::target_socket<>    t_socket_type;
+%  i_socket_type isock;
+%  t_socket_type tsock;
+%  
+%  foo_interconn(sc_core::sc_module_name name)
+%    : sc_core::sc_module(name)
+%    , isock("isock", gs::socket::GS_TXN_ONLY)
+%    , tsock("tsock")
+%  {
+%    gs::socket::config<i_socket_type::traits_type> cfg;
+%    
+%    //OSCI BP + two extension
+%    //(we do not add foo_interconn_access_count
+%    // since it is truly ignorable)
+%    cfg.use_mandatory_phase(tlm::BEGIN_REQ);
+%    cfg.use_mandatory_phase(tlm::END_REQ);
+%    cfg.use_mandatory_phase(tlm::BEGIN_RESP);
+%    cfg.use_mandatory_phase(tlm::END_RESP);
+%    cfg.use_optional_extension<compressed>();
+%    cfg.use_optional_extension<encrypted>();
+%    cfg.treat_unknown_as_rejected();
+
+%    tsock.set_config(cfg);
+%    isock.set_config(cfg);
+
+%    tsock.register_nb_transport_fw(this, &foo_interconn::nb_fw);
+%    tsock.register_b_transport(this, &foo_interconn::b_fw);
+%  }
+%    
+%  tlm::tlm_sync_enum nb_fw(
+%    t_socket_type::payload_type& txn,
+%    t_socket_type::phase_type&   ph,
+%    sc_core::sc_time&            t)
+%  {
+%  }
+%  
+%  void b_fw(
+%    t_socket_type::payload_type& txn,
+%    sc_core::sc_time&            t)
+%  {
+%    //first lets increase the access count
+%    // of this transaction (for profiling reasons)
+%    tsock.get_extension<foo_interconn_access_count>(txn)->value++;
+%    
+%    //now let's handle crc
+%    crc* crced;
+%    if (tsock.get_extension(crced, txn)){
+%      //the sender attached a crc to this txn data
+%      if (isock.get_recent_config().has_extension<crc>()==gs::ext::gs_reject){
+%        //the connected target cannot check crcs
+%        // so we check it with the appropriate bit width
+%        if (check_crc(txn, crced->value)){
+%          //check was okay, so do a deep
+%          do_deep_copy(m_txn,txn)
+%        }
+%        
+%        
+%        //and we invalidate the extension
+%        // because downstream no-one else
+%        //  shall handle timeout again
+%        isock.invalidate_extension<timeout>(txn);
+%      }
+%      else{
+%        //nothing. The connected target can handle
+%        // the timeout
+%        ;
+%      }
+%    }
+%  }
+%  
+%  //the txn we put our deepcopies in
+%  i_socket_type::payload_type m_txn;
+%  
+%  bool check_crc(t_socket_type::payload_type&, unsigned int){}
+%};
+
+%\subsection{Configuration Interface}
+
+%\begin{small}
+%\begin{verbatim}
+%\end{verbatim}
+%\end{small}
+
+%\begin{small}
+%\begin{verbatim}
+%void set_config(gs::socket::config<TRAITS>&);
+%gs::socket::config<TRAITS>& get_recent_config();
+%\end{verbatim}
+%\end{small}
+
+%After the user has instantiated and set up a configuration (e.g. \verb|my_config|) he can assign it to the GreenSocket via \verb|socket.set_config(my_config);|. Note that before end of elaboration, all GreenSockets have to have a valid configuration (a valid configuration could be a configuration that just treats unknowns as ignorable).
+
+%During simulation runtime, in the \verb|start_of_simulation| callback or within the \verb|bound_to| callback (see far below) the current configuration can be retrieved by a call to \verb|socket.get_recent_config();|
+
+%\subsection{Extension Interface}
+
+%\begin{small}
+%\begin{verbatim}
+%template <typename T>
+%bool get_extension(T*& ptr, payload_type& txn);  
+
+%template <typename T>
+%T* get_extension(payload_type& txn);  
+
+%template <typename T>
+%bool validate_extension(payload_type& txn);  
+
+%template <typename T>
+%void invalidate_extension(payload_type& txn);
+%\end{verbatim}
+%\end{small}
+
+%GreenSocket provides a set of extension helpers, as listed above.
+%The first \verb|get_extension| can be used in conjunction with all extension types. When used with a guard extension, the return value indicates if the guard was set or not. \verb|ptr| will point to the guard extension, and should not be used. When used with a data extension, the return value indicated if the data extension was already present (usually the case) and \verb|ptr| will always point to the extension ready to be used (if it wasn't there, the call has added it).
+%Finally, when used with a guarded data extension, the return value indicates whether the guard was set or not, and \verb|ptr| will point to the ready to be used data part of the extension (if it wasn't there, the call has added the data part, but it does not set the guard).
+
+%The second \verb|get_extension| can only be used with guard or data extensions. With a guard extension it will return a non-NULL pointer if the guard was set (the returned pointer should not be used). With a data extension it will return a ready to be used pointer to the data extension.
+
+%\verb|validate_extension| will set the guard of a guarded data or a simple guard extension. It cannot be used with data extensions. If the transaction is memory managed, the guard extension will be set as an auto extension, so that it will be cleaned off of the transaction as soon as it's done. If there is no memory manager, the extension will be added sticky (to be cleaned off manually). The return value is true if there was a memory manager, and false if not.
+
+%\verb|invalidate_extension| will reset the guard of a guarded data or a simple guard extension immediately. It cannot be used with data extensions.
+
+%If used with a debug compile, the functions will check if the accessed extensions are in the configuration of the socket.
+
+%\subsection{Initiator Socket}
+
+%The initiator socket is a template class as shown below. The code snippet omits some other template parameters that should only be altered by '''very''' advanced users.
+
+%\begin{small}
+%\begin{verbatim}
+%template <typename MODULE, 
+%          unsigned int BUSWIDTH=32
+%          >
+%class initiator_socket;
+%\end{verbatim}
+%\end{small}
+
+%The template argument \verb|MODULE| shall be of the type of the owning module, to allow for non-virtual callbacks, while \verb|BUSWIDTH| shall express the physical width of the modelled connection. If omitted the latter will default to 32.
+
+%\subsection{Registering Callbacks}
+
+%To register callbacks for the backwards interface the initiator socket offers
+%\begin{small}
+%\begin{verbatim}
+%typedef sync_enum_type (MODULE::*nb_cb)(payload_type& trans, phase_type& phase, sc_core::sc_time& t);
+%typedef void (MODULE::*dmi_cb)(sc_dt::uint64 start_range, sc_dt::uint64 end_range);
+
+%void register_nb_transport_bw(MODULE* mod, nb_cb cb);
+%void register_invalidate_dmi(MODULE* mod, dmi_cb cb);
+%\end{verbatim}
+%\end{small}
+
+%As can be seen the signatures of the callbacks exactly match the ones of the TLM2.0 standard. The initiator is not obliged to register any callbacks at all (i.e. it will only use \verb|b_transport|). However incoming calls (e.g. \verb|nb_transport_bw|) for which no callback has been registered will result in an error.
+
+%\subsection{Memory Management Interface}
+
+%The initiator socket has three functions related to memory management.
+
+%\begin{small}
+%\begin{verbatim}
+%//get MMed transaction from pool (use for nb_transport)
+%payload_type* get_transaction();
+
+%//return MMed transaction to pool (use for nb_transport)
+%void release_transaction(payload_type* txn);
+%  
+%//fill a transaction that was stack allocated
+%void fill_transaction(payload_type& txn);
+%\end{verbatim}
+%\end{small}
+
+%\verb|get_transaction| return a memory managed, pooled transaction object. It is pre-equipped with all sticky extensions (data extensions and the data parts of guarded data extensions) and its reference count is already at 1. \verb|release_transaction| shall be called when the owner of the socket has no further use of a transaction he created using \verb|get_transaction|. \verb|release_transaction| may never be called if the transaction does not belong to your own socket!
+
+%\verb|fill_transaction| can be used to setup a transaction that did not come from the socket's pool. E.g. a stack allocated transaction for use with b\_transport. It is important to let the socket fill such a transaction, because it adds some extensions it needs to operate properly.
+
+%\subsection{Target Socket}
+
+%The target socket is a template class as shown below. The code snippet omits some other template parameters that should only be altered by '''very''' advanced users.
+
+%\begin{small}
+%\begin{verbatim}
+%template <typename MODULE, 
+%          unsigned int BUSWIDTH=32
+%          >
+%class target_socket;
+%\end{verbatim}
+%\end{small}
+
+%The template argument \verb|MODULE| shall be of the type of the owning module, to allow for non-virtual callbacks, while \verb|BUSWIDTH| shall express the physical width of the modelled connection. If omitted the latter will default to 32.
+
+%
+%\subsection{Registering Callbacks}
+
+%To register callbacks for the backwards interface the initiator socket offers
+%\begin{small}
+%\begin{verbatim}
+%typedef sync_enum_type (MODULE::*nb_cb)(payload_type& trans, phase_type& phase, sc_core::sc_time& t);
+%typedef void (MODULE::*b_cb)(payload_type& trans, sc_core::sc_time& t);
+%typedef bool (MODULE::*dmi_cb)(payload_type& trans, tlm::tlm_dmi&  dmi_data);
+%typedef unsigned int (MODULE::*dbg_cb)(payload_type& trans);
+
+%void register_nb_transport_fw(MODULE* mod, nb_cb cb);
+%void register_b_transport(MODULE* mod, b_cb cb);
+%void register_get_dmi(MODULE* mod, dmi_cb cb);
+%void register_dbg_transport(MODULE* mod, dbg_cb cb);
+%\end{verbatim}
+%\end{small}
+
+%As can be seen the signatures of the callbacks exactly match the ones of the TLM2.0 standard. The target is obliged to register at least a callback for nb\_transport or b\_transport, otherwise the socket would be useless. Incoming calls for which no callback has been registered will result in an error.
+
+%\subsection{Example}
+
+%The following example is a one-fits-all for everything above. It will only show initiator related code, for the target it is similar.
+
+%First let's assume some global extension definitions
+
+%\begin{small}
+%\begin{verbatim}
+%#include "gs_extension.h"
+
+%//some extensions we will use
+%GS_GUARD_ONLY_EXTENSIONS(foo);
+%GS_GUARD_ONLY_EXTENSIONS(baa);
+
+%//some new phases
+%DECLARE_EXTENDED_PHASE(BEGIN_BAZ);
+%DECLARE_EXTENDED_PHASE(END_BAZ);
+%\end{verbatim}
+%\end{small}
+
+%Now to the initiator.
+%\begin{small}
+%\begin{verbatim}
+%#include "green_initiator_socket.h"
+%#include "the_global_extension_defs.h"
+
+%SC_MODULE(my_initiator){
+%  gs::socket::initiator_socket<my_initiator> socket;
+%  typedef gs::socket::initiator_socket<my_initiator>::traits_type traits_type; 
+%  ...
+%  SC_CTOR(my_initiator) : socket("socket"){
+%    gs::socket::config<traits_type> cfg;
+%    cfg.use_mandatory_extension<foo>();
+%    cfg.use_ignorable_extension<baa>();
+%    cfg.use_mandatory_phase(BEGIN_REQ);
+%    cfg.use_mandatory_phase(END_REQ);
+%    cfg.use_ignorable_phase(BEGIN_BAZ);
+%    cfg.use_ignorable_phase(END_BAZ);
+%    cfg.treat_unknown_as_ignorable();
+%    socket.set_config(cfg);
+%    socket.register_nb_transport_bw(this, &my_initiator::my_nb_trans);
+
+%    SC_THREAD(run_b);
+%    SC_THREAD(run_nb);
+%  }
+%  ...
+
+%  void start_of_simulation(){
+%    if (socket.get_recent_config().has_phase(BEGIN_BAZ) 
+%       && socket.get_recent_config().has_phase(END_BAZ)) remember_we_can_use_BAZ();
+%  }
+
+%  void run_b(){
+%    sc_time no_time;
+%    tlm::tlm_generic_payload gp; //stack allocate
+%    socket.fill_transaction(gp); //let socket initialize the txn
+%    my_setup(gp);
+%    socket.validate_extension<foo>(gp); //we ignore the return as we know there is no MM
+%    socket.b_transport(gp, no_time);
+%    my_setup(gp);
+%    socket.invalidate_extension<foo>(gp); //reset manually, since we have no MM
+%    socket.b_transport(gp, no_time);
+%  }
+
+%  void run_nb(){
+%    tlm::tlm_generic_payload* gp=socket.get_transaction();
+%    my_setup(*gp);
+%    socket.validate_extension<foo>(*gp); //we ignore the return as we know there is MM
+%    tlm::tlm_phase ph=BEGIN_REQ;
+%    if (socket.nb_transport(gp, ph, no_time)==TLM_COMPLETED)
+%      socket.release_transaction(gp); //back to pool
+%    else
+%      ...
+%  }
+
+%  tlm::tlm_sync_enum my_nb_trans(tlm::tlm_generic_payload& gp, tlm::tlm_phase ph, sc_time& t){
+%    ...
+%  }
+%};
+%\end{verbatim}
+%\end{small}
+%More examples will be added soon.
+
+%\section{Deriving from GreenSocket}
+%Coming soon
+
+\end{document}
