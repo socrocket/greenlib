@@ -1,0 +1,73 @@
+This is Service Plugin 'TEST_SERVICE' (ID=5)
+This is User API 'TEST_SERVICE_API
+This is User API 'TEST_SERVICE_API
+
+
+@0 s /0 (ServiceUserModuleA): Test User API Tests
+
+@0 s /0 (ServiceUserModuleA): call API with: bla_bla_1
+@0 s /0 (TEST_SERVICE):  Got transaction, command=CMD_TEST_1
+@0 s /0 (TEST_SERVICE): received transaction
+@0 s /0 (TEST_SERVICE): Plugin got data: DATA1 DATA2 bla_bla_1 
+@0 s /0 (ServiceUserModuleA): got from API:  101
+
+@0 s /0 (ServiceUserModuleA): call API with: bla_bla_2
+@0 s /0 (TEST_SERVICE):  Got transaction, command=CMD_TEST_1
+@0 s /0 (TEST_SERVICE): received transaction
+@0 s /0 (TEST_SERVICE): Plugin got data: DATA1 DATA2 bla_bla_2 
+@0 s /0 (ServiceUserModuleA): got from API:  102
+
+@0 s /0 (ServiceUserModuleA): call API with: bla_bla_3
+@0 s /0 (TEST_SERVICE):  Got transaction, command=CMD_TEST_1
+@0 s /0 (TEST_SERVICE): received transaction
+@0 s /0 (TEST_SERVICE): Plugin got data: DATA1 DATA2 bla_bla_3 
+@0 s /0 (ServiceUserModuleA): got from API:  103
+
+@0 s /0 (ServiceUserModuleA): call API with: bla_bla_4
+@0 s /0 (TEST_SERVICE):  Got transaction, command=CMD_TEST_1
+@0 s /0 (TEST_SERVICE): received transaction
+@0 s /0 (TEST_SERVICE): Plugin got data: DATA1 DATA2 bla_bla_4 
+@0 s /0 (ServiceUserModuleA): got from API:  104
+
+@0 s /0 (ServiceUserModuleA): call API with: bla_bla_5
+@0 s /0 (TEST_SERVICE):  Got transaction, command=CMD_TEST_1
+@0 s /0 (TEST_SERVICE): received transaction
+@0 s /0 (TEST_SERVICE): Plugin got data: DATA1 DATA2 bla_bla_5 
+@0 s /0 (ServiceUserModuleA): got from API:  105
+
+
+
+
+@0 s /0 (ServiceUserModuleB): Test User API Tests
+
+@0 s /0 (ServiceUserModuleB): call API with: bla_bla_1
+@0 s /0 (TEST_SERVICE):  Got transaction, command=CMD_TEST_1
+@0 s /0 (TEST_SERVICE): received transaction
+@0 s /0 (TEST_SERVICE): Plugin got data: DATA1 DATA2 bla_bla_1 
+@0 s /0 (ServiceUserModuleB): got from API:  106
+
+@0 s /0 (ServiceUserModuleB): call API with: bla_bla_2
+@0 s /0 (TEST_SERVICE):  Got transaction, command=CMD_TEST_1
+@0 s /0 (TEST_SERVICE): received transaction
+@0 s /0 (TEST_SERVICE): Plugin got data: DATA1 DATA2 bla_bla_2 
+@0 s /0 (ServiceUserModuleB): got from API:  107
+
+@0 s /0 (ServiceUserModuleB): call API with: bla_bla_3
+@0 s /0 (TEST_SERVICE):  Got transaction, command=CMD_TEST_1
+@0 s /0 (TEST_SERVICE): received transaction
+@0 s /0 (TEST_SERVICE): Plugin got data: DATA1 DATA2 bla_bla_3 
+@0 s /0 (ServiceUserModuleB): got from API:  108
+
+@0 s /0 (ServiceUserModuleB): call API with: bla_bla_4
+@0 s /0 (TEST_SERVICE):  Got transaction, command=CMD_TEST_1
+@0 s /0 (TEST_SERVICE): received transaction
+@0 s /0 (TEST_SERVICE): Plugin got data: DATA1 DATA2 bla_bla_4 
+@0 s /0 (ServiceUserModuleB): got from API:  109
+
+@0 s /0 (ServiceUserModuleB): call API with: bla_bla_5
+@0 s /0 (TEST_SERVICE):  Got transaction, command=CMD_TEST_1
+@0 s /0 (TEST_SERVICE): received transaction
+@0 s /0 (TEST_SERVICE): Plugin got data: DATA1 DATA2 bla_bla_5 
+@0 s /0 (ServiceUserModuleB): got from API:  110
+
+

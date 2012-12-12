@@ -1,0 +1,6 @@
+Simulation time: Wed Dec  8 10:30:44 2010
+
+dbg_msg_L4: testbench_message_streamer_tests.cpp:92: @20 ns /2: (ModuleA): Hallo L4 after 20ns
+new line
+sys_msg_INFO: testbench_message_streamer_tests.cpp:94: @20 ns /2: (ModuleA): This is an sc_info!
+sys_msg_ERROR: testbench_message_streamer_tests.cpp:96: @20 ns /2: (ModuleA): This is an sc_error!

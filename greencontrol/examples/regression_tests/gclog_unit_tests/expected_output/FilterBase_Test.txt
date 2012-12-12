@@ -1,0 +1,70 @@
+Tuesday, 16 February 2010 - 13:06:06
+Debug text output used with GC_Logger.
+Starting log.
+
+Test 1
+Trying to create filters with an invalid number of filter ports.
+
+Only one transaction should be logged.
+  Transaction 0x93a24f8 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 64
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a16a8 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = 
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a2538 (hasChanged: 1)
+    -> pNext     (0) = 0
+
+Test 2
+Testing the ServiceFilter with 2 filter ports.
+
+
+This should be followed by two transactions, one NO_SERVICE CT and one CONFIG_SERVICE CT.
+
+  Transaction 0x93a24f8 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 64
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a16a8 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = 
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a2538 (hasChanged: 1)
+    -> pNext     (0) = 0
+  Transaction 0x93a24f8 returning:
+    mHasChanged      = 1
+    mService     (1) = 1 (CONFIG_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 64
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a16a8 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = 
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a2538 (hasChanged: 1)
+    -> pNext     (0) = 0
+
+Regular end of log.
+Finished on Tuesday, 16 February 2010 - 13:06:06
+Closing log.

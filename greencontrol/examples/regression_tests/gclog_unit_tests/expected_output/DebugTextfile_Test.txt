@@ -1,0 +1,90 @@
+Tuesday, 16 February 2010 - 13:06:06
+Debug text output used with GC_Logger.
+Starting log.
+
+User output: This should be the first line in DebugTextfile_Test.txt after the header.
+This should be the second line, but without the "User output:" prefix.
+
+Test 2
+After this, there should be a single transaction.
+
+  Transaction 0x93a83a0:
+    mHasChanged      = 0
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 0
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1678 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = 
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a83e0 (hasChanged: 0)
+    -> pNext     (0) = 0
+
+Test 3
+Now the same transaction should be printed, followed by another, which acts as a returning CT
+
+  Transaction 0x93a83a0:
+    mHasChanged      = 0
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 0
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1678 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = 
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a83e0 (hasChanged: 0)
+    -> pNext     (0) = 0
+  Transaction 0x93a8418 returning:
+    mHasChanged      = 1
+    mService     (1) = 2 (AV_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0x93a1678
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 0
+    mSpecifier   (1) = This transaction should be modified.
+    mValue       (1) = 
+    mID          (1) = 0x93a1678 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = This way it should act as a returning transaction
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a8458 (hasChanged: 1)
+    -> pNext     (0) = 0
+
+Test 4
+Another LogConfig was activated. This should be visible in the following output.
+
+  Transaction 0x93a83a0:
+    mHasChanged      = 0
+    mService     (0) = 0 (NO_SERVICE)
+    mTarget      (0) = 0
+    mCmd         (0) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (0) = 0
+    mAnyUint     (0) = 0
+    mSpecifier   (0) = 
+    mValue       (0) = 
+    mID          (0) = 0x93a1678 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (0) = 
+    mError       (0) = 0
+    mLogPointer  (0) = 0
+    mCmdIf       (0) = 0
+    mLogConfig   (0) = 0xbfe8d8a4 (hasChanged: 1)
+    -> pNext     (1) = 0x93a83e0 -> 0
+
+Regular end of log.
+Finished on Tuesday, 16 February 2010 - 13:06:06
+Closing log.

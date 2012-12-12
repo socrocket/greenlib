@@ -1,0 +1,506 @@
+Tuesday, 16 February 2010 - 13:06:06
+Debug text output used with GC_Logger.
+Starting log.
+
+Test 1
+The LogConfig class should be printed three times.
+The first is set to true, the second to false and the third one is mixed.
+
+    LogConfig 0xbfe8d834:
+      m_bHasChanged      = 0
+      m_bStandardSetting = 1
+      m_bService         = 1
+      m_bTarget          = 1
+      m_bCmd             = 1
+      m_bAnyPointer      = 1
+      m_bAnyPointer2     = 1
+      m_bAnyUint         = 1
+      m_bSpecifier       = 1
+      m_bValue           = 1
+      m_bID              = 1
+      m_bError           = 1
+      m_bMetaData        = 1
+      m_bLogPointer      = 1
+      m_bCmdIf           = 1
+      m_bLogConfig       = 1
+      m_pNext            = 0
+    LogConfig 0xbfe8d834:
+      m_bHasChanged      = 0
+      m_bStandardSetting = 0
+      m_bService         = 0
+      m_bTarget          = 0
+      m_bCmd             = 0
+      m_bAnyPointer      = 0
+      m_bAnyPointer2     = 0
+      m_bAnyUint         = 0
+      m_bSpecifier       = 0
+      m_bValue           = 0
+      m_bID              = 0
+      m_bError           = 0
+      m_bMetaData        = 0
+      m_bLogPointer      = 0
+      m_bCmdIf           = 0
+      m_bLogConfig       = 0
+      m_pNext            = 0
+    LogConfig 0xbfe8d834:
+      m_bHasChanged      = 1
+      m_bStandardSetting = 0
+      m_bService         = 0
+      m_bTarget          = 0
+      m_bCmd             = 1
+      m_bAnyPointer      = 1
+      m_bAnyPointer2     = 0
+      m_bAnyUint         = 0
+      m_bSpecifier       = 0
+      m_bValue           = 0
+      m_bID              = 0
+      m_bError           = 0
+      m_bMetaData        = 0
+      m_bLogPointer      = 1
+      m_bCmdIf           = 0
+      m_bLogConfig       = 0
+      m_pNext            = 0
+
+Test 2
+The four different toString() methods of the CT are being tested. (toString, toDetailedString, toConfigString, toDebugString)
+The LogConfig from the previous test is activated. The output should change accordingly.
+
+  Transaction 0xbfe8d7c0:
+    mService     = 0 (NO_SERVICE)
+    mTarget      = 0
+    mCmd         = 0
+    mAnyPointer  = 0
+    mAnyPointer2 = 0
+    mAnyUint     = 36
+    mSpecifier   = 
+    mValue       = 
+    mID          = 0x31
+    mMetaData    = 
+    mError       = 0
+    mLogPointer  = 0
+    mCmdIf       = 0
+    mLogConfig   = 0xbfe8d834
+  Transaction 0xbfe8d7c0:
+    mService     = 0 (NO_SERVICE)
+    mTarget      = 0
+    mCmd         = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  = 0
+    mAnyPointer2 = 0
+    mAnyUint     = 36
+    mSpecifier   = 
+    mValue       = 
+    mID          = 0x31 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    = 
+    mError       = 0
+    mLogPointer  = 0
+    mCmdIf       = 0
+    mLogConfig   = 0xbfe8d834
+  Transaction 0xbfe8d7c0:
+    mCmd         = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  = 0
+    mLogPointer  = 0
+
+  Transaction 0xbfe8d7c0:
+    mHasChanged      = 0
+    mService     (0) = 0 (NO_SERVICE)
+    mTarget      (0) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (0) = 0
+    mAnyUint     (0) = 36
+    mSpecifier   (0) = 
+    mValue       (0) = 
+    mID          (0) = 0x31 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (0) = 
+    mError       (0) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (0) = 0
+    mLogConfig   (0) = 0xbfe8d834 (hasChanged: 1)
+    -> pNext     (1) = 0x93a8470 -> 0
+
+Test 3
+The automatic setting of the hasChanged flag is being tested.
+
+  Transaction 0xbfe8d7c0:
+    mHasChanged      = 0
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 36
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x31 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 1
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a8470 (hasChanged: 0)
+    -> pNext     (0) = 0
+  Transaction 0xbfe8d784 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 3740576
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x38fff4 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 2
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a2740 (hasChanged: 1)
+    -> pNext     (0) = 0
+
+The copy operator of the CT gets tested.
+
+  Transaction 0xbfe8d7c0:
+    mHasChanged      = 0
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 36
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x31 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 1
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a8470 (hasChanged: 0)
+    -> pNext     (0) = 0
+  Transaction 0xbfe8d784:
+    mHasChanged      = 0
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 36
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x31 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 1
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a2740 (hasChanged: 1)
+    -> pNext     (0) = 0
+
+The copy operator of the CT gets tested again, this time with an activated LogConfig. The LogConfig must not be copied
+
+  Transaction 0xbfe8d7c0:
+    mHasChanged      = 0
+    mService     (0) = 0 (NO_SERVICE)
+    mTarget      (0) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (0) = 0
+    mAnyUint     (0) = 36
+    mSpecifier   (0) = 
+    mValue       (0) = 
+    mID          (0) = 0x31 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (0) = Transaction 1
+    mError       (0) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (0) = 0
+    mLogConfig   (0) = 0xbfe8d834 (hasChanged: 1)
+    -> pNext     (1) = 0x93a8470 -> 0
+  Transaction 0xbfe8d784:
+    mHasChanged      = 0
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 36
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x31 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 1
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a2740 (hasChanged: 1)
+    -> pNext     (0) = 0
+
+Test 4
+The behaviour of the integrated stack is being tested.
+
+  Transaction 0x93a2760 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 543516756
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1688 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 1
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a27a0 (hasChanged: 1)
+    -> pNext     (0) = 0
+  Transaction 0x93a2760 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 543516756
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1688 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 1
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0xbfe8d818 (hasChanged: 0)
+    -> pNext     (1) = 0xbfe8d834 -> 0x93a27a0 -> 0
+  Transaction 0x93a2760 returning:
+    mHasChanged      = 1
+    mService     (0) = 0 (NO_SERVICE)
+    mTarget      (0) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (0) = 0
+    mAnyUint     (0) = 543516756
+    mSpecifier   (0) = 
+    mValue       (0) = 
+    mID          (0) = 0x93a1688 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (0) = Transaction 1
+    mError       (0) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (0) = 0
+    mLogConfig   (0) = 0xbfe8d834 (hasChanged: 1)
+    -> pNext     (1) = 0x93a27a0 -> 0
+  Transaction 0x93a2760 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 543516756
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1688 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 1
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a27a0 (hasChanged: 1)
+    -> pNext     (0) = 0
+
+Test 5
+The copy operator of the LogConfig class is being tested.
+
+  Transaction 0x93a65e8 returning:
+    mHasChanged      = 1
+    mService     (0) = 0 (NO_SERVICE)
+    mTarget      (0) = 0
+    mCmd         (0) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (0) = 0
+    mAnyPointer2 (0) = 0
+    mAnyUint     (0) = 543516756
+    mSpecifier   (1) = 
+    mValue       (0) = 
+    mID          (0) = 0x93a1688 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (0) = Transaction 1
+    mError       (0) = 0
+    mLogPointer  (0) = 0
+    mCmdIf       (0) = 0
+    mLogConfig   (0) = 0xbfe8d834 (hasChanged: 1)
+    -> pNext     (1) = 0x93a2720 -> 0
+  Transaction 0x93a2760:
+    mHasChanged      = 0
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 543516756
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1688 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 2
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0xbfe8d818 (hasChanged: 0)
+    -> pNext     (1) = 0xbfe8d7fc -> 0x93a6490 -> 0
+
+The LogConfigs are being copied, the stack must not change.
+
+  Transaction 0x93a65e8 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 543516756
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1688 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 1
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0xbfe8d834 (hasChanged: 0)
+    -> pNext     (1) = 0x93a2720 -> 0
+  Transaction 0x93a2760:
+    mHasChanged      = 0
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 543516756
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1688 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 2
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0xbfe8d818 (hasChanged: 0)
+    -> pNext     (1) = 0xbfe8d7fc -> 0x93a6490 -> 0
+
+The default LogConfig of Transaction 1 gets modified.
+
+  Transaction 0x93a65e8 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 543516756
+    mSpecifier   (0) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1688 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 1
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a2720 (hasChanged: 1)
+    -> pNext     (0) = 0
+  Transaction 0x93a65e8 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 543516756
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1688 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = Transaction 1
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a2720 (hasChanged: 0)
+    -> pNext     (0) = 0
+
+Test 6
+The command_if interface gets tested.
+The first time no command_if object is set, which results in warnings. The second time the command_if is set.
+
+User output: Warning: API/Plugin doesn't implement command_if!
+User output: Warning: API/Plugin doesn't implement command_if!
+User output: Warning: API/Plugin doesn't implement command_if!
+  Transaction 0x93a6430 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 543516756
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1688 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = 
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a27a0 (hasChanged: 1)
+    -> pNext     (0) = 0
+User output: Command_if_dummy instance name
+User output: CMD_0
+User output: Doesn't do anything.
+  Transaction 0x93a6430 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (CMD_0)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 543516756
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1688 (Command_if_dummy instance name)
+    mMetaData    (1) = 
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0xbfe8d96c
+    mLogConfig   (1) = 0x93a27a0 (hasChanged: 1)
+    -> pNext     (0) = 0
+
+Test 7
+The log_if interface gets tested. Therefore the string_vector and log_vector classes are being used.
+
+User output: vector<string> = { Added to vec }
+  Transaction 0x93a6430 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (CMD_0)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 543516756
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1688 (Command_if_dummy instance name)
+    mMetaData    (1) = 
+    mError       (1) = 0
+    mLogPointer  (1) = 0xbfe8d880 ( vector<string> = { Added to vec, Added to stringVec } )
+    mCmdIf       (1) = 0xbfe8d96c
+    mLogConfig   (1) = 0x93a27a0 (hasChanged: 1)
+    -> pNext     (0) = 0
+User output: vector<T> = { 42 }
+  Transaction 0x93a6430 returning:
+    mHasChanged      = 1
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (CMD_0)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 543516756
+    mSpecifier   (1) = 
+    mValue       (1) = 
+    mID          (1) = 0x93a1688 (Command_if_dummy instance name)
+    mMetaData    (1) = 
+    mError       (1) = 0
+    mLogPointer  (1) = 0xbfe8d870 ( vector<T> = { 42, -5, 85 } )
+    mCmdIf       (1) = 0xbfe8d96c
+    mLogConfig   (1) = 0x93a27a0 (hasChanged: 1)
+    -> pNext     (0) = 0
+User output: vector<T> = { 0x93a1688, 0xbfe8d870, 0x93a61a0 }
+User output: vector<T> = { Test String, Added to vec, vector<string> = { Added to vec, Added to stringVec } }
+
+Regular end of log.
+Finished on Tuesday, 16 February 2010 - 13:06:06
+Closing log.

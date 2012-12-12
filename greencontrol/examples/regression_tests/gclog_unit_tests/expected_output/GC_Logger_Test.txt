@@ -1,0 +1,115 @@
+Tuesday, 16 February 2010 - 13:06:06
+Debug text output used with GC_Logger.
+Starting log.
+
+
+Test 1
+There should be no output until test 2.
+
+Test 2
+Only the REQUEST should be printed.
+
+  Transaction 0x93a2740:
+    mHasChanged      = 0
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 154805184
+    mSpecifier   (1) = Test 2 REQUEST
+    mValue       (1) = 
+    mID          (1) = 0x93a1698 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = This transaction should be the first in the log and not be followed by a RESPONSE
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a2780 (hasChanged: 0)
+    -> pNext     (0) = 0
+
+Test 3
+There should be a REQUEST followed by a RESPONSE.
+
+  Transaction 0x93a2740:
+    mHasChanged      = 0
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 154805184
+    mSpecifier   (1) = Test 3 REQUEST
+    mValue       (1) = 
+    mID          (1) = 0x93a1698 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = 
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a2780 (hasChanged: 0)
+    -> pNext     (0) = 0
+  Transaction 0x93a2740 returning:
+    mHasChanged      = 1
+    mService     (0) = 0 (NO_SERVICE)
+    mTarget      (0) = 0
+    mCmd         (0) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (0) = 0
+    mAnyPointer2 (0) = 0
+    mAnyUint     (0) = 154805184
+    mSpecifier   (1) = Test 3 RESPONSE
+    mValue       (0) = 
+    mID          (0) = 0x93a1698 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (0) = 
+    mError       (0) = 0
+    mLogPointer  (0) = 0
+    mCmdIf       (0) = 0
+    mLogConfig   (0) = 0x93a2780 (hasChanged: 1)
+    -> pNext     (0) = 0
+
+Test 4
+The filters are deactivated now, so nothing should be printed.
+
+Test 5
+Only the RESPONSE should get logged.
+
+  Transaction 0x93a2740 returning:
+    mHasChanged      = 1
+    mService     (0) = 0 (NO_SERVICE)
+    mTarget      (0) = 0
+    mCmd         (0) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (0) = 0
+    mAnyPointer2 (0) = 0
+    mAnyUint     (0) = 154805184
+    mSpecifier   (1) = Test 5 RESPONSE
+    mValue       (0) = 
+    mID          (0) = 0x93a1698 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = This RESPONSE should not be preceeded by a REQUEST. It should appear after Test 3.
+    mError       (0) = 0
+    mLogPointer  (0) = 0
+    mCmdIf       (0) = 0
+    mLogConfig   (0) = 0x93a2780 (hasChanged: 1)
+    -> pNext     (0) = 0
+
+Test 6
+Only the REQUEST should get logged.
+
+  Transaction 0x93a2740:
+    mHasChanged      = 0
+    mService     (1) = 0 (NO_SERVICE)
+    mTarget      (1) = 0
+    mCmd         (1) = 0 (Warning: API/Plugin doesn't implement command_if!)
+    mAnyPointer  (1) = 0
+    mAnyPointer2 (1) = 0
+    mAnyUint     (1) = 154805184
+    mSpecifier   (1) = Test 6 REQUEST
+    mValue       (1) = 
+    mID          (1) = 0x93a1698 (Warning: API/Plugin doesn't implement command_if!)
+    mMetaData    (1) = This transaction should not be followed by any other
+    mError       (1) = 0
+    mLogPointer  (1) = 0
+    mCmdIf       (1) = 0
+    mLogConfig   (1) = 0x93a2780 (hasChanged: 0)
+    -> pNext     (0) = 0
+
+Regular end of log.
+Finished on Tuesday, 16 February 2010 - 13:06:06
+Closing log.

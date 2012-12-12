@@ -1,0 +1,365 @@
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0: Make post read callbacks
+New parameter callback method called:
+  Parameter 'OM2.int_param'
+  exlicit of type 'int'
+ParamCallbAdapt_b: Create parameter callback adapter 1 for caller parameter 'OM1.int_param'.
+OM1.gs_param_base_0: registerParamCallback(shared_ptr<ParamCallbAdapt_b>)
+OM1.gs_param_base_0:    param 'OM1.int_param' registerParamCallback(ParamCallbAdapt callb=1, type=pre_read)
+ParamCallbAdapt_b: Create parameter callback adapter 2 for caller parameter 'OM1.int_param'.
+OM1.gs_param_base_0: registerParamCallback(shared_ptr<ParamCallbAdapt_b>)
+OM1.gs_param_base_0:    param 'OM1.int_param' registerParamCallback(ParamCallbAdapt callb=2, type=post_read)
+ParamCallbAdapt_b: Create parameter callback adapter 3 for caller parameter 'OM1.int_param'.
+OM1.gs_param_base_0: registerParamCallback(shared_ptr<ParamCallbAdapt_b>)
+OM1.gs_param_base_0:    param 'OM1.int_param' registerParamCallback(ParamCallbAdapt callb=3, type=pre_write)
+ParamCallbAdapt_b: Create parameter callback adapter 4 for caller parameter 'OM1.int_param'.
+OM1.gs_param_base_0: registerParamCallback(shared_ptr<ParamCallbAdapt_b>)
+OM1.gs_param_base_0:    param 'OM1.int_param' registerParamCallback(ParamCallbAdapt callb=4, type=post_write)
+ParamCallbAdapt_b: Create parameter callback adapter 5 for caller parameter 'OM1.int_param'.
+OM1.gs_param_base_0: registerParamCallback(shared_ptr<ParamCallbAdapt_b>)
+OM1.gs_param_base_0:    param 'OM1.int_param' registerParamCallback(ParamCallbAdapt callb=5, type=destroy_param)
+ParamCallbAdapt_b: Create parameter callback adapter 6 for caller parameter 'OM2.int_param'.
+OM2.gs_param_base_0: registerParamCallback(shared_ptr<ParamCallbAdapt_b>)
+OM2.gs_param_base_0:    param 'OM2.int_param' registerParamCallback(ParamCallbAdapt callb=6, type=pre_read)
+ParamCallbAdapt_b: Create parameter callback adapter 7 for caller parameter 'OM2.int_param'.
+OM2.gs_param_base_0: registerParamCallback(shared_ptr<ParamCallbAdapt_b>)
+OM2.gs_param_base_0:    param 'OM2.int_param' registerParamCallback(ParamCallbAdapt callb=7, type=post_read)
+ParamCallbAdapt_b: Create parameter callback adapter 8 for caller parameter 'OM2.int_param'.
+OM2.gs_param_base_0: registerParamCallback(shared_ptr<ParamCallbAdapt_b>)
+OM2.gs_param_base_0:    param 'OM2.int_param' registerParamCallback(ParamCallbAdapt callb=8, type=pre_write)
+ParamCallbAdapt_b: Create parameter callback adapter 9 for caller parameter 'OM2.int_param'.
+OM2.gs_param_base_0: registerParamCallback(shared_ptr<ParamCallbAdapt_b>)
+OM2.gs_param_base_0:    param 'OM2.int_param' registerParamCallback(ParamCallbAdapt callb=9, type=post_write)
+ParamCallbAdapt_b: Create parameter callback adapter 10 for caller parameter 'OM2.int_param'.
+OM2.gs_param_base_0: registerParamCallback(shared_ptr<ParamCallbAdapt_b>)
+OM2.gs_param_base_0:    param 'OM2.int_param' registerParamCallback(ParamCallbAdapt callb=10, type=destroy_param)
+ParamCallbAdapt_b: Create parameter callback adapter 11 for caller parameter 'OM2.int_param'.
+OM2.gs_param_base_0: registerParamCallback(shared_ptr<ParamCallbAdapt_b>)
+OM2.gs_param_base_0:    param 'OM2.int_param' registerParamCallback(ParamCallbAdapt callb=11, type=post_write_and_destroy)
+OM1.gs_param_base_0: Make reject_write callbacks
+OM1.gs_param_base_0: Make pre_write callbacks
+OM1.gs_param_base_0:    call adapter 3
+ callback function got: pre_write callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+ callback function got: pre_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+call adapter 1:  pre_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+ callback function got: post_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+call adapter 1:  pre_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+call adapter 2:  post_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+ callback function got: post_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+ callback function got: pre_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+call adapter 1:  pre_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+call adapter 2:  post_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+call adapter 2:  post_read callback omitted.
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+ callback function got: pre_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+call adapter 1:  pre_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+ callback function got: post_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+call adapter 1:  pre_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+call adapter 2:  post_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+ callback function got: post_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+ callback function got: pre_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+call adapter 1:  pre_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+call adapter 2:  post_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+call adapter 2:  post_read callback omitted.
+   callback function: (old value: 0)
+OM1.gs_param_base_0: Make post write callbacks and notify event
+OM1.gs_param_base_0:    call adapter 4
+ callback function got: post_write callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+ callback function got: pre_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+call adapter 1:  pre_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+ callback function got: post_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+call adapter 1:  pre_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+call adapter 2:  post_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+ callback function got: post_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+ callback function got: pre_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+call adapter 1:  pre_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+call adapter 2:  post_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+call adapter 2:  post_read callback omitted.
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+ callback function got: pre_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+call adapter 1:  pre_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+ callback function got: post_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+call adapter 1:  pre_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+call adapter 2:  post_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+ callback function got: post_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+ callback function got: pre_read callback for param OM1.int_param
+OM1.gs_param_base_0: Make pre_read callbacks
+OM1.gs_param_base_0:    call adapter 1
+call adapter 1:  pre_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+call adapter 2:  post_read callback omitted.
+OM1.gs_param_base_0: Make post read callbacks
+OM1.gs_param_base_0:    call adapter 2
+call adapter 2:  post_read callback omitted.
+   callback function: (new value: 501)
+OM2.gs_param_base_0: Make reject_write callbacks
+OM2.gs_param_base_0: Make pre_write callbacks
+OM2.gs_param_base_0:    call adapter 8
+ callback function got: pre_write callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+ callback function got: pre_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+ callback function got: post_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+ callback function got: post_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+ callback function got: pre_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+ callback function got: pre_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+ callback function got: post_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+ callback function got: post_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+ callback function got: pre_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+   callback function: (old value: 0)
+OM2.gs_param_base_0: Make post write callbacks and notify event
+OM2.gs_param_base_0:    call adapter 9
+ callback function got: post_write callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+ callback function got: pre_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+ callback function got: post_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+ callback function got: post_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+ callback function got: pre_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+ callback function got: pre_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+ callback function got: post_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+ callback function got: post_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+ callback function got: pre_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+   callback function: (new value: 502)
+OM2.gs_param_base_0:    call adapter 11
+ simple callback function got: callback for param OM2.int_param
+END SIMULATION
+Parameter list:
+vector: size=2
+OM1.int_param
+OM2.int_param
+OM2.gs_param_base_0: Make destroy param callbacks
+OM2.gs_param_base_0:    call adapter 10
+ callback function got: destroy_param callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+ callback function got: pre_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+ callback function got: post_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+ callback function got: post_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+ callback function got: pre_read callback for param OM2.int_param
+OM2.gs_param_base_0: Make pre_read callbacks
+OM2.gs_param_base_0:    call adapter 6
+call adapter 6:  pre_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0: Make post read callbacks
+OM2.gs_param_base_0:    call adapter 7
+call adapter 7:  post_read callback omitted.
+OM2.gs_param_base_0:    call adapter 11
+ simple callback function got: callback for param OM2.int_param
+ParamCallbAdapt_b: Unregister parameter callback adapter 1 at caller parameter 'OM1.int_param'.
+OM1.gs_param_base_0: param 'OM1.int_param' unregisterParamCallback(ParamCallbAdapt callb=1)
+OM1.gs_param_base_0:              removed parameter callback adapter 1
+ParamCallbAdapt_b: Unregister parameter callback adapter 2 at caller parameter 'OM1.int_param'.
+OM1.gs_param_base_0: param 'OM1.int_param' unregisterParamCallback(ParamCallbAdapt callb=2)
+OM1.gs_param_base_0:              removed parameter callback adapter 2
+ParamCallbAdapt_b: Unregister parameter callback adapter 3 at caller parameter 'OM1.int_param'.
+OM1.gs_param_base_0: param 'OM1.int_param' unregisterParamCallback(ParamCallbAdapt callb=3)
+OM1.gs_param_base_0:              removed parameter callback adapter 3
+ParamCallbAdapt_b: Unregister parameter callback adapter 4 at caller parameter 'OM1.int_param'.
+OM1.gs_param_base_0: param 'OM1.int_param' unregisterParamCallback(ParamCallbAdapt callb=4)
+OM1.gs_param_base_0:              removed parameter callback adapter 4
+ParamCallbAdapt_b: Unregister parameter callback adapter 5 at caller parameter 'OM1.int_param'.
+OM1.gs_param_base_0: param 'OM1.int_param' unregisterParamCallback(ParamCallbAdapt callb=5)
+OM1.gs_param_base_0:              removed parameter callback adapter 5
+ParamCallbAdapt_b: Deleting parameter callback adapter 11 (shared pointer deleted)
+ParamCallbAdapt_b: Deleting parameter callback adapter 10 (shared pointer deleted)
+ParamCallbAdapt_b: Deleting parameter callback adapter 9 (shared pointer deleted)
+ParamCallbAdapt_b: Deleting parameter callback adapter 8 (shared pointer deleted)
+ParamCallbAdapt_b: Deleting parameter callback adapter 7 (shared pointer deleted)
+ParamCallbAdapt_b: Deleting parameter callback adapter 6 (shared pointer deleted)
+ParamCallbAdapt_b: Deleting parameter callback adapter 5 (shared pointer deleted)
+ParamCallbAdapt_b: Deleting parameter callback adapter 4 (shared pointer deleted)
+ParamCallbAdapt_b: Deleting parameter callback adapter 3 (shared pointer deleted)
+ParamCallbAdapt_b: Deleting parameter callback adapter 2 (shared pointer deleted)
+ParamCallbAdapt_b: Deleting parameter callback adapter 1 (shared pointer deleted)
+OM1.gs_param_base_0: Make destroy param callbacks

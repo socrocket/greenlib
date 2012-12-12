@@ -1,0 +1,12 @@
+Tuesday, 16 February 2010 - 13:06:06
+CSV output used with GC_Logger.
+
+
+"Time / Delta";"Transaction:";Service;"Service Name";Target;Command;"Command Name";AnyPointer;AnyPointer2;AnyUint;Specifier;Value;ID;"Sender Name";MetaData;Error;LogPointer;"LogPointer Content";CommandIf;LogConfig
+"0 s/0";returning;0;"NO_SERVICE";0;0;"Warning: API/Plugin doesn't implement command_if!";0;0;1768763237;"";"";0x93a16d0;"Warning: API/Plugin doesn't implement command_if!";"";0;0;;0;0x93a8468
+"0 s/0";returning;0;"NO_SERVICE";0;0;"Warning: API/Plugin doesn't implement command_if!";;0;1768763237;"";"";0x93a16d0;"Warning: API/Plugin doesn't implement command_if!";"A LogConfig object is used in the CT.";0;;;;0xbfe8d400
+"0 s/0";returning;0;"NO_SERVICE";0;0;"Warning: API/Plugin doesn't implement command_if!";0;0;1768763237;"";"";0x93a16d0;"Warning: API/Plugin doesn't implement command_if!";"The LogConfig is reset to true.";0;0;;0;0xbfe8d400
+
+
+Regular end of log.
+Finished on Tuesday, 16 February 2010 - 13:06:06
