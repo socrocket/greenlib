@@ -1,0 +1,333 @@
+@0 s /0 (Slave1): memory size: 262144
+@0 s /0 (Slave1.GSGPBidirectionalSocket): manual configuration
+@0 s /0 (M1.GSGPBidirectionalSocket): manual configuration
+@0 s /0 (M1.GSGPBidirectionalSocket): automatic configuration SKIPPED because of manual configuration
+@0 s /0 (Slave1.GSGPBidirectionalSocket): automatic configuration SKIPPED because of manual configuration
+@0 s /0 (M1.GSGPBidirectionalSocket): automatic configuration SKIPPED because of manual configuration
+@0 s /0 (Slave1.GSGPBidirectionalSocket): automatic configuration SKIPPED because of manual configuration
+@0 s /0 (Slave1.GSGPBidirectionalSocket): I am a socket of type GSGPBidirectionalSocket
+@0 s /0 (Slave1.GSGPBidirectionalSocket): (#0:) I am connected to a GSGPSocket
+@0 s /0 (M1.GSGPBidirectionalSocket): I am a socket of type GSGPBidirectionalSocket
+@0 s /0 (M1.GSGPBidirectionalSocket): (#0:) I am connected to a GSGPSocket
+@100 ns /1 (M1): write mode
+
+(M1): data to send: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@100 ns /2 (M1): Master send Request (RequestValid).
+@100 ns /2 (M1.GSGPBidirectionalSocket): Request
+@100 ns /2 (M1.GSGPBidirectionalSocket): send BEGIN_REQ, TLM_WRITE_COMMAND
+@100 ns /2 (Slave1.GSGPBidirectionalSocket): got BEGIN_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@100 ns /3 (Slave1.GSGPBidirectionalSocket): Send RequestValid
+@100 ns /3 (Slave1): non-blocking notify RequestValid, TLM_WRITE_COMMAND
+@100 ns /3 (Slave1.GSGPBidirectionalSocket): AckRequest (delay=10 ns)
+@100 ns /3 (Slave1.GSGPBidirectionalSocket): send END_REQ, TLM_WRITE_COMMAND
+@100 ns /3 (M1.GSGPBidirectionalSocket): got END_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@100 ns /3 (Slave1): accepted WRITE cmd (in 1 cycle), now waiting for data.
+@110 ns /4 (M1): non-blocking notify RequestAccepted, TLM_WRITE_COMMAND
+@110 ns /5 (M1): got RequestAccepted TLM_WRITE_COMMAND out of local peq
+@110 ns /5 (M1): Slave sent RequestAccepted.
+@110 ns /5 (M1): Master send data (DataValid).
+@110 ns /5 (M1.GSGPBidirectionalSocket): SendData
+@110 ns /5 (M1.GSGPBidirectionalSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@110 ns /5 (Slave1.GSGPBidirectionalSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@110 ns /6 (Slave1.GSGPBidirectionalSocket): Send DataValid
+@110 ns /6 (Slave1): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@110 ns /6 (Slave1): receiving data from master.
+@110 ns /6 (Slave1): data valid: 0x14 (32bit=20)
+@110 ns /6 (Slave1): Got 20 data bytes sent to addr=0x4000 (local addr=0x0):
+            0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@110 ns /6 (Slave1.GSGPBidirectionalSocket): AckData
+@110 ns /6 (Slave1.GSGPBidirectionalSocket): send END_DATA, TLM_WRITE_COMMAND
+@110 ns /6 (M1.GSGPBidirectionalSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@309 ns /7 (M1): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@309 ns /8 (M1): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@309 ns /8 (M1): Slave accepted the data (DataAccepted).
+
+(M1): data to send: 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 
+@309 ns /9 (M1): Master send Request (RequestValid).
+@309 ns /9 (M1.GSGPBidirectionalSocket): Request
+@309 ns /9 (M1.GSGPBidirectionalSocket): send BEGIN_REQ, TLM_WRITE_COMMAND
+@309 ns /9 (Slave1.GSGPBidirectionalSocket): got BEGIN_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@309 ns /10 (Slave1.GSGPBidirectionalSocket): Send RequestValid
+@309 ns /10 (Slave1): non-blocking notify RequestValid, TLM_WRITE_COMMAND
+@309 ns /10 (Slave1.GSGPBidirectionalSocket): AckRequest (delay=10 ns)
+@309 ns /10 (Slave1.GSGPBidirectionalSocket): send END_REQ, TLM_WRITE_COMMAND
+@309 ns /10 (M1.GSGPBidirectionalSocket): got END_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@309 ns /10 (Slave1): accepted WRITE cmd (in 1 cycle), now waiting for data.
+@319 ns /11 (M1): non-blocking notify RequestAccepted, TLM_WRITE_COMMAND
+@319 ns /12 (M1): got RequestAccepted TLM_WRITE_COMMAND out of local peq
+@319 ns /12 (M1): Slave sent RequestAccepted.
+@319 ns /12 (M1): Master send data (DataValid).
+@319 ns /12 (M1.GSGPBidirectionalSocket): SendData
+@319 ns /12 (M1.GSGPBidirectionalSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@319 ns /12 (Slave1.GSGPBidirectionalSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@319 ns /13 (Slave1.GSGPBidirectionalSocket): Send DataValid
+@319 ns /13 (Slave1): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@319 ns /13 (Slave1): receiving data from master.
+@319 ns /13 (Slave1): data valid: 0x14 (32bit=20)
+@319 ns /13 (Slave1): Got 20 data bytes sent to addr=0x4014 (local addr=0x14):
+            20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 
+@319 ns /13 (Slave1.GSGPBidirectionalSocket): AckData
+@319 ns /13 (Slave1.GSGPBidirectionalSocket): send END_DATA, TLM_WRITE_COMMAND
+@319 ns /13 (M1.GSGPBidirectionalSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@518 ns /14 (M1): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@518 ns /15 (M1): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@518 ns /15 (M1): Slave accepted the data (DataAccepted).
+
+(M1): data to send: 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 
+@518 ns /16 (M1): Master send Request (RequestValid).
+@518 ns /16 (M1.GSGPBidirectionalSocket): Request
+@518 ns /16 (M1.GSGPBidirectionalSocket): send BEGIN_REQ, TLM_WRITE_COMMAND
+@518 ns /16 (Slave1.GSGPBidirectionalSocket): got BEGIN_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@518 ns /17 (Slave1.GSGPBidirectionalSocket): Send RequestValid
+@518 ns /17 (Slave1): non-blocking notify RequestValid, TLM_WRITE_COMMAND
+@518 ns /17 (Slave1.GSGPBidirectionalSocket): AckRequest (delay=10 ns)
+@518 ns /17 (Slave1.GSGPBidirectionalSocket): send END_REQ, TLM_WRITE_COMMAND
+@518 ns /17 (M1.GSGPBidirectionalSocket): got END_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@518 ns /17 (Slave1): accepted WRITE cmd (in 1 cycle), now waiting for data.
+@528 ns /18 (M1): non-blocking notify RequestAccepted, TLM_WRITE_COMMAND
+@528 ns /19 (M1): got RequestAccepted TLM_WRITE_COMMAND out of local peq
+@528 ns /19 (M1): Slave sent RequestAccepted.
+@528 ns /19 (M1): Master send data (DataValid).
+@528 ns /19 (M1.GSGPBidirectionalSocket): SendData
+@528 ns /19 (M1.GSGPBidirectionalSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@528 ns /19 (Slave1.GSGPBidirectionalSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@528 ns /20 (Slave1.GSGPBidirectionalSocket): Send DataValid
+@528 ns /20 (Slave1): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@528 ns /20 (Slave1): receiving data from master.
+@528 ns /20 (Slave1): data valid: 0x14 (32bit=20)
+@528 ns /20 (Slave1): Got 20 data bytes sent to addr=0x4028 (local addr=0x28):
+            40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 
+@528 ns /20 (Slave1.GSGPBidirectionalSocket): AckData
+@528 ns /20 (Slave1.GSGPBidirectionalSocket): send END_DATA, TLM_WRITE_COMMAND
+@528 ns /20 (M1.GSGPBidirectionalSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@727 ns /21 (M1): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@727 ns /22 (M1): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@727 ns /22 (M1): Slave accepted the data (DataAccepted).
+
+(M1): data to send: 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 
+@727 ns /23 (M1): Master send Request (RequestValid).
+@727 ns /23 (M1.GSGPBidirectionalSocket): Request
+@727 ns /23 (M1.GSGPBidirectionalSocket): send BEGIN_REQ, TLM_WRITE_COMMAND
+@727 ns /23 (Slave1.GSGPBidirectionalSocket): got BEGIN_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@727 ns /24 (Slave1.GSGPBidirectionalSocket): Send RequestValid
+@727 ns /24 (Slave1): non-blocking notify RequestValid, TLM_WRITE_COMMAND
+@727 ns /24 (Slave1.GSGPBidirectionalSocket): AckRequest (delay=10 ns)
+@727 ns /24 (Slave1.GSGPBidirectionalSocket): send END_REQ, TLM_WRITE_COMMAND
+@727 ns /24 (M1.GSGPBidirectionalSocket): got END_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@727 ns /24 (Slave1): accepted WRITE cmd (in 1 cycle), now waiting for data.
+@737 ns /25 (M1): non-blocking notify RequestAccepted, TLM_WRITE_COMMAND
+@737 ns /26 (M1): got RequestAccepted TLM_WRITE_COMMAND out of local peq
+@737 ns /26 (M1): Slave sent RequestAccepted.
+@737 ns /26 (M1): Master send data (DataValid).
+@737 ns /26 (M1.GSGPBidirectionalSocket): SendData
+@737 ns /26 (M1.GSGPBidirectionalSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@737 ns /26 (Slave1.GSGPBidirectionalSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@737 ns /27 (Slave1.GSGPBidirectionalSocket): Send DataValid
+@737 ns /27 (Slave1): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@737 ns /27 (Slave1): receiving data from master.
+@737 ns /27 (Slave1): data valid: 0x14 (32bit=20)
+@737 ns /27 (Slave1): Got 20 data bytes sent to addr=0x403c (local addr=0x3c):
+            60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 
+@737 ns /27 (Slave1.GSGPBidirectionalSocket): AckData
+@737 ns /27 (Slave1.GSGPBidirectionalSocket): send END_DATA, TLM_WRITE_COMMAND
+@737 ns /27 (M1.GSGPBidirectionalSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@936 ns /28 (M1): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@936 ns /29 (M1): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@936 ns /29 (M1): Slave accepted the data (DataAccepted).
+
+(M1): data to send: 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 
+@936 ns /30 (M1): Master send Request (RequestValid).
+@936 ns /30 (M1.GSGPBidirectionalSocket): Request
+@936 ns /30 (M1.GSGPBidirectionalSocket): send BEGIN_REQ, TLM_WRITE_COMMAND
+@936 ns /30 (Slave1.GSGPBidirectionalSocket): got BEGIN_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@936 ns /31 (Slave1.GSGPBidirectionalSocket): Send RequestValid
+@936 ns /31 (Slave1): non-blocking notify RequestValid, TLM_WRITE_COMMAND
+@936 ns /31 (Slave1.GSGPBidirectionalSocket): AckRequest (delay=10 ns)
+@936 ns /31 (Slave1.GSGPBidirectionalSocket): send END_REQ, TLM_WRITE_COMMAND
+@936 ns /31 (M1.GSGPBidirectionalSocket): got END_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@936 ns /31 (Slave1): accepted WRITE cmd (in 1 cycle), now waiting for data.
+@946 ns /32 (M1): non-blocking notify RequestAccepted, TLM_WRITE_COMMAND
+@946 ns /33 (M1): got RequestAccepted TLM_WRITE_COMMAND out of local peq
+@946 ns /33 (M1): Slave sent RequestAccepted.
+@946 ns /33 (M1): Master send data (DataValid).
+@946 ns /33 (M1.GSGPBidirectionalSocket): SendData
+@946 ns /33 (M1.GSGPBidirectionalSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@946 ns /33 (Slave1.GSGPBidirectionalSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@946 ns /34 (Slave1.GSGPBidirectionalSocket): Send DataValid
+@946 ns /34 (Slave1): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@946 ns /34 (Slave1): receiving data from master.
+@946 ns /34 (Slave1): data valid: 0x14 (32bit=20)
+@946 ns /34 (Slave1): Got 20 data bytes sent to addr=0x4050 (local addr=0x50):
+            80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 
+@946 ns /34 (Slave1.GSGPBidirectionalSocket): AckData
+@946 ns /34 (Slave1.GSGPBidirectionalSocket): send END_DATA, TLM_WRITE_COMMAND
+@946 ns /34 (M1.GSGPBidirectionalSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@1145 ns /35 (M1): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@1145 ns /36 (M1): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@1145 ns /36 (M1): Slave accepted the data (DataAccepted).
+
+----------------------------------------------------------
+
+@1245 ns /37 (M1): read mode
+
+@1245 ns /38 (M1): Master send Request (RequestValid).
+@1245 ns /38 (M1.GSGPBidirectionalSocket): Request
+@1245 ns /38 (M1.GSGPBidirectionalSocket): send BEGIN_REQ, TLM_READ_COMMAND
+@1245 ns /38 (Slave1.GSGPBidirectionalSocket): got BEGIN_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1245 ns /39 (Slave1.GSGPBidirectionalSocket): Send RequestValid
+@1245 ns /39 (Slave1): non-blocking notify RequestValid, TLM_READ_COMMAND
+@1245 ns /39 (Slave1.GSGPBidirectionalSocket): AckRequest (delay=10 ns)
+@1245 ns /39 (Slave1.GSGPBidirectionalSocket): send END_REQ, TLM_READ_COMMAND
+@1245 ns /39 (M1.GSGPBidirectionalSocket): got END_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1245 ns /39 (Slave1): accepted READ cmd.
+@1245 ns /39 (Slave1): processing (blocking or nb) READ: burstlength=20, local addr=0x0, data=
+         stored data to transmit: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@1245 ns /39 (Slave1): sending data now (delay 3).
+@1245 ns /39 (Slave1.GSGPBidirectionalSocket): Response (delay=30 ns, status=TLM_OK_RESPONSE, bytes_valid=20
+@1245 ns /39 (Slave1.GSGPBidirectionalSocket): send BEGIN_RESP, TLM_READ_COMMAND
+@1245 ns /39 (M1.GSGPBidirectionalSocket): got BEGIN_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1255 ns /40 (M1): non-blocking notify RequestAccepted, TLM_READ_COMMAND
+@1255 ns /41 (M1): got RequestAccepted TLM_READ_COMMAND out of local peq
+@1255 ns /41 (M1): Slave sent RequestAccepted.
+@1255 ns /41 (M1): master waits for data (chunk).
+@1275 ns /42 (M1): non-blocking notify ResponseValid, TLM_READ_COMMAND
+@1275 ns /43 (M1): got ResponseValid TLM_READ_COMMAND out of local peq
+@1275 ns /43 (M1): Slave sent data.
+@1275 ns /43 (M1): data valid: 0x14 (32bit=20)
+@1275 ns /43 (M1.GSGPBidirectionalSocket): AckResponse
+@1275 ns /43 (M1.GSGPBidirectionalSocket): send END_RESP, TLM_READ_COMMAND
+@1275 ns /43 (Slave1.GSGPBidirectionalSocket): got END_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+(M1): data received: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@1275 ns /44 (Slave1.GSGPBidirectionalSocket): Send ResponseAccepted
+@1275 ns /44 (Slave1): non-blocking notify ResponseAccepted, TLM_READ_COMMAND
+@1275 ns /44 (Slave1): master sent ResponseAccepted.
+
+@1275 ns /44 (M1): Master send Request (RequestValid).
+@1275 ns /44 (M1.GSGPBidirectionalSocket): Request
+@1275 ns /44 (M1.GSGPBidirectionalSocket): send BEGIN_REQ, TLM_READ_COMMAND
+@1275 ns /44 (Slave1.GSGPBidirectionalSocket): got BEGIN_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1275 ns /45 (Slave1.GSGPBidirectionalSocket): Send RequestValid
+@1275 ns /45 (Slave1): non-blocking notify RequestValid, TLM_READ_COMMAND
+@1275 ns /45 (Slave1.GSGPBidirectionalSocket): AckRequest (delay=10 ns)
+@1275 ns /45 (Slave1.GSGPBidirectionalSocket): send END_REQ, TLM_READ_COMMAND
+@1275 ns /45 (M1.GSGPBidirectionalSocket): got END_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1275 ns /45 (Slave1): accepted READ cmd.
+@1275 ns /45 (Slave1): processing (blocking or nb) READ: burstlength=20, local addr=0x14, data=
+         stored data to transmit: 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 
+@1275 ns /45 (Slave1): sending data now (delay 3).
+@1275 ns /45 (Slave1.GSGPBidirectionalSocket): Response (delay=30 ns, status=TLM_OK_RESPONSE, bytes_valid=20
+@1275 ns /45 (Slave1.GSGPBidirectionalSocket): send BEGIN_RESP, TLM_READ_COMMAND
+@1275 ns /45 (M1.GSGPBidirectionalSocket): got BEGIN_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1285 ns /46 (M1): non-blocking notify RequestAccepted, TLM_READ_COMMAND
+@1285 ns /47 (M1): got RequestAccepted TLM_READ_COMMAND out of local peq
+@1285 ns /47 (M1): Slave sent RequestAccepted.
+@1285 ns /47 (M1): master waits for data (chunk).
+@1305 ns /48 (M1): non-blocking notify ResponseValid, TLM_READ_COMMAND
+@1305 ns /49 (M1): got ResponseValid TLM_READ_COMMAND out of local peq
+@1305 ns /49 (M1): Slave sent data.
+@1305 ns /49 (M1): data valid: 0x14 (32bit=20)
+@1305 ns /49 (M1.GSGPBidirectionalSocket): AckResponse
+@1305 ns /49 (M1.GSGPBidirectionalSocket): send END_RESP, TLM_READ_COMMAND
+@1305 ns /49 (Slave1.GSGPBidirectionalSocket): got END_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+(M1): data received: 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 
+@1305 ns /50 (Slave1.GSGPBidirectionalSocket): Send ResponseAccepted
+@1305 ns /50 (Slave1): non-blocking notify ResponseAccepted, TLM_READ_COMMAND
+@1305 ns /50 (Slave1): master sent ResponseAccepted.
+
+@1305 ns /50 (M1): Master send Request (RequestValid).
+@1305 ns /50 (M1.GSGPBidirectionalSocket): Request
+@1305 ns /50 (M1.GSGPBidirectionalSocket): send BEGIN_REQ, TLM_READ_COMMAND
+@1305 ns /50 (Slave1.GSGPBidirectionalSocket): got BEGIN_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1305 ns /51 (Slave1.GSGPBidirectionalSocket): Send RequestValid
+@1305 ns /51 (Slave1): non-blocking notify RequestValid, TLM_READ_COMMAND
+@1305 ns /51 (Slave1.GSGPBidirectionalSocket): AckRequest (delay=10 ns)
+@1305 ns /51 (Slave1.GSGPBidirectionalSocket): send END_REQ, TLM_READ_COMMAND
+@1305 ns /51 (M1.GSGPBidirectionalSocket): got END_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1305 ns /51 (Slave1): accepted READ cmd.
+@1305 ns /51 (Slave1): processing (blocking or nb) READ: burstlength=20, local addr=0x28, data=
+         stored data to transmit: 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 
+@1305 ns /51 (Slave1): sending data now (delay 3).
+@1305 ns /51 (Slave1.GSGPBidirectionalSocket): Response (delay=30 ns, status=TLM_OK_RESPONSE, bytes_valid=20
+@1305 ns /51 (Slave1.GSGPBidirectionalSocket): send BEGIN_RESP, TLM_READ_COMMAND
+@1305 ns /51 (M1.GSGPBidirectionalSocket): got BEGIN_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1315 ns /52 (M1): non-blocking notify RequestAccepted, TLM_READ_COMMAND
+@1315 ns /53 (M1): got RequestAccepted TLM_READ_COMMAND out of local peq
+@1315 ns /53 (M1): Slave sent RequestAccepted.
+@1315 ns /53 (M1): master waits for data (chunk).
+@1335 ns /54 (M1): non-blocking notify ResponseValid, TLM_READ_COMMAND
+@1335 ns /55 (M1): got ResponseValid TLM_READ_COMMAND out of local peq
+@1335 ns /55 (M1): Slave sent data.
+@1335 ns /55 (M1): data valid: 0x14 (32bit=20)
+@1335 ns /55 (M1.GSGPBidirectionalSocket): AckResponse
+@1335 ns /55 (M1.GSGPBidirectionalSocket): send END_RESP, TLM_READ_COMMAND
+@1335 ns /55 (Slave1.GSGPBidirectionalSocket): got END_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+(M1): data received: 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 
+@1335 ns /56 (Slave1.GSGPBidirectionalSocket): Send ResponseAccepted
+@1335 ns /56 (Slave1): non-blocking notify ResponseAccepted, TLM_READ_COMMAND
+@1335 ns /56 (Slave1): master sent ResponseAccepted.
+
+@1335 ns /56 (M1): Master send Request (RequestValid).
+@1335 ns /56 (M1.GSGPBidirectionalSocket): Request
+@1335 ns /56 (M1.GSGPBidirectionalSocket): send BEGIN_REQ, TLM_READ_COMMAND
+@1335 ns /56 (Slave1.GSGPBidirectionalSocket): got BEGIN_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1335 ns /57 (Slave1.GSGPBidirectionalSocket): Send RequestValid
+@1335 ns /57 (Slave1): non-blocking notify RequestValid, TLM_READ_COMMAND
+@1335 ns /57 (Slave1.GSGPBidirectionalSocket): AckRequest (delay=10 ns)
+@1335 ns /57 (Slave1.GSGPBidirectionalSocket): send END_REQ, TLM_READ_COMMAND
+@1335 ns /57 (M1.GSGPBidirectionalSocket): got END_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1335 ns /57 (Slave1): accepted READ cmd.
+@1335 ns /57 (Slave1): processing (blocking or nb) READ: burstlength=20, local addr=0x3c, data=
+         stored data to transmit: 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 
+@1335 ns /57 (Slave1): sending data now (delay 3).
+@1335 ns /57 (Slave1.GSGPBidirectionalSocket): Response (delay=30 ns, status=TLM_OK_RESPONSE, bytes_valid=20
+@1335 ns /57 (Slave1.GSGPBidirectionalSocket): send BEGIN_RESP, TLM_READ_COMMAND
+@1335 ns /57 (M1.GSGPBidirectionalSocket): got BEGIN_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1345 ns /58 (M1): non-blocking notify RequestAccepted, TLM_READ_COMMAND
+@1345 ns /59 (M1): got RequestAccepted TLM_READ_COMMAND out of local peq
+@1345 ns /59 (M1): Slave sent RequestAccepted.
+@1345 ns /59 (M1): master waits for data (chunk).
+@1365 ns /60 (M1): non-blocking notify ResponseValid, TLM_READ_COMMAND
+@1365 ns /61 (M1): got ResponseValid TLM_READ_COMMAND out of local peq
+@1365 ns /61 (M1): Slave sent data.
+@1365 ns /61 (M1): data valid: 0x14 (32bit=20)
+@1365 ns /61 (M1.GSGPBidirectionalSocket): AckResponse
+@1365 ns /61 (M1.GSGPBidirectionalSocket): send END_RESP, TLM_READ_COMMAND
+@1365 ns /61 (Slave1.GSGPBidirectionalSocket): got END_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+(M1): data received: 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 
+@1365 ns /62 (Slave1.GSGPBidirectionalSocket): Send ResponseAccepted
+@1365 ns /62 (Slave1): non-blocking notify ResponseAccepted, TLM_READ_COMMAND
+@1365 ns /62 (Slave1): master sent ResponseAccepted.
+
+@1365 ns /62 (M1): Master send Request (RequestValid).
+@1365 ns /62 (M1.GSGPBidirectionalSocket): Request
+@1365 ns /62 (M1.GSGPBidirectionalSocket): send BEGIN_REQ, TLM_READ_COMMAND
+@1365 ns /62 (Slave1.GSGPBidirectionalSocket): got BEGIN_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1365 ns /63 (Slave1.GSGPBidirectionalSocket): Send RequestValid
+@1365 ns /63 (Slave1): non-blocking notify RequestValid, TLM_READ_COMMAND
+@1365 ns /63 (Slave1.GSGPBidirectionalSocket): AckRequest (delay=10 ns)
+@1365 ns /63 (Slave1.GSGPBidirectionalSocket): send END_REQ, TLM_READ_COMMAND
+@1365 ns /63 (M1.GSGPBidirectionalSocket): got END_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1365 ns /63 (Slave1): accepted READ cmd.
+@1365 ns /63 (Slave1): processing (blocking or nb) READ: burstlength=20, local addr=0x50, data=
+         stored data to transmit: 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 
+@1365 ns /63 (Slave1): sending data now (delay 3).
+@1365 ns /63 (Slave1.GSGPBidirectionalSocket): Response (delay=30 ns, status=TLM_OK_RESPONSE, bytes_valid=20
+@1365 ns /63 (Slave1.GSGPBidirectionalSocket): send BEGIN_RESP, TLM_READ_COMMAND
+@1365 ns /63 (M1.GSGPBidirectionalSocket): got BEGIN_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1375 ns /64 (M1): non-blocking notify RequestAccepted, TLM_READ_COMMAND
+@1375 ns /65 (M1): got RequestAccepted TLM_READ_COMMAND out of local peq
+@1375 ns /65 (M1): Slave sent RequestAccepted.
+@1375 ns /65 (M1): master waits for data (chunk).
+@1395 ns /66 (M1): non-blocking notify ResponseValid, TLM_READ_COMMAND
+@1395 ns /67 (M1): got ResponseValid TLM_READ_COMMAND out of local peq
+@1395 ns /67 (M1): Slave sent data.
+@1395 ns /67 (M1): data valid: 0x14 (32bit=20)
+@1395 ns /67 (M1.GSGPBidirectionalSocket): AckResponse
+@1395 ns /67 (M1.GSGPBidirectionalSocket): send END_RESP, TLM_READ_COMMAND
+@1395 ns /67 (Slave1.GSGPBidirectionalSocket): got END_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+(M1): data received: 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 
+@1395 ns /68 (Slave1.GSGPBidirectionalSocket): Send ResponseAccepted
+@1395 ns /68 (Slave1): non-blocking notify ResponseAccepted, TLM_READ_COMMAND
+@1395 ns /68 (Slave1): master sent ResponseAccepted.
+
+Simulation stopped

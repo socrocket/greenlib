@@ -1,0 +1,421 @@
+@0 s /0 (Slave): memory size: 262144
+@0 s /0 (Slave.GSGPSlaveSocket): manual configuration
+@0 s /0 (Master.GSGPMasterSocket): manual configuration
+@0 s /0 (Master.GSGPMasterSocket): automatic configuration SKIPPED because of manual configuration
+@0 s /0 (Slave.GSGPSlaveSocket): automatic configuration SKIPPED because of manual configuration
+@0 s /0 (Slave.GSGPSlaveSocket): I am a socket of type GSGPMasterSocket
+@0 s /0 (Slave.GSGPSlaveSocket): (#0:) I am connected to a GSGPSocket
+@0 s /0 (Master.GSGPMasterSocket): I am a socket of type GSGPSlaveSocket
+@0 s /0 (Master.GSGPMasterSocket): (#0:) I am connected to a GSGPSocket
+
+------ WRITE #1 ----------------------------------------------------
+
+@0 s /1 (Master): write transaction
+(Master): data to send: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@0 s /1 (Master): Master send Request (RequestValid).
+@0 s /1 (Master.GSGPMasterSocket): Request
+@0 s /1 (Master.GSGPMasterSocket): send BEGIN_REQ, TLM_WRITE_COMMAND
+@0 s /1 (Slave.GSGPSlaveSocket): got BEGIN_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@0 s /2 (Slave.GSGPSlaveSocket): Send RequestValid
+@0 s /2 (Slave): non-blocking notify RequestValid, TLM_WRITE_COMMAND
+@0 s /2 (Slave.GSGPSlaveSocket): AckRequest (delay=10 ns)
+@0 s /2 (Slave.GSGPSlaveSocket): send END_REQ, TLM_WRITE_COMMAND
+@0 s /2 (Master.GSGPMasterSocket): got END_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@0 s /2 (Slave): accepted WRITE cmd (in 1 cycle), now waiting for data.
+@10 ns /3 (Master): non-blocking notify RequestAccepted, TLM_WRITE_COMMAND
+@10 ns /4 (Master): got RequestAccepted TLM_WRITE_COMMAND out of local peq
+@10 ns /4 (Master): Slave sent RequestAccepted.
+@10 ns /4 (Master): Master send data (DataValid).
+@10 ns /4 (Master.GSGPMasterSocket): SendData
+@10 ns /4 (Master.GSGPMasterSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@10 ns /4 (Slave.GSGPSlaveSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@10 ns /5 (Slave.GSGPSlaveSocket): Send DataValid
+@10 ns /5 (Slave): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@10 ns /5 (Slave): receiving data from master.
+@10 ns /5 (Slave): data valid: 0x8 (32bit=8)
+@10 ns /5 (Slave): ack data chunk (0x8 bytes valid) (not yet all bytes valid).
+@10 ns /5 (Slave.GSGPSlaveSocket): AckData
+@10 ns /5 (Slave.GSGPSlaveSocket): send END_DATA, TLM_WRITE_COMMAND
+@10 ns /5 (Master.GSGPMasterSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@89 ns /6 (Master): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@89 ns /7 (Master): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@89 ns /7 (Master): Slave accepted the data (DataAccepted).
+@89 ns /7 (Master): Master send data (DataValid).
+@89 ns /7 (Master.GSGPMasterSocket): SendData
+@89 ns /7 (Master.GSGPMasterSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@89 ns /7 (Slave.GSGPSlaveSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@89 ns /8 (Slave.GSGPSlaveSocket): Send DataValid
+@89 ns /8 (Slave): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@89 ns /8 (Slave): receiving data from master.
+@89 ns /8 (Slave): data valid: 0x10 (32bit=16)
+@89 ns /8 (Slave): ack data chunk (0x10 bytes valid) (not yet all bytes valid).
+@89 ns /8 (Slave.GSGPSlaveSocket): AckData
+@89 ns /8 (Slave.GSGPSlaveSocket): send END_DATA, TLM_WRITE_COMMAND
+@89 ns /8 (Master.GSGPMasterSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@248 ns /9 (Master): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@248 ns /10 (Master): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@248 ns /10 (Master): Slave accepted the data (DataAccepted).
+@248 ns /10 (Master): Master send data (DataValid).
+@248 ns /10 (Master.GSGPMasterSocket): SendData
+@248 ns /10 (Master.GSGPMasterSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@248 ns /10 (Slave.GSGPSlaveSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@248 ns /11 (Slave.GSGPSlaveSocket): Send DataValid
+@248 ns /11 (Slave): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@248 ns /11 (Slave): receiving data from master.
+@248 ns /11 (Slave): data valid: 0x14 (32bit=20)
+@248 ns /11 (Slave): Got 20 data bytes sent to addr=0x4000 (local addr=0x0):
+            0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@248 ns /11 (Slave.GSGPSlaveSocket): AckData
+@248 ns /11 (Slave.GSGPSlaveSocket): send END_DATA, TLM_WRITE_COMMAND
+@248 ns /11 (Master.GSGPMasterSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@248 ns /11 (Slave): send DataResp
+@248 ns /11 (Slave.GSGPSlaveSocket): Response (delay=199 ns, status=TLM_OK_RESPONSE, bytes_valid=20
+@248 ns /11 (Slave.GSGPSlaveSocket): send BEGIN_RESP, TLM_WRITE_COMMAND
+@248 ns /11 (Master.GSGPMasterSocket): got BEGIN_RESP, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@447 ns /12 (Master): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@447 ns /12 (Master): non-blocking notify ResponseValid, TLM_WRITE_COMMAND
+@447 ns /13 (Master): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@447 ns /13 (Master): Slave accepted the data (DataAccepted).
+@447 ns /13 (Master): got ResponseValid TLM_WRITE_COMMAND out of local peq
+@447 ns /13 (Master): Slave sent response (ResponseValid).
+@447 ns /13 (Master.GSGPMasterSocket): AckResponse
+@447 ns /13 (Master.GSGPMasterSocket): send END_RESP, TLM_WRITE_COMMAND
+@447 ns /13 (Slave.GSGPSlaveSocket): got END_RESP, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@447 ns /14 (Slave.GSGPSlaveSocket): Send ResponseAccepted
+@447 ns /14 (Slave): non-blocking notify ResponseAccepted, TLM_WRITE_COMMAND
+@447 ns /14 (Slave): master sent ResponseAccepted.
+@447 ns /14 (Slave): bvalid is 20
+
+------ WRITE #2 ----------------------------------------------------
+
+@547 ns /15 (Master): write transaction with response error
+(Master): data to send: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@547 ns /15 (Master): Master send Request (RequestValid).
+@547 ns /15 (Master.GSGPMasterSocket): Request
+@547 ns /15 (Master.GSGPMasterSocket): send BEGIN_REQ, TLM_WRITE_COMMAND
+@547 ns /15 (Slave.GSGPSlaveSocket): got BEGIN_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@547 ns /16 (Slave.GSGPSlaveSocket): Send RequestValid
+@547 ns /16 (Slave): non-blocking notify RequestValid, TLM_WRITE_COMMAND
+@547 ns /16 (Slave.GSGPSlaveSocket): AckRequest (delay=10 ns)
+@547 ns /16 (Slave.GSGPSlaveSocket): send END_REQ, TLM_WRITE_COMMAND
+@547 ns /16 (Master.GSGPMasterSocket): got END_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@547 ns /16 (Slave): accepted WRITE cmd (in 1 cycle), now waiting for data.
+@557 ns /17 (Master): non-blocking notify RequestAccepted, TLM_WRITE_COMMAND
+@557 ns /18 (Master): got RequestAccepted TLM_WRITE_COMMAND out of local peq
+@557 ns /18 (Master): Slave sent RequestAccepted.
+@557 ns /18 (Master): Master send data (DataValid).
+@557 ns /18 (Master.GSGPMasterSocket): SendData
+@557 ns /18 (Master.GSGPMasterSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@557 ns /18 (Slave.GSGPSlaveSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@557 ns /19 (Slave.GSGPSlaveSocket): Send DataValid
+@557 ns /19 (Slave): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@557 ns /19 (Slave): receiving data from master.
+@557 ns /19 (Slave): data valid: 0x8 (32bit=8)
+@557 ns /19 (Slave): ack data chunk (0x8 bytes valid) (not yet all bytes valid).
+@557 ns /19 (Slave.GSGPSlaveSocket): AckData
+@557 ns /19 (Slave.GSGPSlaveSocket): send END_DATA, TLM_WRITE_COMMAND
+@557 ns /19 (Master.GSGPMasterSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@636 ns /20 (Master): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@636 ns /21 (Master): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@636 ns /21 (Master): Slave accepted the data (DataAccepted).
+@636 ns /21 (Master): Master send data (DataValid).
+@636 ns /21 (Master.GSGPMasterSocket): SendData
+@636 ns /21 (Master.GSGPMasterSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@636 ns /21 (Slave.GSGPSlaveSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@636 ns /22 (Slave.GSGPSlaveSocket): Send DataValid
+@636 ns /22 (Slave): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@636 ns /22 (Slave): receiving data from master.
+@636 ns /22 (Slave): data valid: 0x10 (32bit=16)
+@636 ns /22 (Slave): ack data chunk (0x10 bytes valid) (not yet all bytes valid).
+@636 ns /22 (Slave.GSGPSlaveSocket): AckData
+@636 ns /22 (Slave.GSGPSlaveSocket): send END_DATA, TLM_WRITE_COMMAND
+@636 ns /22 (Master.GSGPMasterSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@795 ns /23 (Master): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@795 ns /24 (Master): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@795 ns /24 (Master): Slave accepted the data (DataAccepted).
+@795 ns /24 (Master): Master send data (DataValid).
+@795 ns /24 (Master.GSGPMasterSocket): SendData
+@795 ns /24 (Master.GSGPMasterSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@795 ns /24 (Slave.GSGPSlaveSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@795 ns /25 (Slave.GSGPSlaveSocket): Send DataValid
+@795 ns /25 (Slave): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@795 ns /25 (Slave): receiving data from master.
+@795 ns /25 (Slave): data valid: 0x14 (32bit=20)
+@795 ns /25 (Slave): Got 20 data bytes sent to addr=0x4000 (local addr=0x0):
+            0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@795 ns /25 (Slave.GSGPSlaveSocket): AckData
+@795 ns /25 (Slave.GSGPSlaveSocket): send END_DATA, TLM_WRITE_COMMAND
+@795 ns /25 (Master.GSGPMasterSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@795 ns /25 (Slave): send DataResp
+@795 ns /25 (Slave.GSGPSlaveSocket): Response (delay=199 ns, status=TLM_OK_RESPONSE, bytes_valid=20
+@795 ns /25 (Slave.GSGPSlaveSocket): send BEGIN_RESP, TLM_WRITE_COMMAND
+@795 ns /25 (Master.GSGPMasterSocket): got BEGIN_RESP, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@994 ns /26 (Master): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@994 ns /26 (Master): non-blocking notify ResponseValid, TLM_WRITE_COMMAND
+@994 ns /27 (Master): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@994 ns /27 (Master): Slave accepted the data (DataAccepted).
+@994 ns /27 (Master): got ResponseValid TLM_WRITE_COMMAND out of local peq
+@994 ns /27 (Master): Slave sent response (ResponseValid).
+@994 ns /27 (Master.GSGPMasterSocket): ErrorResponse
+@994 ns /27 (Master.GSGPMasterSocket): send END_RESP, TLM_WRITE_COMMAND
+@994 ns /27 (Slave.GSGPSlaveSocket): got END_RESP, TLM_WRITE_COMMAND, ERROR! from socket #0 (GSGP-Socket)
+@994 ns /28 (Slave.GSGPSlaveSocket): Send ResponseError
+@994 ns /28 (Slave): non-blocking notify ResponseError, TLM_WRITE_COMMAND
+
+Warning: Slave: error: phase ResponseError
+In file: TestSlave.h:313
+In process: Slave.fec_0 @ 994 ns
+
+------ WRITE #3 ----------------------------------------------------
+
+@1094 ns /29 (Master): write transaction
+(Master): data to send: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@1094 ns /29 (Master): Master send Request (RequestValid).
+@1094 ns /29 (Master.GSGPMasterSocket): Request
+@1094 ns /29 (Master.GSGPMasterSocket): send BEGIN_REQ, TLM_WRITE_COMMAND
+@1094 ns /29 (Slave.GSGPSlaveSocket): got BEGIN_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@1094 ns /30 (Slave.GSGPSlaveSocket): Send RequestValid
+@1094 ns /30 (Slave): non-blocking notify RequestValid, TLM_WRITE_COMMAND
+@1094 ns /30 (Slave): decline cmd
+@1094 ns /30 (Slave.GSGPSlaveSocket): ErrorRequest
+@1094 ns /30 (Slave.GSGPSlaveSocket): transaction locally marked as error
+@1094 ns /30 (Slave.GSGPSlaveSocket): send BEGIN_RESP, TLM_WRITE_COMMAND
+@1094 ns /30 (Master.GSGPMasterSocket): got BEGIN_RESP, TLM_WRITE_COMMAND, ERROR! from socket #0 (GSGP-Socket)
+@1094 ns /30 (Slave.GSGPSlaveSocket): transaction has been completed by master (RequestError phase)
+@1104 ns /31 (Master): non-blocking notify RequestError, TLM_WRITE_COMMAND
+@1104 ns /32 (Master): got RequestError TLM_WRITE_COMMAND out of local peq
+
+Warning: Master: Oh no, request error.
+In file: TestMaster.h:261
+In process: Master.main_action @ 1104 ns
+
+------ WRITE #4 ----------------------------------------------------
+
+@1204 ns /33 (Master): write transaction
+(Master): data to send: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@1204 ns /33 (Master): Master send Request (RequestValid).
+@1204 ns /33 (Master.GSGPMasterSocket): Request
+@1204 ns /33 (Master.GSGPMasterSocket): send BEGIN_REQ, TLM_WRITE_COMMAND
+@1204 ns /33 (Slave.GSGPSlaveSocket): got BEGIN_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@1204 ns /34 (Slave.GSGPSlaveSocket): Send RequestValid
+@1204 ns /34 (Slave): non-blocking notify RequestValid, TLM_WRITE_COMMAND
+@1204 ns /34 (Slave.GSGPSlaveSocket): AckRequest (delay=10 ns)
+@1204 ns /34 (Slave.GSGPSlaveSocket): send END_REQ, TLM_WRITE_COMMAND
+@1204 ns /34 (Master.GSGPMasterSocket): got END_REQ, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@1204 ns /34 (Slave): accepted WRITE cmd (in 1 cycle), now waiting for data.
+@1214 ns /35 (Master): non-blocking notify RequestAccepted, TLM_WRITE_COMMAND
+@1214 ns /36 (Master): got RequestAccepted TLM_WRITE_COMMAND out of local peq
+@1214 ns /36 (Master): Slave sent RequestAccepted.
+@1214 ns /36 (Master): Master send data (DataValid).
+@1214 ns /36 (Master.GSGPMasterSocket): SendData
+@1214 ns /36 (Master.GSGPMasterSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@1214 ns /36 (Slave.GSGPSlaveSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@1214 ns /37 (Slave.GSGPSlaveSocket): Send DataValid
+@1214 ns /37 (Slave): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@1214 ns /37 (Slave): receiving data from master.
+@1214 ns /37 (Slave): data valid: 0x8 (32bit=8)
+@1214 ns /37 (Slave): ack data chunk (0x8 bytes valid) (not yet all bytes valid).
+@1214 ns /37 (Slave.GSGPSlaveSocket): AckData
+@1214 ns /37 (Slave.GSGPSlaveSocket): send END_DATA, TLM_WRITE_COMMAND
+@1214 ns /37 (Master.GSGPMasterSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@1293 ns /38 (Master): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@1293 ns /39 (Master): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@1293 ns /39 (Master): Slave accepted the data (DataAccepted).
+@1293 ns /39 (Master): Master send data (DataValid).
+@1293 ns /39 (Master.GSGPMasterSocket): SendData
+@1293 ns /39 (Master.GSGPMasterSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@1293 ns /39 (Slave.GSGPSlaveSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@1293 ns /40 (Slave.GSGPSlaveSocket): Send DataValid
+@1293 ns /40 (Slave): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@1293 ns /40 (Slave): receiving data from master.
+@1293 ns /40 (Slave): data valid: 0x10 (32bit=16)
+@1293 ns /40 (Slave): ack data chunk (0x10 bytes valid) (not yet all bytes valid).
+@1293 ns /40 (Slave.GSGPSlaveSocket): AckData
+@1293 ns /40 (Slave.GSGPSlaveSocket): send END_DATA, TLM_WRITE_COMMAND
+@1293 ns /40 (Master.GSGPMasterSocket): got END_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@1452 ns /41 (Master): non-blocking notify DataAccepted, TLM_WRITE_COMMAND
+@1452 ns /42 (Master): got DataAccepted TLM_WRITE_COMMAND out of local peq
+@1452 ns /42 (Master): Slave accepted the data (DataAccepted).
+@1452 ns /42 (Master): Master send data (DataValid).
+@1452 ns /42 (Master.GSGPMasterSocket): SendData
+@1452 ns /42 (Master.GSGPMasterSocket): send BEGIN_DATA, TLM_WRITE_COMMAND
+@1452 ns /42 (Slave.GSGPSlaveSocket): got BEGIN_DATA, TLM_WRITE_COMMAND, no error from socket #0 (GSGP-Socket)
+@1452 ns /43 (Slave.GSGPSlaveSocket): Send DataValid
+@1452 ns /43 (Slave): non-blocking notify DataValid, TLM_WRITE_COMMAND
+@1452 ns /43 (Slave): receiving data from master.
+@1452 ns /43 (Slave): data valid: 0x14 (32bit=20)
+@1452 ns /43 (Slave): Got 20 data bytes sent to addr=0x4000 (local addr=0x0):
+            0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@1452 ns /43 (Slave): send DataError
+@1452 ns /43 (Slave.GSGPSlaveSocket): ErrorData
+@1452 ns /43 (Slave.GSGPSlaveSocket): transaction locally marked as error
+@1452 ns /43 (Slave.GSGPSlaveSocket): send END_DATA, TLM_WRITE_COMMAND
+@1452 ns /43 (Master.GSGPMasterSocket): got END_DATA, TLM_WRITE_COMMAND, ERROR! from socket #0 (GSGP-Socket)
+@1651 ns /44 (Master): non-blocking notify DataError, TLM_WRITE_COMMAND
+@1651 ns /45 (Master): got DataError TLM_WRITE_COMMAND out of local peq
+
+Warning: Master: Oh no, data error.
+In file: TestMaster.h:293
+In process: Master.main_action @ 1651 ns
+
+----------------------------------------------------------
+
+
+------  READ #1 ----------------------------------------------------
+
+@1751 ns /46 (Master): read transaction
+@1751 ns /46 (Master): Master send Request (RequestValid).
+@1751 ns /46 (Master.GSGPMasterSocket): Request
+@1751 ns /46 (Master.GSGPMasterSocket): send BEGIN_REQ, TLM_READ_COMMAND
+@1751 ns /46 (Slave.GSGPSlaveSocket): got BEGIN_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1751 ns /47 (Slave.GSGPSlaveSocket): Send RequestValid
+@1751 ns /47 (Slave): non-blocking notify RequestValid, TLM_READ_COMMAND
+@1751 ns /47 (Slave.GSGPSlaveSocket): AckRequest (delay=10 ns)
+@1751 ns /47 (Slave.GSGPSlaveSocket): send END_REQ, TLM_READ_COMMAND
+@1751 ns /47 (Master.GSGPMasterSocket): got END_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1751 ns /47 (Slave): accepted READ cmd.
+@1751 ns /47 (Slave): processing (blocking or nb) READ: burstlength=20, local addr=0x0, data=
+         stored data to transmit: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@1751 ns /47 (Slave): sending data chunk now (delay 3).
+@1751 ns /47 (Slave): bvalid is 8
+@1751 ns /47 (Slave.GSGPSlaveSocket): Response (delay=30 ns, status=TLM_OK_RESPONSE, bytes_valid=8
+@1751 ns /47 (Slave.GSGPSlaveSocket): send BEGIN_RESP, TLM_READ_COMMAND
+@1751 ns /47 (Master.GSGPMasterSocket): got BEGIN_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1761 ns /48 (Master): non-blocking notify RequestAccepted, TLM_READ_COMMAND
+@1761 ns /49 (Master): got RequestAccepted TLM_READ_COMMAND out of local peq
+@1761 ns /49 (Master): Slave sent RequestAccepted.
+@1761 ns /49 (Master): master waits for data (chunk).
+@1781 ns /50 (Master): non-blocking notify ResponseValid, TLM_READ_COMMAND
+@1781 ns /51 (Master): got ResponseValid TLM_READ_COMMAND out of local peq
+@1781 ns /51 (Master): Slave sent data.
+@1781 ns /51 (Master): data valid: 0x8 (32bit=8)
+@1781 ns /51 (Master.GSGPMasterSocket): AckResponse
+@1781 ns /51 (Master.GSGPMasterSocket): send END_RESP, TLM_READ_COMMAND
+@1781 ns /51 (Slave.GSGPSlaveSocket): got END_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1781 ns /51 (Master): master waits for data (chunk).
+@1781 ns /52 (Slave.GSGPSlaveSocket): Send ResponseAccepted
+@1781 ns /52 (Slave): non-blocking notify ResponseAccepted, TLM_READ_COMMAND
+@1781 ns /52 (Slave): master sent ResponseAccepted.
+@1781 ns /52 (Slave): bvalid is 8
+@1781 ns /52 (Slave): sending data chunk now.
+@1781 ns /52 (Slave.GSGPSlaveSocket): Response (delay=10 ns, status=TLM_OK_RESPONSE, bytes_valid=16
+@1781 ns /52 (Slave.GSGPSlaveSocket): send BEGIN_RESP, TLM_READ_COMMAND
+@1781 ns /52 (Master.GSGPMasterSocket): got BEGIN_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1791 ns /53 (Master): non-blocking notify ResponseValid, TLM_READ_COMMAND
+@1791 ns /54 (Master): got ResponseValid TLM_READ_COMMAND out of local peq
+@1791 ns /54 (Master): Slave sent data.
+@1791 ns /54 (Master): data valid: 0x10 (32bit=16)
+@1791 ns /54 (Master.GSGPMasterSocket): AckResponse
+@1791 ns /54 (Master.GSGPMasterSocket): send END_RESP, TLM_READ_COMMAND
+@1791 ns /54 (Slave.GSGPSlaveSocket): got END_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1791 ns /54 (Master): master waits for data (chunk).
+@1791 ns /55 (Slave.GSGPSlaveSocket): Send ResponseAccepted
+@1791 ns /55 (Slave): non-blocking notify ResponseAccepted, TLM_READ_COMMAND
+@1791 ns /55 (Slave): master sent ResponseAccepted.
+@1791 ns /55 (Slave): bvalid is 16
+@1791 ns /55 (Slave): sending data chunk now.
+@1791 ns /55 (Slave.GSGPSlaveSocket): Response (delay=10 ns, status=TLM_OK_RESPONSE, bytes_valid=20
+@1791 ns /55 (Slave.GSGPSlaveSocket): send BEGIN_RESP, TLM_READ_COMMAND
+@1791 ns /55 (Master.GSGPMasterSocket): got BEGIN_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1801 ns /56 (Master): non-blocking notify ResponseValid, TLM_READ_COMMAND
+@1801 ns /57 (Master): got ResponseValid TLM_READ_COMMAND out of local peq
+@1801 ns /57 (Master): Slave sent data.
+@1801 ns /57 (Master): data valid: 0x14 (32bit=20)
+@1801 ns /57 (Master.GSGPMasterSocket): AckResponse
+@1801 ns /57 (Master.GSGPMasterSocket): send END_RESP, TLM_READ_COMMAND
+@1801 ns /57 (Slave.GSGPSlaveSocket): got END_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+(Master): data received: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@1801 ns /58 (Slave.GSGPSlaveSocket): Send ResponseAccepted
+@1801 ns /58 (Slave): non-blocking notify ResponseAccepted, TLM_READ_COMMAND
+@1801 ns /58 (Slave): master sent ResponseAccepted.
+@1801 ns /58 (Slave): bvalid is 20
+
+------  READ #2 ----------------------------------------------------
+
+@1901 ns /59 (Master): read transaction with response error
+@1901 ns /59 (Master): Master send Request (RequestValid).
+@1901 ns /59 (Master.GSGPMasterSocket): Request
+@1901 ns /59 (Master.GSGPMasterSocket): send BEGIN_REQ, TLM_READ_COMMAND
+@1901 ns /59 (Slave.GSGPSlaveSocket): got BEGIN_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1901 ns /60 (Slave.GSGPSlaveSocket): Send RequestValid
+@1901 ns /60 (Slave): non-blocking notify RequestValid, TLM_READ_COMMAND
+@1901 ns /60 (Slave.GSGPSlaveSocket): AckRequest (delay=10 ns)
+@1901 ns /60 (Slave.GSGPSlaveSocket): send END_REQ, TLM_READ_COMMAND
+@1901 ns /60 (Master.GSGPMasterSocket): got END_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1901 ns /60 (Slave): accepted READ cmd.
+@1901 ns /60 (Slave): processing (blocking or nb) READ: burstlength=20, local addr=0x0, data=
+         stored data to transmit: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@1901 ns /60 (Slave): sending data chunk now (delay 3).
+@1901 ns /60 (Slave): bvalid is 8
+@1901 ns /60 (Slave.GSGPSlaveSocket): Response (delay=30 ns, status=TLM_OK_RESPONSE, bytes_valid=8
+@1901 ns /60 (Slave.GSGPSlaveSocket): send BEGIN_RESP, TLM_READ_COMMAND
+@1901 ns /60 (Master.GSGPMasterSocket): got BEGIN_RESP, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@1911 ns /61 (Master): non-blocking notify RequestAccepted, TLM_READ_COMMAND
+@1911 ns /62 (Master): got RequestAccepted TLM_READ_COMMAND out of local peq
+@1911 ns /62 (Master): Slave sent RequestAccepted.
+@1911 ns /62 (Master): master waits for data (chunk).
+@1931 ns /63 (Master): non-blocking notify ResponseValid, TLM_READ_COMMAND
+@1931 ns /64 (Master): got ResponseValid TLM_READ_COMMAND out of local peq
+@1931 ns /64 (Master): Slave sent data.
+@1931 ns /64 (Master): data valid: 0x8 (32bit=8)
+@1931 ns /64 (Master.GSGPMasterSocket): ErrorResponse
+@1931 ns /64 (Master.GSGPMasterSocket): send END_RESP, TLM_READ_COMMAND
+@1931 ns /64 (Slave.GSGPSlaveSocket): got END_RESP, TLM_READ_COMMAND, ERROR! from socket #0 (GSGP-Socket)
+(Master): data received: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 
+@1931 ns /65 (Slave.GSGPSlaveSocket): Send ResponseError
+@1931 ns /65 (Slave): non-blocking notify ResponseError, TLM_READ_COMMAND
+
+Warning: Slave: error: phase ResponseError
+In file: TestSlave.h:313
+In process: Slave.fec_0 @ 1931 ns
+
+------  READ #3 ----------------------------------------------------
+
+@2031 ns /66 (Master): read transaction
+@2031 ns /66 (Master): Master send Request (RequestValid).
+@2031 ns /66 (Master.GSGPMasterSocket): Request
+@2031 ns /66 (Master.GSGPMasterSocket): send BEGIN_REQ, TLM_READ_COMMAND
+@2031 ns /66 (Slave.GSGPSlaveSocket): got BEGIN_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@2031 ns /67 (Slave.GSGPSlaveSocket): Send RequestValid
+@2031 ns /67 (Slave): non-blocking notify RequestValid, TLM_READ_COMMAND
+@2031 ns /67 (Slave): decline cmd
+@2031 ns /67 (Slave.GSGPSlaveSocket): ErrorRequest
+@2031 ns /67 (Slave.GSGPSlaveSocket): transaction locally marked as error
+@2031 ns /67 (Slave.GSGPSlaveSocket): send BEGIN_RESP, TLM_READ_COMMAND
+@2031 ns /67 (Master.GSGPMasterSocket): got BEGIN_RESP, TLM_READ_COMMAND, ERROR! from socket #0 (GSGP-Socket)
+@2031 ns /67 (Slave.GSGPSlaveSocket): transaction has been completed by master (RequestError phase)
+@2041 ns /68 (Master): non-blocking notify RequestError, TLM_READ_COMMAND
+@2041 ns /69 (Master): got RequestError TLM_READ_COMMAND out of local peq
+
+Warning: Master: Oh no, request error.
+In file: TestMaster.h:360
+In process: Master.main_action @ 2041 ns
+
+------  READ #4 ----------------------------------------------------
+
+@2141 ns /70 (Master): read transaction
+@2141 ns /70 (Master): Master send Request (RequestValid).
+@2141 ns /70 (Master.GSGPMasterSocket): Request
+@2141 ns /70 (Master.GSGPMasterSocket): send BEGIN_REQ, TLM_READ_COMMAND
+@2141 ns /70 (Slave.GSGPSlaveSocket): got BEGIN_REQ, TLM_READ_COMMAND, no error from socket #0 (GSGP-Socket)
+@2141 ns /71 (Slave.GSGPSlaveSocket): Send RequestValid
+@2141 ns /71 (Slave): non-blocking notify RequestValid, TLM_READ_COMMAND
+@2141 ns /71 (Slave): decline cmd
+@2141 ns /71 (Slave.GSGPSlaveSocket): ErrorRequest
+@2141 ns /71 (Slave.GSGPSlaveSocket): transaction locally marked as error
+@2141 ns /71 (Slave.GSGPSlaveSocket): send BEGIN_RESP, TLM_READ_COMMAND
+@2141 ns /71 (Master.GSGPMasterSocket): got BEGIN_RESP, TLM_READ_COMMAND, ERROR! from socket #0 (GSGP-Socket)
+@2141 ns /71 (Slave.GSGPSlaveSocket): transaction has been completed by master (RequestError phase)
+@2151 ns /72 (Master): non-blocking notify RequestError, TLM_READ_COMMAND
+@2151 ns /73 (Master): got RequestError TLM_READ_COMMAND out of local peq
+
+Warning: Master: Oh no, request error.
+In file: TestMaster.h:360
+In process: Master.main_action @ 2151 ns
+
+----------------------------------------------------------
+
+
+Master !!!!!!!!!!!!!!!! ALL DONE !!!!!!!!!!!!!!!!!!!!!
+
+Simulation stopped
