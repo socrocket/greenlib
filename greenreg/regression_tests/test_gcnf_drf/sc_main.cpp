@@ -48,7 +48,7 @@
 #include "greencontrol/gcnf/apis/configFileApi/configfile_tool.h"  // API Tool to read configuration file(s)
 #include "greencontrol/gcnf/apis/utils/show_database.h"
 
-#include "gr_gsgpsocket.h"
+//#include "gr_gsgpsocket.h"
 
 //# include "gsgpsocket/transport/GSGPSlaveSocket.h"
 
@@ -235,7 +235,7 @@ int sc_main(int argc, char** argv) {
   /// GreenControl and GreenConfig
   gs::ctr::GC_Core core("ControlCore");
   gs::cnf::ConfigDatabase cnfdatabase("ConfigDatabase");
-  gs::cnf::ConfigPlugin configPlugin("ConfigPlugin", &cnfdatabase);
+  gs::cnf::ConfigPlugin configPlugin(&cnfdatabase);
   
   gs::cnf::cnf_api *mApi = gs::cnf::GCnf_Api::getApiInstance(NULL);
   MyMod mod("MyMod");

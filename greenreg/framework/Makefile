@@ -11,6 +11,6 @@ all: myprog
 
 myprog: $(OBJFILES)
 
-%.o: %.cpp
-	$(CC) $(FLAGS) $(INCDIRS) -o $@ $<
+#%.o: %.cpp
+#	$(CC) $(FLAGS) $(INCDIRS) -o $@ $<
 

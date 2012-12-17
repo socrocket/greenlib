@@ -14,8 +14,8 @@ all: myprog
 myprog: $(OBJFILES)
 	mv *.o $(MYOBJDIR)
 
-%.o: %.cpp
-	$(CC) $(FLAGS) $(INCDIRS) -o $@ $<
+##%.o: %.cpp
+##	$(CC) $(FLAGS) $(INCDIRS) -o $@ $<
 
 clean:
 	rm -f  $(MYOBJDIR)/*.o libgreenreg.a

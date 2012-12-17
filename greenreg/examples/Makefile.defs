@@ -1,126 +1,57 @@
-# Directory where this Makefile is located
-TOP := $(dir $(lastword $(MAKEFILE_LIST)))
+# Configuration of dependencies
 
-# Try to find dependencies automatically
--include $(TOP)/../../Makefile.greensocs
+DEPENDENCIES = GREENSOCS SYSTEMC TLM BOOST GREENREG
 
+GREENSOCS_CPPFLAGS = -D_REENTRANT
+GREENSOCS_INCLUDEDIR = /opt/greensocs/gs_tarball/bartho-test-install/include
+GREENSOCS_LIBRARYDIR = /opt/greensocs/gs_tarball/bartho-test-install/lib
+GREENSOCS_LIBRARIES = pthread
 
-## target architecture (if not defined in Makefile)
-ifndef TARGET_ARCH
- TARGET_ARCH=$(subst $(SYSTEMC)/lib-,,$(wildcard $(SYSTEMC)/lib-*))
-endif
+SYSTEMC_CPPFLAGS = -DUSE_STATIC_CASTS -DSC_INCLUDE_DYNAMIC_PROCESSES
+SYSTEMC_INCLUDEDIR = /home/bartho/greensocs/packages/gsdevelopment/tools/new-systemc-2.3-final/include
+SYSTEMC_LIBRARYDIR = /home/bartho/greensocs/packages/gsdevelopment/tools/new-systemc-2.3-final/lib-linux64
+SYSTEMC_LIBRARIES = systemc
 
-## Your SystemC installation path
-ifdef SYSTEMC21V1
- SYSTEMC = /cad/tools/systemc2.1
- SCCFLAG = -DSYSTEMC21V1
-else
- SYSTEMC ?= /cad/tools/systemc
-endif
+TLM_INCLUDEDIR = TLM_INCLUDE_DIRS-NOTFOUND
+TLM_LIBRARYDIR = 
+TLM_LIBRARIES = 
 
-## Your compiler
-CC ?= g++
+BOOST_INCLUDEDIR = /opt/greensocs/qemu-systemc-demo-2012-01-02/dependencies/boost/include/boost-1_34_1
+BOOST_LIBRARYDIR = 
+BOOST_LIBRARIES = 
 
-## set some directories 
-#GREENBUS_DIR ?= /Users/schroede/mydev/greensocs_greenbus
-GREENBUS_DIR ?= / # dummy
-TLM2_DIR ?= /Users/schroede/mydev/TLM-2008-06-09/include/tlm
-DUST_DIR ?= /home/klingauf/mydev/sc_dust/trunk/src/systemc
-GREENSOCKET_DIR ?= /Users/schroede/mydev/greensocs_greensocket
-GSGPSOCKET_DIR ?= /Users/schroede/mydev/greensocs_gsgpsocket
-GS_CONTROL_DIR ?= /Users/schroede/mydev/greensocs_greencontrol
-PCIESOCKET_DIR ?= /Users/schroede/mydev/greensocs_pcie
-GREENPARTS_DIR ?= /Users/schroede/mydev/greensocs_greenparts/greenparts
-GREENREG_DIR ?= /Users/schroede/mydev/greensocs_greenreg/greenreg
-GREENREG_LIB_DIR ?= /Users/schroede/mydev/greensocs_greenreg/greenreg
-HPC_DIR ?= /Users/schroede/mydev/hpc
-BOOST ?= /cad/tools/boost
-LUA_DIR ?= /cad/tools/lua5.1
-GCOV_DIR ?= /Developer/SDKs/MacOSX10.5.sdk/usr/lib/gcc/i686-apple-darwin9/4.0.1
+GREENREG_INCLUDEDIR = /opt/greensocs/gs_tarball/greenlib/greenreg
+GREENREG_LIBRARYDIR = /opt/greensocs/gs_tarball/greenlib/greenreg
+GREENREG_LIBRARIES = greenreg
 
 
-GREENREG_INCDIRS  = \
-	    -I $(GREENREG_DIR)  \
-	    -I $(GREENREG_DIR)/framework/core/analysis \
-	    -I $(GREENREG_DIR)/framework/core \
-	    -I $(GREENREG_DIR)/framework/devices   \
-	    -I $(GREENREG_DIR)/framework/registers  \
-	    -I $(GREENREG_DIR)/sysc_ext/kernel  \
-	    -I $(GREENREG_DIR)/sysc_ext/utils  \
-	    -I $(GREENREG_DIR)/sysc_ext/communication  \
-	    -I $(GREENREG_DIR)/internal/device   \
-	    -I $(GREENREG_DIR)/internal/registers/register   \
-	    -I $(GREENREG_DIR)/internal/registers/bit   \
-	    -I $(GREENREG_DIR)/internal/registers/register_data   \
-	    -I $(GREENREG_DIR)/internal/registers/bit_range   \
-	    -I $(GREENREG_DIR)/internal/registers   \
-	    -I $(GREENREG_DIR)/greenreg_socket   \
-	    -I $(GREENREG_DIR)/utils   \
-	    -I $(GREENREG_DIR)/utils/stl_ext   \
-	    -I $(GREENREG_DIR)/utils/patterns   \
-	    -I $(GREENREG_DIR)/utils/storage   \
-	    -I $(GREENREG_DIR)/gs
+################################
+# GENERIC BELLOW HERE
 
-ifdef SYSTEMC21V1
- SCV_INCLUDE = /cad/tools/systemc2.1-scv/include
- SCV_LIB = /cad/tools/systemc2.1-scv/lib-$(TARGET_ARCH)
-else
- SCV_INCLUDE ?= /cad/tools/systemc-scv/include
- SCV_LIB ?= /cad/tools/systemc-scv/lib-$(TARGET_ARCH)
-endif
+# SYSTEMC_CPPFLAGS += $(addprefix -I,${SYSTEMC_INCLUDEDIR})
+# SYSTEMC_LDFLAGS = $(addprefix -L,${SYSTEMC_LIBRARYDIR})
+# SYSTEMC_LDLIBS = $(addprefix -l,${SYSTEMC_LIBRARIES})
 
-## Static or dynamic cast class hierarchy
-#ifdef STATIC
-## Note: dynamic cast variant of the generic protocol is deprecated. So always use static casts.
-STATIC_DEFINE=-DUSE_STATIC_CASTS
-#endif
+define BUILD_COMPILER_FLAGS
+   $(1)_CPPFLAGS += $$(addprefix -I,$${$(1)_INCLUDEDIR})
+#   $$(warning $(1)_CPPFLAGS = $$($(1)_CPPFLAGS))
+   $(1)_LDFLAGS += $$(addprefix -L,$${$(1)_LIBRARYDIR})
+#   $$(warning $(1)_LDFLAGS = $$($(1)_LDFLAGS))
+   $(1)_LDLIBS += $$(addprefix -l,$${$(1)_LIBRARIES})
+#   $$(warning $(1)_LDLIBS = $$($(1)_LDLIBS))
+endef
 
-## Generic Protocol Extensions
-ifdef EXTENSION
-EXT_TR_DEFINE=-DEXTENDED_TRANSACTION=$(EXTENSION)
-endif
-
-DEFFLAGS = $(EXT_TR_DEFINE) $(STATIC_DEFINE) -DSC_INCLUDE_DYNAMIC_PROCESSES
+$(foreach dep,$(DEPENDENCIES),$(eval $(call BUILD_COMPILER_FLAGS,$(dep))))
 
 
-## muldefs should be avoided in the source code, not by the linker
-##LDFLAGS = -Wl,-zmuldefs
-LDFLAGS =
+################################
+# Core of the Makefile
 
-INCDIR = -I$(GS_CONTROL_DIR) -I$(BOOST) -I$(GREENBUS_DIR) -I$(GREENSOCKET_DIR) -I$(GSGPSOCKET_DIR) \
-         -I$(TLM2_DIR) -I$(DUST_DIR) -I$(HPC_DIR) -I$(PCIESOCKET_DIR) -I$(GREENPARTS_DIR) -I$(SCV_INCLUDE) \
-         -I. -I.. -I$(SYSTEMC)/include -I$(LUA_DIR)/include $(GREENREG_INCDIRS)
-LIBDIR = -L$(DUST_DIR) -L$(SCV_LIB) -L. -L.. -L$(SYSTEMC)/lib-$(TARGET_ARCH) -L$(LUA_DIR)/lib-$(TARGET_ARCH) -L$(GREENREG_LIB_DIR)
+CPPFLAGS += $(foreach dep,$(DEPENDENCIES),${${dep}_CPPFLAGS})
+LDFLAGS += $(foreach dep,$(DEPENDENCIES),${${dep}_LDFLAGS})
+LDLIBS += $(foreach dep,$(DEPENDENCIES),${${dep}_LDLIBS})
 
-## use this line if you want to link against dust
-#LIBS   =  -lscv -ldust -lsystemc -lm $(EXTRA_LIBS)
+${MODULE}: $(OBJS)
 
-## use this line if you dont need dust
-## here may be needed to write -lscv at the beginning - which also may cause problems!
-LIBS   =  -lm $(EXTRA_LIBS) -lgreenreg -lsystemc
-
-
-EXE    = $(MODULE).x
-
-.SUFFIXES: .cc .cpp .o .x
-
-$(EXE): $(OBJS) $(SYSTEMC)/lib-$(TARGET_ARCH)/libsystemc.a 
-	$(CC) $(CFLAGS) $(SCCFLAG) $(DEFFLAGS) $(LDFLAGS) $(INCDIR) $(LIBDIR) -o $@ $(OBJS) $(LIBS) 2>&1 | c++filt
-#	strip $(EXE)
-
-.cpp.o:
-	$(CC) $(CFLAGS) $(SCCFLAG) $(DEFFLAGS) $(INCDIR) -c $<
-
-.cc.o:
-	$(CC) $(CFLAGS) $(SCCFLAG) $(DEFFLAGS) $(INCDIR) -c $<
-
-clean::
-	rm -f $(OBJS) *~ $(EXE) core
-
-ultraclean: clean
-	rm -f Makefile.deps
-
-Makefile.deps:
-#	$(CC) $(CFLAGS) $(DEFFLAGS) $(INCDIR) -M $(SRCS) >> Makefile.deps
-
-#include Makefile.deps
+clean:
+	rm -f $(OBJS) ${MODULE}

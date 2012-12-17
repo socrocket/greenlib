@@ -52,7 +52,7 @@
 
 #include "greencontrol/config.h"
 #include "greencontrol/gcnf/apis/configFileApi/configfile_tool.h"  // API Tool to read configuration file(s)
-#include "gr_gsgpsocket.h"
+//#include "gr_gsgpsocket.h"
 
 class newMod : public gs::reg::gr_device {
 public:
@@ -167,7 +167,7 @@ int sc_main(int argc, char** argv) {
   /// GreenControl and GreenConfig
   gs::ctr::GC_Core core("ControlCore");
   gs::cnf::ConfigDatabase cnfdatabase("ConfigDatabase");
-  gs::cnf::ConfigPlugin configPlugin("ConfigPlugin", &cnfdatabase);
+  gs::cnf::ConfigPlugin configPlugin(&cnfdatabase);
 
   newMod nmod("newMod", opt);
 

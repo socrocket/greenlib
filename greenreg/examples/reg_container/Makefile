@@ -22,4 +22,4 @@ OBJS = $(SRCS:.cpp=.o)
 include ../Makefile.gspm
 include ../Makefile.defs
 
-all: $(EXE)
+#all: $(EXE)
