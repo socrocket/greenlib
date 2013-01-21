@@ -32,6 +32,7 @@
 #include "config_globals.h"
 #include "utils.h"
 #include "param_db_if.h"
+#include "greencontrol/core/gc_transaction.h"
 
 
 namespace gs {

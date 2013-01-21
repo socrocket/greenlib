@@ -140,7 +140,9 @@ namespace cnf {
       }
 
       // traverse the environment table setting global variables as parameters
-      lua_getfield(L, LUA_GLOBALSINDEX, "_G");
+//      lua_getfield(L, LUA_GLOBALSINDEX, "_G");
+      // getglobal should work for both lua 5.1 and 5.2
+      lua_getglobal(L, "_G");
       error = setParamsFromLuaTable(L, lua_gettop(L));
       if (error < 0) {
         fprintf(stderr, "Error loading lua config file: %s\n", config_file);
