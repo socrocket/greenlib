@@ -392,7 +392,7 @@ public:
     }
     // if new observer entry
     else {
-      m_CallbackBehaviorMap.insert(  std::make_pair<void*, CallbackBehavior::CallbackBehavior>(observer, behav) );
+      m_CallbackBehaviorMap.insert(std::make_pair(observer, behav));
       //GS_PARAM_ARRAY_DUMP("set_callback_behavior("<<(unsigned int)behav<<", "<<(unsigned long int) observer<<"): inserted new behavior entry!");
       GS_PARAM_ARRAY_DUMP("set_callback_behavior("<<(unsigned int)behav<<", <omitted ptr addr for diff>): inserted new behavior entry!");
     }
