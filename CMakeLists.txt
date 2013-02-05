@@ -12,6 +12,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package( SystemC )
 if(SystemC_FOUND)
     include_directories(${SystemC_INCLUDE_DIRS})
+    link_directories(${SystemC_LIBRARIES})
 endif()
 
 

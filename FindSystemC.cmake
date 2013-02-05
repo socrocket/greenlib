@@ -35,12 +35,24 @@ message(STATUS "Searching for SystemC")
 # The HINTS option should only be used for values computed from the system.
 SET(_SYSTEMC_HINTS
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\SystemC\\2.2;SystemcHome]/include"
-  $ENV{SYSTEMC_HOME}/include
+  $ENV{SYSTEMC_PREFIX}/include
+  $ENV{SYSTEMC_PREFIX}/lib
+  $ENV{SYSTEMC_PREFIX}/lib-linux
+  $ENV{SYSTEMC_PREFIX}/lib-linux64
+  $ENV{SYSTEMC_PREFIX}/lib-macos
   )
 # Hard-coded guesses should still go in PATHS. This ensures that the user
 # environment can always override hard guesses.
 SET(_SYSTEMC_PATHS
   /usr/include/systemc
+  /usr/lib
+  /usr/lib-linux
+  /usr/lib-linux64
+  /usr/lib-macos
+  /usr/local/lib
+  /usr/local/lib-linux
+  /usr/local/lib-linux64
+  /usr/local/lib-macos
   )
 FIND_FILE(_SYSTEMC_VERSION_FILE
   NAMES sc_ver.h
@@ -74,9 +86,6 @@ set(SystemC_VERSION ${SystemC_MAJOR}.${SystemC_MINOR})
 
 message(STATUS "SystemC_VERSION = ${SystemC_VERSION}")
 
-set(SystemC_FOUND TRUE)
-
-
 FIND_PATH(SystemC_INCLUDE_DIRS
   NAMES systemc.h
   HINTS ${_SYSTEMC_HINTS}
@@ -86,11 +95,11 @@ FIND_PATH(SystemC_INCLUDE_DIRS
 FIND_PATH(SystemC_LIBRARY_DIRS
   NAMES libsystemc.a
   HINTS ${_SYSTEMC_HINTS}
-        $ENV{SYSTEMC_HOME}/lib
-        $ENV{SYSTEMC_HOME}/lib-linux
-        $ENV{SYSTEMC_HOME}/lib-linux64
-        $ENV{SYSTEMC_HOME}/lib-macos
   PATHS ${_SYSTEMC_PATHS}
 )
 
-set(SystemC_LIBRARIES systemc)
+set(SystemC_LIBRARIES ${SystemC_LIBRARY_DIRS}/libsystemc.a)
+
+message(STATUS "SystemC library = ${SystemC_LIBRARIES}")
+
+set(SystemC_FOUND TRUE)
