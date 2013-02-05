@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
-project (greenlib)
+project (GREENLIB)
 
 include(FeatureSummary)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
+# Option for example compilation
 
-
+option (COMPILE_EXAMPLE "Build Example" OFF)
 
 # Require SystemC
 
@@ -43,7 +44,7 @@ endif()
 
 # GreenSocs library
 
-set (GreenSocs_INCLUDE_DIRS ../../../include)
+set (GreenSocs_INCLUDE_DIRS "")
 set (GreenSocs_LIBRARY_DIRS ../../../lib)
 set (GreenSocs_LIBRARIES pthread)
 
@@ -62,6 +63,8 @@ configure_file(
     Makefile.defs
     @ONLY
 )
+
+set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greencontrol/include/)
 
 install(DIRECTORY greencontrol/include/
         DESTINATION include
@@ -85,6 +88,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
 
 # GreenSocket
 
+set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greensocket/include/)
+
 install(DIRECTORY greensocket/include/
         DESTINATION include
         PATTERN ".svn" EXCLUDE
@@ -106,6 +111,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
 
 
 # GsgpSocket
+
+set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} gsgpsocket/include/)
 
 install(DIRECTORY gsgpsocket/include/
         DESTINATION include
@@ -129,6 +136,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
 
 # GreenRouter
 
+set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenrouter/include/)
+
 install(DIRECTORY greenrouter/include/
         DESTINATION include
         PATTERN ".svn" EXCLUDE
@@ -148,6 +157,12 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
         DESTINATION examples/greenrouter
 )
 
+# Greensocs Library include directory (for example).
+include_directories(${GreenSocs_INCLUDE_DIRS})
+# CXX flags for example compilation.
+set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES")
+if(COMPILE_EXAMPLE)
+endif(COMPILE_EXAMPLE)
 
 # build a CPack driven installer package
 include (InstallRequiredSystemLibraries)
