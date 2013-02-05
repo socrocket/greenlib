@@ -185,6 +185,7 @@ include_directories(${GreenSocs_INCLUDE_DIRS})
 set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES")
 if(COMPILE_EXAMPLE)
 add_subdirectory(greensignalsocket)
+add_subdirectory(greenrouter)
 endif(COMPILE_EXAMPLE)
 
 # build a CPack driven installer package
