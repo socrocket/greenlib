@@ -84,7 +84,7 @@ public:
   //--------------------------------------------------------------------------
   SimpleBusProtocol(sc_core::sc_module_name name_, uint16_t clkPeriod = (uint16_t) -1) :
     sc_core::sc_module(name_),
-    ext_base_type(BUSWIDTH),
+    ext_base_type(),
     m_fw_peq(this, &SimpleBusProtocol::fw_peq_cb, this),
     m_bw_peq(this, &SimpleBusProtocol::bw_peq_cb, this),
     router_port("router_port"),
