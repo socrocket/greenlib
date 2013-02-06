@@ -24,7 +24,7 @@
 
 #include "greenrouter/genericRouter.h"
 #include "greenrouter/extensionAddressMap.h"
-#include "green_signal.h"
+#include "greensignalsocket/green_signal.h"
 namespace gs_generic_signal{
 /*
 typedef gs::gp::GenericRouter<32, 255, gs_generic_signal::gs_generic_signal_protocol_types, \

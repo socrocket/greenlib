@@ -2,8 +2,8 @@
 #define INITIATOR_SIGNAL_SOCKET_WRAPPER_H_
 
 #include "tlm.h"
-#include "green_signal_h/gs_generic_signal_ifs.h"
-#include "green_signal_h/green_signal_socket/generic/wrapper_base.h"
+#include "greensignalsocket/green_signal_h/gs_generic_signal_ifs.h"
+#include "greensignalsocket/green_signal_h/green_signal_socket/generic/wrapper_base.h"
 
 namespace gs_generic_signal
 {

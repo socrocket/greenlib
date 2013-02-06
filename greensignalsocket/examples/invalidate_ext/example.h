@@ -2,7 +2,7 @@
 #define EXAMPLE_H_
 
 #include "tlm.h"
-#include "green_signal.h"
+#include "greensignalsocket/green_signal.h"
 
 //Following example shows that, you may use SAME PAYLOAD
 //again and again to transmit the values of different signals,

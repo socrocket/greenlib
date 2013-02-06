@@ -2,8 +2,8 @@
 #define TARGET_SIGNAL_MULTI_SOCKET_H_
 
 #include "greensocket/target/multi_socket.h"
-#include "green_signal_h/gs_generic_signal_ifs.h"
-#include "green_signal_h/green_signal_socket/generic/wrapper_base.h"
+#include "greensignalsocket/green_signal_h/gs_generic_signal_ifs.h"
+#include "greensignalsocket/green_signal_h/green_signal_socket/generic/wrapper_base.h"
 #include <vector>
 using namespace std;
 namespace gs_generic_signal {

@@ -1,8 +1,8 @@
 #ifndef INITIATOR_SIGNAL_MULTI_SOCKET_H_
 #define INITIATOR_SIGNAL_MULTI_SOCKET_H_
 #include "greensocket/initiator/multi_socket.h"
-#include "green_signal_h/gs_generic_signal_ifs.h"
-#include "green_signal_h/green_signal_socket/initiator/initiator_signal_socket_wrapper.h"
+#include "greensignalsocket/green_signal_h/gs_generic_signal_ifs.h"
+#include "greensignalsocket/green_signal_h/green_signal_socket/initiator/initiator_signal_socket_wrapper.h"
 
 using namespace gs::socket;
 namespace gs_generic_signal
