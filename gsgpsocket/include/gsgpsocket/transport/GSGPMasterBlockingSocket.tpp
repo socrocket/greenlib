@@ -41,7 +41,7 @@
 template <typename SOCKET> 
 GenericPhase RequestBlockObj<SOCKET, GenericPhase>::block(typename SOCKET::accessHandle &th, GenericPhase &ph, const sc_core::sc_time &d) {
   GS_BLOCKING_FRAGMENT1(th, ph);
-  operator()(th, ph, d);
+  this->operator()(th, ph, d);
   GS_BLOCKING_FRAGMENT2(th);
 }
 template <typename SOCKET> 
