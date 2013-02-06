@@ -47,10 +47,10 @@ int sc_main(int, char**)
   
 #ifdef USE_GPSOCKET
   /// GreenControl Core instance
-  gs::ctr::GC_Core       core("ControlCore");
+  gs::ctr::GC_Core core();
   // GreenConfig Plugin
   gs::cnf::ConfigDatabase cnfdatabase("ConfigDatabase");
-  gs::cnf::ConfigPlugin configPlugin("ConfigPlugin", &cnfdatabase);
+  gs::cnf::ConfigPlugin configPlugin(&cnfdatabase);
 #endif
 
   gs::gp::SimpleBusProtocol<32> p("Protocol", 10);
