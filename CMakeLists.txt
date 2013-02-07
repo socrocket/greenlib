@@ -184,6 +184,7 @@ include_directories(${GreenSocs_INCLUDE_DIRS})
 # CXX flags for example compilation.
 set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES")
 if(COMPILE_EXAMPLE)
+add_subdirectory(greensignalsocket)
 endif(COMPILE_EXAMPLE)
 
 # build a CPack driven installer package
