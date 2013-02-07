@@ -23,7 +23,6 @@ set_package_properties(SystemC PROPERTIES
                        TYPE REQUIRED
                        PURPOSE "Compile the examples")
 
-
 # Require TLM
 find_package( TLM )
 if(TLM_FOUND)
@@ -155,6 +154,29 @@ install(DIRECTORY greenrouter/docs/     # TODO: doc or docs?
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
         DESTINATION examples/greenrouter
+)
+
+# GreenSignalSocket
+
+set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greensignalsocket/include/)
+
+install(DIRECTORY greensignalsocket/include/
+        DESTINATION include
+        PATTERN ".svn" EXCLUDE
+)
+
+install(DIRECTORY greensignalsocket/examples/
+        DESTINATION examples/greensignalsocket
+        PATTERN ".svn" EXCLUDE
+)
+
+install(DIRECTORY greensignalsocket/docs/     # TODO: doc or docs?
+        DESTINATION docs/greensignalsocket
+        PATTERN ".svn" EXCLUDE
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
+        DESTINATION examples/greensignalsocket
 )
 
 # Greensocs Library include directory (for example).
