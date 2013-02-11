@@ -8,8 +8,7 @@ using namespace gs::socket;
 namespace gs_generic_signal
 {
 typedef gs::socket::initiator_multi_socket<32,gs_generic_signal_protocol_types,
-gs_generic_signal_bind_checker,gs_generic_signal_mm_interface,
-gs_generic_signal_ext_supp>
+gs_generic_signal_bind_checker,gs_generic_signal_mm_interface>
 
 initiator_signal_multi_base_socket;
 

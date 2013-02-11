@@ -49,44 +49,45 @@ class gs_generic_signal_bw_transport_if: public virtual tlm::tlm_bw_nonblocking_
 , public virtual tlm::tlm_bw_direct_mem_if
 {};
 
+/*
+ * this class is normally used for dynamic casts.
+ */
+class gs_generic_signal_bind_base{};
 
-class gs_generic_signal_bind_base{};//this class is normally used for dynamic casts
-class gs_generic_signal_config{};//this class would normally contain your custom configuration structure
-
-class gs_generic_signal_ext_supp //the extension support base. This time derived from the gs extension support base
-                  // so that the gs extension API can be used. Just add fill_txn
-  : public gs::socket::extension_support_base<gs_generic_signal_protocol_types>
-{
-public:
-	gs_generic_signal_ext_supp(unsigned int i): gs::socket::extension_support_base< gs_generic_signal_protocol_types>(i){}
-
-	gs_generic_signal_payload* fill_txn(gs_generic_signal_payload* t)
-	{ //fill txn must set mm ptr
-		gs_generic_signal_mm_interface* test=dynamic_cast<gs_generic_signal_mm_interface*>(this);
-		if (!test) std::cout<<"Extension support casting error"<<std::endl;
-		else t->set_mm(test);
-		//std::cout<<"I don't fill anything..."<<std::endl;
-		return t;
-  }  
-};
+/*
+ * this class would normally contain your custom configuration structure.
+ */
+class gs_generic_signal_config{};
 
 
-///bind checker must be derived from bind_base
+/*
+ * bind checker must be derived from bind_base.
+ */
 class gs_generic_signal_bind_checker:
 public gs::socket::bind_checker<gs_generic_signal_protocol_types>
 {
-public:
+    public:
+    /*
+     * this ctor must be there (provides name and pointer to owning socket).
+     */
+    template <typename A_TYPE>
+    gs_generic_signal_bind_checker(const char* n, A_TYPE* p, unsigned int w):
+        gs::socket::bind_checker< gs_generic_signal_protocol_types >(n, p, w)
+    {
 
-  ///this ctor must be there (provides name and pointer to owning socket)
-  template <typename A_TYPE>
-  gs_generic_signal_bind_checker(const char* n, A_TYPE* p) : gs::socket::bind_checker< gs_generic_signal_protocol_types >(n,p)
-  {}
-  
-  ///override the typedef for the ext support (the other type defs are inherited)
-  typedef gs_generic_signal_ext_supp        ext_support_type;
- /// typedef gs_generic_signal_config      config_type;
-  ///typedef gs::socket::gs_callback_binder_base             root_type;
-  ///typedef gs::socket::gs_multi_to_multi_bind_base<gs_generic_signal_protocol_types> multi_root_type;
+    }
+
+    /*
+     * fill txn must set mm ptr.
+     */
+    gs_generic_signal_payload* fill_txn(gs_generic_signal_payload* t)
+    { 
+        gs_generic_signal_mm_interface* test = 
+                            dynamic_cast<gs_generic_signal_mm_interface*>(this);
+        if (!test) std::cout << "Extension support casting error" << std::endl;
+        else t->set_mm(test);
+        return t;
+    }
 };
 }
 #endif /*GS_GENERIC_SIGNAL_IFS_H_*/
