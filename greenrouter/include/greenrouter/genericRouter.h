@@ -277,6 +277,29 @@ public:
     m_EOEdone=true;
   }
 
+    //------------------------------------------------------------------------
+    /**
+    * Refresh Address Mapping.
+    */
+    //------------------------------------------------------------------------
+
+    void refreshAddressMap()
+    {
+        if (m_addressMap)
+        {
+            delete m_addressMap;
+        }
+        createAddressMap();
+
+        GS_DUMP_N(name(), "Creating address map...");
+        m_addressMap->generateMap(init_socket);
+        m_addressMap->dumpMap();
+
+        GS_DUMP_N(name(),
+                "Checking address map sanity (overlapping address regions)...");
+        m_addressMap->checkSanity();
+        m_EOEdone=true;
+    }
 
   //--------------------------------------------------------------------------
   /**
