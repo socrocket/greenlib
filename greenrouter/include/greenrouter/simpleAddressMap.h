@@ -410,23 +410,38 @@ class SimpleAddressMap
 
        insert ( address_low, address_high, port_id );
      }
-     else if ( other_gp )
+     else if (other_gp)
      {
-       address_low   = other_gp->base_addr;
-       address_high  = other_gp->high_addr;
+        address_low = other_gp->base_addr;
+        address_high = other_gp->high_addr;
 
-       insert ( address_low, address_high, port_id );
+        /*
+         * We don't want to MAP devices with null sized area.
+         */
+        if (other_gp->base_addr < other_gp->high_addr)
+        {
+            insert(address_low, address_high, port_id);
+        }
 
 #ifdef GS_SOCKET_ADDRESS_ARRAY
-       // this loop will add all the other address range exists in the
-       // greensocket, if there is only one address range 
-       // num_address_range should be 0
-       for (int i=0; i < other_gp->num_address_range ; i++  )
-       {
-          address_low   = other_gp->parr_base_addr[i].getValue();
-          address_high  = other_gp->parr_high_addr[i].getValue();
-          insert ( address_low, address_high, port_id );
-       }
+        /*
+         * This loop will add all the other address range exists in the
+         * greensocket, if there is only one address range num_address_range
+         * should be 0.
+         */
+        for (int i = 0; i < other_gp->num_address_range; i++)
+        {
+            address_low = other_gp->parr_base_addr[i].getValue();
+            address_high = other_gp->parr_high_addr[i].getValue();
+
+            /*
+             * We don't want to MAP devices with null sized area.
+             */
+            if (address_low < address_high)
+            {
+                insert(address_low, address_high, port_id);
+            }
+        }
 #endif
      }
      else
