@@ -179,6 +179,25 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
         DESTINATION examples/greensignalsocket
 )
 
+# Greenreg
+
+set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenreg/include/)
+
+install(DIRECTORY greenreg/include/
+        DESTINATION include
+        PATTERN ".svn" EXCLUDE
+)
+
+install(DIRECTORY greenreg/examples/
+        DESTINATION examples/greenreg
+        PATTERN ".svn" EXCLUDE
+)
+
+install(DIRECTORY greenreg/doc/     # TODO: doc or docs?
+        DESTINATION docs/greenreg
+        PATTERN ".svn" EXCLUDE
+)
+
 # Greensocs Library include directory (for example).
 include_directories(${GreenSocs_INCLUDE_DIRS})
 # CXX flags for example compilation.
