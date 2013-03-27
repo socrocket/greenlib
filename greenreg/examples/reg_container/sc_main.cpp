@@ -50,7 +50,7 @@
 
 #include <boost/config.hpp>
 #include <systemc>
-#include <greenreg.h>
+#include <greenreg/greenreg.h>
 
 #include "greencontrol/config.h"
 
