@@ -3,22 +3,18 @@
 # include files and libraries are. This code sets the following
 # variables: (from kernel/sc_ver.h)
 #
-#  SystemC_VERSION_STRING     = Version of the package found, eg. "2.2.0"
 #  SystemC_VERSION_MAJOR      = The major version of the package found.
 #  SystemC_VERSION_MINOR      = The minor version of the package found.
-#  SystemC_VERSION_PATCH      = The patch version of the package found.
-#  SystemC_VERSION_DATE       = The date of release (from SYSTEMC_VERSION)
-#  SystemC_VERSION            = This is set to: $major.$minor.$patch
+#  SystemC_VERSION_REV        = The patch version of the package found.
+#  SystemC_VERSION            = This is set to: $major.$minor.$rev
 #
 # The minimum required version of SystemC can be specified using the
 # standard CMake syntax, e.g. FIND_PACKAGE(SystemC 2.2)
 #
 # For these components the following variables are set:
 #
-#  SystemC_FOUND                    - TRUE if all components are found.
 #  SystemC_INCLUDE_DIRS             - Full paths to all include dirs.
 #  SystemC_LIBRARIES                - Full paths to all libraries.
-#  SystemC_<component>_FOUND        - TRUE if <component> is found.
 #
 # Example Usages:
 #  FIND_PACKAGE(SystemC)
@@ -61,30 +57,17 @@ FIND_FILE(_SYSTEMC_VERSION_FILE
   PATH_SUFFIXES sysc/kernel
 )
 
+EXEC_PROGRAM("cat ${_SYSTEMC_VERSION_FILE} |grep '#define SC_API_VERSION_STRING' | cut -d '_' -f 7 "
+             OUTPUT_VARIABLE SystemC_MAJOR)
+EXEC_PROGRAM("cat ${_SYSTEMC_VERSION_FILE} |grep '#define SC_API_VERSION_STRING' | cut -d '_' -f 8 "
+             OUTPUT_VARIABLE SystemC_MINOR)
+EXEC_PROGRAM("cat ${_SYSTEMC_VERSION_FILE} |grep '#define SC_API_VERSION_STRING' | cut -d '_' -f 9 "
+             OUTPUT_VARIABLE SystemC_REV)
+
+set(SystemC_VERSION ${SystemC_MAJOR}.${SystemC_MINOR}.${SystemC_REV})
 
 
-
-message(STATUS "_SYSTEMC_VERSION_FILE   in   ${_SYSTEMC_VERSION_FILE}")
-
-
-# IF(_SYSTEMC_VERSION_FILE)
-#     EXECUTE_PROCESS(COMMAND "echo sed -ne 's,^#define\\s*SYSTEMC_VERSION\\s*,,p' ${_SYSTEMC_VERSION_FILE}"
-#       RESULT_VARIABLE res
-#       OUTPUT_VARIABLE var
-#       ERROR_VARIABLE var # sun-java output to stderr
-#       OUTPUT_STRIP_TRAILING_WHITESPACE
-#       ERROR_STRIP_TRAILING_WHITESPACE)
-#     if(res)
-#         MESSAGE(STATUS "found version ${res},${var}.")
-#     endif()
-# endif()
-
-
-set(SystemC_MAJOR 2)
-set(SystemC_MINOR 2)
-set(SystemC_VERSION ${SystemC_MAJOR}.${SystemC_MINOR})
-
-message(STATUS "SystemC_VERSION = ${SystemC_VERSION}")
+message(STATUS "SystemC version = ${SystemC_VERSION}")
 
 FIND_PATH(SystemC_INCLUDE_DIRS
   NAMES systemc.h
