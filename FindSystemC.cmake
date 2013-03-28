@@ -31,11 +31,21 @@ message(STATUS "Searching for SystemC")
 # The HINTS option should only be used for values computed from the system.
 SET(_SYSTEMC_HINTS
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\SystemC\\2.2;SystemcHome]/include"
+  ${SYSTEMC_PREFIX}/include
+  ${SYSTEMC_PREFIX}/lib
+  ${SYSTEMC_PREFIX}/lib-linux
+  ${SYSTEMC_PREFIX}/lib-linux64
+  ${SYSTEMC_PREFIX}/lib-macos
   $ENV{SYSTEMC_PREFIX}/include
   $ENV{SYSTEMC_PREFIX}/lib
   $ENV{SYSTEMC_PREFIX}/lib-linux
   $ENV{SYSTEMC_PREFIX}/lib-linux64
   $ENV{SYSTEMC_PREFIX}/lib-macos
+  ${CMAKE_INSTALL_PREFIX}/include
+  ${CMAKE_INSTALL_PREFIX}/lib
+  ${CMAKE_INSTALL_PREFIX}/lib-linux
+  ${CMAKE_INSTALL_PREFIX}/lib-linux64
+  ${CMAKE_INSTALL_PREFIX}/lib-macos
   )
 # Hard-coded guesses should still go in PATHS. This ensures that the user
 # environment can always override hard guesses.
