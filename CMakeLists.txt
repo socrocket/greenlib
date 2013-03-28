@@ -14,8 +14,9 @@ find_package( SystemC )
 if(SystemC_FOUND)
     include_directories(${SystemC_INCLUDE_DIRS})
     link_directories(${SystemC_LIBRARIES})
+else()
+    message( FATAL_ERROR "SystemC library not found." )
 endif()
-
 
 set_package_properties(SystemC PROPERTIES
                        URL "http://www.accellera.org/downloads/standards/systemc"

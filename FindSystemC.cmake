@@ -76,6 +76,9 @@ EXEC_PROGRAM("cat ${_SYSTEMC_VERSION_FILE} |grep '#define SC_API_VERSION_STRING'
 
 set(SystemC_VERSION ${SystemC_MAJOR}.${SystemC_MINOR}.${SystemC_REV})
 
+if("${SystemC_MAJOR}" MATCHES "2")
+  set(SystemC_FOUND TRUE)
+endif("${SystemC_MAJOR}" MATCHES "2")
 
 message(STATUS "SystemC version = ${SystemC_VERSION}")
 
@@ -94,5 +97,3 @@ FIND_PATH(SystemC_LIBRARY_DIRS
 set(SystemC_LIBRARIES ${SystemC_LIBRARY_DIRS}/libsystemc.a)
 
 message(STATUS "SystemC library = ${SystemC_LIBRARIES}")
-
-set(SystemC_FOUND TRUE)
