@@ -198,14 +198,23 @@ install(DIRECTORY greenreg/doc/     # TODO: doc or docs?
         PATTERN ".svn" EXCLUDE
 )
 
+install(DIRECTORY greenreg/lib/
+        DESTINATION lib
+        FILES_MATCHING PATTERN "lib*.a"
+        PATTERN "CMakeFiles" EXCLUDE
+)
+
 # Greensocs Library include directory (for example).
 include_directories(${GreenSocs_INCLUDE_DIRS})
-# CXX flags for example compilation.
+# CXX flags for example or library compilation.
 set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES")
 if(COMPILE_EXAMPLE)
 add_subdirectory(greensignalsocket)
 add_subdirectory(greenrouter)
 endif(COMPILE_EXAMPLE)
+
+# Compile greenreg library.
+add_subdirectory(greenreg)
 
 # build a CPack driven installer package
 include (InstallRequiredSystemLibraries)
