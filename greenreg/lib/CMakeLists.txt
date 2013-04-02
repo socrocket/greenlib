@@ -65,3 +65,5 @@ ADD_LIBRARY( greenreg STATIC
     ../src/internal/registers/register/I_register.cpp
     ../src/internal/registers/register/register_container.cpp
     )
+
+install(TARGETS greenreg DESTINATION lib)

@@ -201,12 +201,6 @@ install(DIRECTORY greenreg/doc/     # TODO: doc or docs?
         PATTERN ".svn" EXCLUDE
 )
 
-install(DIRECTORY greenreg/lib/
-        DESTINATION lib
-        FILES_MATCHING PATTERN "lib*.a"
-        PATTERN "CMakeFiles" EXCLUDE
-)
-
 # Greensocs Library include directory (for example).
 include_directories(${GreenSocs_INCLUDE_DIRS})
 # CXX flags for example or library compilation.
