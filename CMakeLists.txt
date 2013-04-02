@@ -28,6 +28,8 @@ set_package_properties(SystemC PROPERTIES
 find_package( TLM )
 if(TLM_FOUND)
     include_directories(${TLM_INCLUDE_DIRS})
+else()
+    message( FATAL_ERROR "TLM library not found." )
 endif()
 
 
