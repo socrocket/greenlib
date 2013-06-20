@@ -22,6 +22,10 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
+#ifndef SC_INCLUDE_DYNAMIC_PROCESSES
+#error SC_INCLUDE_DYNAMIC_PROCESSES must be defined.
+#endif /* !SC_INCLUDE_DYNAMIC_PROCESSES */
+
 //
 // This file is the recommended file to include the basic
 // GreenConfig service which is located in the namespace
