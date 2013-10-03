@@ -187,6 +187,12 @@ public:
   /// Returns if this container contains the specified rule.
   ////////////////////////////////////////////
   bool has_rule(const std::string _name);
+
+  ////////////////////////////////////////////
+  /// is_empty
+  /// Returns if this container contains no rules.
+  ////////////////////////////////////////////
+  bool is_empty();
   
 protected:
   

@@ -231,6 +231,9 @@ bool gr_notification_rule_container::has_rule(const std::string _name) {
   return (find_rule(_name) != NULL);
 }
 
+bool gr_notification_rule_container::is_empty() {
+    return ((m_inactive_rules.size() == 0) && (m_active_rules.size() == 0));
+}
 
 #ifdef GR_NOTIF_RULE_DBG
 void gr_notification_rule_container::show_active_rules() {
