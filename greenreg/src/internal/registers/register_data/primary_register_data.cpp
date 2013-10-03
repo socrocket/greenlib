@@ -121,7 +121,13 @@ void primary_register_data::on_received_write_request( uint_gr_t _value, transac
     case sc_core::SC_METHOD_PROC_:
       // if reg uses events and this is being called by an SC_METHOD, suspend notification of pre rules!
       if (m_parent_register->get_events_enabled() || _delayed) {
-        GR_FORCE_WARNING("ATTENTION: Pre read notification rules will be skipped because you are calling from within an SC_METHOD! Either disable events for notification rules of this register or use an SC_THREAD to be able to process a wait here!");
+        /*
+         * Don't warn if there isn't any pre-write rules.
+         */
+        if (!m_parent_register->get_pre_write_rules().is_empty())
+        {
+            GR_FORCE_WARNING("WARNING: Pre write notification rules will be skipped because you are calling from within an SC_METHOD! Either disable events for notification rules of this register or use an SC_THREAD to be able to process a wait here!");
+        }
       } else {
         m_parent_register->get_pre_write_rules().process_active_rules( old_value, new_value, _transaction, _delayed);
         m_parent_register->br.process_tlm_pre_write_rules( old_value, new_value, _transaction, _delayed);
@@ -180,7 +186,13 @@ uint_gr_t primary_register_data::on_received_read_request(transaction_type* _tra
     case sc_core::SC_METHOD_PROC_:
       // if reg uses events and this is being called by an SC_METHOD, suspend notification of pre rules!
       if (m_parent_register->get_events_enabled() || _delayed) {
-        GR_FORCE_WARNING("ATTENTION: Pre read notification rules will be skipped because you are calling from within an SC_METHOD! Either disable events for notification rules of this register or use an SC_THREAD to be able to process a wait here!");
+        /*
+         * Don't warn if there isn't any pre-read rules.
+         */
+        if (!(m_parent_register->get_pre_read_rules().is_empty()))
+        {
+            GR_FORCE_WARNING("WARNING: Pre read notification rules will be skipped because you are calling from within an SC_METHOD! Either disable events for notification rules of this register or use an SC_THREAD to be able to process a wait here!");
+        }
       } else {
         m_parent_register->get_pre_read_rules().process_active_rules( old_value, old_value, _transaction, _delayed);
         m_parent_register->br.process_tlm_pre_read_rules( old_value, old_value, _transaction, _delayed);
