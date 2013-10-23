@@ -2,7 +2,7 @@ ADD_LIBRARY(greenscript STATIC
 	../src/greenscript.cpp
     )
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_GREENCONTROL")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_GREENCONTROL -Wno-unused-value")
 
 #
 # Create _gsp_sc.so and _gsp_sc.py for embedded Python scripts.
