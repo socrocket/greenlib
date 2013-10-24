@@ -1,0 +1,75 @@
+created single IO register Reg5 = 0xaaaaaaaa
+
+
+Entered ReceiverSlaveDevice::end_of_elaboration
+register not delayed GR_FUNCTION without params for post write
+register not delayed GR_FUNCTION with params for post write
+register delayed GR_FUNCTION without params for post write
+register delayed GR_FUNCTION with params for post write
+
+
+@0 s /0 (MasterDevice): Start sending bus register accesses
+------------------------------------------------------------------------------------------
+@5 ns /1 (MasterDevice): ---- SC_THREAD Bus Write 0xff to reg [0x01]
+@5 ns /2 (cb_not_delayed): ****** got NOT DELAYED register notification (GR_FUNCTION callback) for Reg1 post write
+              value = 255=0xff
+@5 ns /2 (cb_not_delayedP): ****** got NOT DELAYED (transaction, delay) register notification (GR_FUNCTION callback) for Reg1 post write
+@5 ns /2 (cb_not_delayedP):        transaction ID = 0x0
+   value = ff=0xff
+@6 ns /4 (cb_delayed): ****** got DELAYED register notification (GR_FUNCTION callback) for Reg1 post write
+              value = 255=0xff
+@7 ns /5 (cb_delayedP): ****** got DELAYED (transaction, delay) register notification (GR_FUNCTION callback) for Reg1 post write
+@7 ns /5 (cb_delayedP):        delayed for 2 ns
+@7 ns /5 (cb_delayedP):        transaction ID = 0x0
+                      value = ff=0xff
+
+
+@10 ns /6 (MasterDevice): ---- SC_THREAD Bus Write 0xffad00bb to reg [0x01]
+@10 ns /7 (cb_not_delayed): ****** got NOT DELAYED register notification (GR_FUNCTION callback) for Reg1 post write
+              value = 4289527995=0xffad00bb
+@10 ns /7 (cb_not_delayedP): ****** got NOT DELAYED (transaction, delay) register notification (GR_FUNCTION callback) for Reg1 post write
+@10 ns /7 (cb_not_delayedP):        transaction ID = 0x1
+   value = ffad00bb=0xffad00bb
+@11 ns /9 (cb_delayed): ****** got DELAYED register notification (GR_FUNCTION callback) for Reg1 post write
+              value = 4289527995=0xffad00bb
+@11 ns /9 (ReceiverSlaveDevice): ************************************************* 
+   disable delayed switch now
+@11 ns /9 (ReceiverSlaveDevice): ************************************************* 
+   enable delayed switch now
+@12 ns /10 (cb_delayedP): ****** got DELAYED (transaction, delay) register notification (GR_FUNCTION callback) for Reg1 post write
+@12 ns /10 (cb_delayedP):        delayed for 2 ns
+@12 ns /10 (cb_delayedP):        transaction ID = 0x1
+                      value = ffad00bb=0xffad00bb
+
+
+@15 ns /11 (MasterDevice): ---- SC_THREAD Bus Write 0xd to reg [0x01]
+@15 ns /12 (cb_not_delayed): ****** got NOT DELAYED register notification (GR_FUNCTION callback) for Reg1 post write
+              value = 13=0xd
+@15 ns /12 (cb_not_delayedP): ****** got NOT DELAYED (transaction, delay) register notification (GR_FUNCTION callback) for Reg1 post write
+@15 ns /12 (cb_not_delayedP):        transaction ID = 0x2
+   value = d=0xd
+@15 ns /12 (cb_delayed): ****** got DELAYED register notification (GR_FUNCTION callback) for Reg1 post write
+              value = 13=0xd
+@15 ns /12 (cb_delayedP): ****** got DELAYED (transaction, delay) register notification (GR_FUNCTION callback) for Reg1 post write
+@15 ns /12 (cb_delayedP):        delayed for 2 ns
+@15 ns /12 (cb_delayedP):        transaction ID = 0x2
+                      value = d=0xd
+
+
+
+
+@20 ns /14 (MasterDevice): ---- SC_THREAD Bus Write 0x0 to reg [0x01]
+@20 ns /15 (cb_not_delayed): ****** got NOT DELAYED register notification (GR_FUNCTION callback) for Reg1 post write
+              value = 0=0x0
+@20 ns /15 (cb_not_delayedP): ****** got NOT DELAYED (transaction, delay) register notification (GR_FUNCTION callback) for Reg1 post write
+@20 ns /15 (cb_not_delayedP):        transaction ID = 0x3
+   value = 0=0x0
+@20 ns /15 (cb_delayed): ****** got DELAYED register notification (GR_FUNCTION callback) for Reg1 post write
+              value = 0=0x0
+@20 ns /15 (cb_delayedP): ****** got DELAYED (transaction, delay) register notification (GR_FUNCTION callback) for Reg1 post write
+@20 ns /15 (cb_delayedP):        delayed for 2 ns
+@20 ns /15 (cb_delayedP):        transaction ID = 0x3
+                      value = 0=0x0
+
+
+------------------------------------------------------------------------------------------
