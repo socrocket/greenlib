@@ -104,7 +104,7 @@ int sc_main(int argc, char** argv) {
   sc_core::sc_report_handler::set_actions("/GreenSocs/GreenReg/write_protected/bit_range_access", sc_core::SC_DISPLAY);
   sc_core::sc_report_handler::set_actions("/GreenSocs/GreenReg/write_protected/bit_access", sc_core::SC_DISPLAY);
   
-  gs::ctr::GC_Core core("ControlCore"); 
+  gs::ctr::GC_Core core(); 
   gs::cnf::ConfigPlugin configPlugin(); 
   
   Device dev("RegisterDevice");
