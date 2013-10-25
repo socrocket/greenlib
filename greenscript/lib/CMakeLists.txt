@@ -36,15 +36,20 @@ TARGET_LINK_LIBRARIES(_gsp_sc_sa.so ${SystemC_LIBRARIES}
                                     ${LUA_LIBRARIES})
 
 install(TARGETS greenscript DESTINATION lib)
-install(FILES _gsp_sc.so
-        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
-install(FILES gsp_sc.py
-        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
 install(FILES ../gs.py
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
-install(FILES _gsp_sc_sa.so
-        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
-install(FILES gsp_sc_sa.py
-        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
+
 install(FILES ../gs_sa.py
+        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
+
+#
+# This is generated files, there are in CMAKE_CURRENT_BINARY_DIR.
+#
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/_gsp_sc.so
+        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gsp_sc.py
+        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/_gsp_sc_sa.so
+        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gsp_sc_sa.py
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
