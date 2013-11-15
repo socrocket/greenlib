@@ -25,12 +25,6 @@ else()
     message( FATAL_ERROR "SystemC library not found." )
 endif()
 
-set_package_properties(SystemC PROPERTIES
-                       URL "http://www.accellera.org/downloads/standards/systemc"
-                       DESCRIPTION "The SystemC Hardware Description Language"
-                       TYPE REQUIRED
-                       PURPOSE "Compile the examples")
-
 # Require TLM
 find_package( TLM )
 if(TLM_FOUND)
