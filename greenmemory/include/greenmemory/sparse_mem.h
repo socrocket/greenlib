@@ -8,7 +8,6 @@
 //   Marcus Bartholomeu
 //     GreenSocs Ltd
 //
-//
 //   This program is free software.
 //
 //   If you have no applicable agreement with GreenSocs Ltd, this software
@@ -158,8 +157,9 @@ int
 sparse_mem<PAGE_SIZE,VALUE_TYPE,ADDRESS_TYPE>::
 lower_bound(address_type addr)
 {
-  return std::lower_bound(ins.begin(), ins.end(),
-                          addr, std::less_equal<int>()) - ins.begin() - 1;
+  return std::lower_bound(ins.begin(), ins.end(), addr,
+                          std::less_equal<address_type>())
+         - ins.begin() - 1;
 }
 
 
@@ -236,7 +236,7 @@ operator[](address_type addr)
   GS_SPARSE_MEM_DEBUG(std::cout << "operator[]: " << addr
                       << ", i = " << i << std::endl);
 
-  // if smaller then the first interval (or empty)
+  // if smaller than the first interval (or empty)
   if (i == -1) {
     // insert page at the front
     i = 0;
