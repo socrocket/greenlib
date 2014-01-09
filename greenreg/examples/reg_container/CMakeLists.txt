@@ -1,7 +1,7 @@
 SET(EXECUTABLE "greenreg_reg_container")
 
 add_executable(${EXECUTABLE} sc_main.cpp)
-target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES} greenreg pthread)
+target_link_libraries(${EXECUTABLE} greenreg ${SystemC_LIBRARIES} pthread)
 
 add_dependencies(compile_test ${EXECUTABLE})
 
