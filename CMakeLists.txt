@@ -38,9 +38,11 @@ endif()
 
 set(Boost_ADDITIONAL_VERSIONS 1.34 1.34.0 1.34.1)
 
-find_package( Boost )
+find_package(Boost)
 if(Boost_FOUND)
    include_directories(${Boost_INCLUDE_DIRS})
+else()
+   message(FATAL_ERROR "Boost library not found.")
 endif()
 
 # Require Python
