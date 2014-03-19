@@ -53,16 +53,17 @@ else()
 endif()
 
 # Require Lua
-
-find_package( Lua )
-if(LUA_FOUND)
-  include_directories(${LUA_INCLUDE_DIR})
-  link_directories(${LUA_LIBRARIES})
-elseif(DEFINED ENV{LUA_INCLUDE_HOME} && DEFINED ENV{LUA_LIBRARY_HOME})
-  include_directories($ENV{LUA_INCLUDE_HOME})
-  link_directories($ENV{LUA_LIBRARY_HOME})
+if(DEFINED ENV{LUA_INCLUDE_DIR} AND DEFINED ENV{LUA_LIBRARIES})
+  include_directories($ENV{LUA_INCLUDE_DIR})
+  link_directories($ENV{LUA_LIBRARIES})
 else()
-  message( STATUS "Lua library not found." )
+  find_package(Lua)
+  if(LUA_FOUND)
+    include_directories(${LUA_INCLUDE_DIR})
+    link_directories(${LUA_LIBRARIES})
+  else()
+    message(FATAL_ERROR "Lua library not found.")
+  endif()
 endif()
 
 # Require SWIG
