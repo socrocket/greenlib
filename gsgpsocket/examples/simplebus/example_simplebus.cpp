@@ -33,8 +33,8 @@
 
 #include <systemc>
 
-#include "gsgpsocket/examples/simple/sillysort.h"
-#include "gsgpsocket/examples/simple/simplememory.h"
+#include "simple/sillysort.h"
+#include "simple/simplememory.h"
                                         
 //#include "gsgpsocket/transport/genericRouter.h"
 //#include "gsgpsocket/protocol/SimpleBus/simpleBusProtocol.h"
