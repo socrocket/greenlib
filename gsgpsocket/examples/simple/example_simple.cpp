@@ -57,7 +57,7 @@ int sc_main(int, char**)
   gs::ctr::GC_Core       core("ControlCore");
   // GreenConfig Plugin
   gs::cnf::ConfigDatabase cnfdatabase("ConfigDatabase");
-  gs::cnf::ConfigPlugin configPlugin("ConfigPlugin", &cnfdatabase);
+  gs::cnf::ConfigPlugin configPlugin(&cnfdatabase);
 #endif
 
   sillysort m("sillysort");
