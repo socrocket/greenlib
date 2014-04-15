@@ -504,7 +504,7 @@ unsigned int GenericRouter_b<BUSWIDTH,TRAITS,DEFAULT_PROTOCOL, PORTMAX, RESP_TYP
 template <unsigned int BUSWIDTH, unsigned int PORTMAX = 255, typename TRAITS=tlm::tlm_base_protocol_types
           ,typename RESP_TYPE=tlm::tlm_response_status
 	  ,RESP_TYPE ADDR_ERR_RESP=tlm::TLM_ADDRESS_ERROR_RESPONSE
-	  ,void (TRAITS::tlm_payload_type::*SET_RESP_CALL)(const RESP_TYPE) = &(TRAITS::tlm_payload_type::set_response_status)
+	  ,void (TRAITS::tlm_payload_type::*SET_RESP_CALL)(const RESP_TYPE) = &TRAITS::tlm_payload_type::set_response_status
 	  ,typename ADDR_MAP = SimpleAddressMap<TRAITS, PORTMAX>
 	  >
 class GenericRouter : public GenericRouter_b<BUSWIDTH, TRAITS, DummyProtocol<BUSWIDTH, TRAITS>, PORTMAX,
