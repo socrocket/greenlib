@@ -7,6 +7,7 @@ set_target_properties(${EXECUTABLE} PROPERTIES COMPILE_FLAGS
                                                "-g -Xlinker -export-dynamic")
 
 target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES}
+                                    pthread
                                     greenscript
                                     ${PYTHON_LIBRARIES}
                                     ${LUA_LIBRARIES})
