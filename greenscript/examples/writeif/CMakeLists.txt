@@ -5,8 +5,8 @@ ADD_EXECUTABLE(${EXECUTABLE}
 )
 target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES}
                                     pthread
-                                    ${PYTHON_LIBRARIES}
                                     greenscript
+                                    ${PYTHON_LIBRARIES}
                                     ${LUA_LIBRARIES})
 
 #
