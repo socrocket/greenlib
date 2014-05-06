@@ -207,7 +207,7 @@ namespace av {
         for (std::vector<std::string>::iterator iter = p_vec.begin();
              iter != p_vec.end(); iter++)
         {
-          fprintf(outp_file, separator);
+          fprintf(outp_file, "%s", separator);
           std::map<std::string,std::string>::iterator iter_m = current_line_values.find(*iter);
           if( iter_m != current_line_values.end() ) {
             fprintf(outp_file, "\"%s\"", iter_m->second.c_str());
