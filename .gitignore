@@ -1,3 +1,77 @@
 # Don't allow to check in ~ files.
 
 *~
+
+# Don't allow Makefiles.
+
+Makefile
+
+# Don't allow CMakeFiles.
+
+*.cmake
+CMakeCache.txt
+Makefile.defs
+CMakeFiles/
+Testing/
+
+
+#Don't allow executable_output.txt
+
+executable_output.txt
+
+#Don't allow to check in example files.
+
+greenmemory/examples/simple/greenmemory_simple
+greenmessage/examples/broadcast/greenmessage_broadcast
+greenmessage/examples/hierarchy/greenmessage_hierarchy
+greenmessage/examples/receiver_group/greenmessage_receiver_group
+greenmessage/examples/simple/greenmessage_simple
+greenmessage/examples/user_writeif/greenmessage_user_writeif
+greenreg/examples/reg_container/greenreg_reg_container
+greenreg/examples/simple/greenreg_simple
+greenrouter/examples/simple/greenrouter_example
+greenscript/examples/dbgr_test/dbgr_test
+greenscript/examples/embedded-adder-fifo/embedded-adder-fifo
+greenscript/examples/embedded-adder/embedded-adder
+greenscript/examples/embedded-greenmessage/embedded-greenmessage
+greenscript/examples/embedded-multi-inst/embedded-multi-inst
+greenscript/examples/embedded-params/embedded-params
+greenscript/examples/embedded-testbench/embedded-testbench
+greenscript/examples/greenmessage-configset/receiver.pyc
+greenscript/examples/greenmessage-configset/sender.pyc
+greenscript/examples/greenmessage/receiver.pyc
+greenscript/examples/greenmessage/sender.pyc
+greenscript/examples/writeif/writeif
+greensignalbus/examples/src/greensignalbus_example
+greensignalsocket/examples/invalidate_ext/greensignalsocket_invalidate_ext
+greensignalsocket/examples/multi_example/greensignalsocket_multi_example
+greensignalsocket/examples/simple/greensignalsocket_simple
+greensocket/examples/simple_b_transport/greensocket_simple_b_transport
+greensocket/examples/simple_b_transport_hierarchy_bind/greensocket_simple_b_transport_hierarchy_bind
+greensocket/examples/simple_b_transport_multi/greensocket_simple_b_transport_multi
+greensocket/examples/simple_quantum_keeper/default.log
+greensocket/examples/simple_quantum_keeper/greensocket_simple_quantum_keeper
+gsgpsocket/examples/bidir_nb_example/gsgpsocket_bidir_nb_example
+gsgpsocket/examples/bidir_nb_example_hier/gsgpsocket_bidir_nb_example_hier
+gsgpsocket/examples/f_example/gsgpsocket_f_example
+gsgpsocket/examples/f_example_hier/gsgpsocket_f_example_hier
+gsgpsocket/examples/generic_port_read_write/gsgpsocket_generic_port_read_write
+gsgpsocket/examples/nb_example/gsgpsocket_nb_example
+gsgpsocket/examples/simple/gsgpsocket_simple
+gsgpsocket/examples/simplebus/gsgpsocket_simplebus
+gsgpsocket/examples/test_devices/gsgpsocket_test_devices
+
+# Don't checkin libraries output.
+
+greenreg/lib/libgreenreg.a
+greenscript/gs.pyc
+greenscript/gs_sa.pyc
+greenscript/gsp_scPYTHON_wrap.cxx
+greenscript/gsp_sc_saPYTHON_wrap.cxx
+greenscript/lib/_gsp_sc.so
+greenscript/lib/_gsp_sc_sa.so
+greenscript/lib/gsp_sc.py
+greenscript/lib/gsp_sc.pyc
+greenscript/lib/gsp_sc_sa.py
+greenscript/lib/gsp_sc_sa.pyc
+greenscript/lib/libgreenscript.a
