@@ -98,7 +98,10 @@ public:
           insert(service, target_address, target_name, is_plugin); 
       }
       else
-        GC_DUMP_N("ControlAddressMap", "                Port is already in map.");
+      {
+          GC_DUMP_N("ControlAddressMap",
+                    "                Port is already in map.");
+      }
     }
     else
       SC_REPORT_WARNING("ControlAddressMap", "Tried to add gc_port, but was NULL.");
@@ -121,9 +124,19 @@ public:
       service = pPort->getSupportedControlService();
 
       if(pPort->isPlugin())
-        GC_DUMP_N("ControlAddressMap", "           Plugin ["<<target_string.c_str()<<"] supporting control service "<<service<<" ("<<getControlServiceString(service).c_str()<<") is removed from core");
+      {
+        GC_DUMP_N("ControlAddressMap", "           Plugin ["
+                  << target_string.c_str() << "] supporting control service "
+                  << service << " (" << getControlServiceString(service).c_str()
+                  << ") is removed from core");
+      }
       else
-        GC_DUMP_N("ControlAddressMap", "           API ["<<target_string.c_str()<<"] supporting control service "<<service<<" ("<<getControlServiceString(service).c_str()<<") is removed from core");
+      {
+        GC_DUMP_N("ControlAddressMap", "           API ["
+                  << target_string.c_str() << "] supporting control service "
+                  << service << " (" << getControlServiceString(service).c_str()
+                  << ") is removed from core");
+      }
 
       // remove port from internal maps
       if(m_address_service_map.erase(target_address) != 1)

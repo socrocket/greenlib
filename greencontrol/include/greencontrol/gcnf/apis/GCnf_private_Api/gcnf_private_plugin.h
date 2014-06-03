@@ -116,8 +116,12 @@ namespace cnf {
         if ( !m_param_db->removeParam(par) ) {
           return 1;
         }
-      } else
-        GCNF_DUMP_N(name(), "CMD_REMOVE_PARAM: failed to remove parameter NULL.");
+      }
+      else
+      {
+        GCNF_DUMP_N(name(),
+                    "CMD_REMOVE_PARAM: failed to remove parameter NULL.");
+      }
       return 0;
     }
       
