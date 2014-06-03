@@ -176,7 +176,7 @@ public:                                                                \
   virtual ~gs_param() { gs_param_t<val_type>::destruct_gs_param(); }              \
                                                                                   \
                                                                                   \
-  const bool deserialize(val_type &target_val, const std::string& str) {          \
+  bool deserialize(val_type &target_val, const std::string& str) {             \
     GCNF_ENABLE_GS_PARAM_LOCK_GUARD( \
     if (gs_param_t<val_type>::m_locked) {                                                \
       GS_PARAM_DUMP("parameter is locked!");                                      \

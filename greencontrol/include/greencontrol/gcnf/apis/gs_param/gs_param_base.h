@@ -237,7 +237,7 @@ public:
    * @return         If the convertion was successfull.
    */
   template<class T>
-  const bool getValue(T &value) const {
+  bool getValue(T &value) const {
     make_pre_read_callbacks();
     bool res = gs_param<T>::static_deserialize(value, this->getString());
     make_post_read_callbacks();
@@ -286,7 +286,7 @@ public:
   }
   
   /// Returns the type identifying enum of the type this parameter stores
-  virtual const Param_type getType() const{
+  virtual Param_type getType() const{
     return PARTYPE_NOT_AVAILABLE;
   }
 
@@ -399,22 +399,22 @@ public:
   virtual const void* get_value_pointer() const = 0;
 
   /// Returns the destrcution flag status: if this parameter is to be destroyed (needed for observers)
-  const bool is_destructing() const {
+  bool is_destructing() const {
     return m_destruction_flag;
   }
   
   /// Returns if this is a Simple Parameter Array of type T*
-  const bool is_simple_array() const {
+  bool is_simple_array() const {
     return m_is_simple_array;
   }
   
   /// Returns if this is an Extended Parameter Array
-  const bool is_extended_array() const {
+  bool is_extended_array() const {
     return m_is_extended_array;
   }
   
   /// Returns if this parameter originally had a default value
-  const bool has_default_value() {
+  bool has_default_value() {
     return m_default_value_was_set;
   }
 

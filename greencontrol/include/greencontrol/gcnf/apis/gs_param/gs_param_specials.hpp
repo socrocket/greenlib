@@ -67,7 +67,7 @@ public:
   }
 
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_NOT_AVAILABLE;
   }
   
@@ -206,7 +206,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_NOT_AVAILABLE;
   }
   
@@ -293,7 +293,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_NOT_AVAILABLE;
   }
   

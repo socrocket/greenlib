@@ -187,7 +187,7 @@ public:
   }
 
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_ATTRIBUTE;
   }
   
@@ -197,7 +197,7 @@ public:
   }  
   
   /// Overloads gs_param_t<T>::deserialize in gs_param_t<T>
-  const bool deserialize(T &target_val, const std::string& str) {
+  bool deserialize(T &target_val, const std::string& str) {
     return static_deserialize(target_val, str);
   }
   /// Static convertion function called by virtual deserialize and others (e.g. GCnf_API)

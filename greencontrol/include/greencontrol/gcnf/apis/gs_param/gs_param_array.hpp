@@ -275,7 +275,7 @@ public:
   }
 
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SMPL_ARRAY;
   }
 
@@ -415,7 +415,7 @@ public:
    * the target is not a taget_val of type val_type.
    * Use setString(str) instead!
    */
-  const bool deserialize(val_type &target_val, const std::string& str) {
+  bool deserialize(val_type &target_val, const std::string& str) {
     // Check the lock!
 #ifdef GCNF_ENABLE_GS_PARAM_LOCK
     if (m_locked) {                                                
@@ -653,7 +653,7 @@ protected:
    * @param  str  String that has to be parsed.
    * @return      If parsing succeeded.
    */
-  const bool parse(std::vector<std::string> &vec, const std::string &str) const {
+  bool parse(std::vector<std::string> &vec, const std::string &str) const {
     // TODO: EXPERIMENTAL does not work for e.g. floats
     //       Use the lua config file parser or set the values with operator=(vector)
     //       or set the members individually with strings or values.

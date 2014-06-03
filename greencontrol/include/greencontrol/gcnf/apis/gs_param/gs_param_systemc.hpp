@@ -78,7 +78,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_INT_BASE;
   }
   
@@ -142,7 +142,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_INT;
   }
   
@@ -205,7 +205,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_UINT_BASE;
   }
   
@@ -269,7 +269,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_UINT;
   }
   
@@ -333,7 +333,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_SIGNED;
   }
   
@@ -397,7 +397,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_BIGINT;
   }
   
@@ -460,7 +460,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_UNSIGNED;
   }
   
@@ -524,7 +524,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_BIGUINT;
   }
   
@@ -585,7 +585,7 @@ public:
   }
   
   /// Operator == with sc_logic
-  const bool operator == (const sc_dt::sc_logic val2) {
+  bool operator == (const sc_dt::sc_logic val2) {
     return getValue() == val2;
   }
   
@@ -607,7 +607,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_BIT;
   }
   
@@ -696,7 +696,7 @@ public:
     return *this;
   }
   /// Operator == with sc_logic_value_t
-  const bool operator == (sc_dt::sc_logic_value_t val2) {
+  bool operator == (sc_dt::sc_logic_value_t val2) {
     return getValue() == (sc_dt::sc_logic)val2;
   }
   
@@ -706,7 +706,7 @@ public:
     return *this;
   }
   /// Operator == with bool
-  const bool operator == (const bool val2) {
+  bool operator == (const bool val2) {
     return getValue() == (sc_dt::sc_logic)val2;
   }
   
@@ -716,7 +716,7 @@ public:
     return *this;
   }
   /// Operator == with char
-  const bool operator == (const char val2) {
+  bool operator == (const char val2) {
     return getValue() == (sc_dt::sc_logic)val2;
   }
   
@@ -726,7 +726,7 @@ public:
     return *this;
   }
   /// Operator == with int
-  const bool operator == (const int val2) {
+  bool operator == (const int val2) {
     return getValue() == (sc_dt::sc_logic)val2;
   }
   
@@ -748,7 +748,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_LOGIC;
   }
   
@@ -842,7 +842,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_TIME;
   }
   
@@ -990,7 +990,7 @@ public:
   
   virtual ~gs_param() { gs_param_t<val_type>::destruct_gs_param(); }              
                                                                                   
-  const bool deserialize(val_type &target_val, const std::string& str) {          
+  bool deserialize(val_type &target_val, const std::string& str) {
 #ifdef GCNF_ENABLE_GS_PARAM_LOCK
     if (gs_param_base::m_locked) {                                                
       GS_PARAM_DUMP("parameter is locked!");                                      
@@ -1072,7 +1072,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SC_EVENT;
   }
   

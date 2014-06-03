@@ -233,7 +233,7 @@ public:
    * @param addr A target address.
    * @return The decoded control service (might be NO_SERVICE).
    */
-  const ControlService getService(const cport_address_type addr)
+  ControlService getService(const cport_address_type addr)
   {
     if (m_address_service_map.count(addr) < 1) {
       //dumpMap();

@@ -346,7 +346,7 @@ public:
    * @param  str         String that should be converted to a value.
    * @return If the convertion was successfull
    */
-  virtual const bool deserialize(val_type &target_val, const std::string& str) = 0;
+  virtual bool deserialize(val_type &target_val, const std::string& str) = 0;
 
   
   // //////////////////////////////////////////////////////////////////// //

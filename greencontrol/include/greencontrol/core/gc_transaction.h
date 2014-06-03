@@ -319,11 +319,11 @@ public:
   const unsigned int& get_mCmd() const {return mCmd; }
   const AnyPointer& get_mAnyPointer() const {return mAnyPointer; }
   const AnyPointer& get_mAnyPointer2() const {return mAnyPointer2; }
-  const unsigned int get_mAnyUint() const {return mAnyUint; }
+  unsigned int get_mAnyUint() const {return mAnyUint; }
   const ControlSpecifier& get_mSpecifier() const {return mSpecifier; }
   const ControlValue& get_mValue() const {return mValue; }
   const cport_address_type& get_mID() const {return mID; }
-  const unsigned int get_mError() const {return mError; }
+  unsigned int get_mError() const {return mError; }
   std::string get_mMetaData() const {return mMetaData; }
   const LogPointer& get_mLogPointer() const {return mLogPointer;}
   const CommandPointer& get_mCmdIf() const {return mCmdIf;}

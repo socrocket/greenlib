@@ -74,7 +74,7 @@ public:
   }
 
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_INT;
   }
   
@@ -172,7 +172,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_UINT;
   }
   
@@ -268,7 +268,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_BOOL;
   }
   
@@ -361,7 +361,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_DOUBLE;
   }
   
@@ -440,7 +440,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_FLOAT;
   }
   
@@ -556,7 +556,7 @@ public:
   }
   
   /// Overloads gs_param_t<T>::deserialize in gs_param_t<T>
-  const bool deserialize(val_type &target_val, const std::string& str) {
+  bool deserialize(val_type &target_val, const std::string& str) {
     // Check the lock!
 #ifdef GCNF_ENABLE_GS_PARAM_LOCK
     if (gs_param_base::m_locked) {                                                
@@ -601,7 +601,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_STRING;
   }
   
@@ -746,7 +746,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_ULONGLONG;
   }
   
@@ -838,7 +838,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_LONGLONG;
   }
   
@@ -949,7 +949,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_UCHAR;
   }
   
@@ -1053,7 +1053,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SIGNED_CHAR;
   }
   
@@ -1157,7 +1157,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_CHAR;
   }
   
@@ -1263,7 +1263,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_USHORT;
   }
   
@@ -1352,7 +1352,7 @@ public:
   }
   
   /// Overloads gs_param_base::getType
-  const Param_type getType() const {
+  Param_type getType() const {
     return PARTYPE_SHORT;
   }
   

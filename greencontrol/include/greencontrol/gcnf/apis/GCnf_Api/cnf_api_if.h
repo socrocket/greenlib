@@ -409,7 +409,7 @@ registerNewParamCallback(new gs::cnf::CallbAdapt< class >(this, &class::method))
    * @return         If the convertion was successfull.
    */
   template<class T>
-  const bool getValue(const std::string &parname, T &value) {
+  bool getValue(const std::string &parname, T &value) {
     return gs_param<T>::static_deserialize(value, getValue(parname));
   }
   
