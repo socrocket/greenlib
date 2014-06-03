@@ -466,7 +466,7 @@ public:
   /**
    * Test if this GSDataTypes carries a pointer.
    */
-  const bool isPointer() const {
+  bool isPointer() const {
     //return pointer!=NULL;
     return m_is_pointer;
     // there is no 2 modes anymore
@@ -533,22 +533,15 @@ public:
    * @param b add this byte to the vector in this GSDataType.
    * @return true on success, false if the data vector in this GSDataType has not been initialized.
    */
-  const bool append(const gs_uint8 b) {
+  bool append(const gs_uint8 b) {
     SC_REPORT_WARNING("GSDataType", "The GSDataType (MData, MSData) does not support append(...) any longer!");
     return false;
-    /*
-    pointer=NULL;
-    if (data==NULL)
-      return false;
-    
-    data->push_back(b);
-    return true;*/
   }
 
   /**
    * Return the size of the byte vector of this GSDataType.
    */
-  inline virtual const gs_uint32 getSize() const { 
+  inline virtual gs_uint32 getSize() const {
     return size;
   }
 

@@ -42,7 +42,7 @@ public:
   virtual ~AttributeRoot(){}
   
   virtual const std::string &getName() const =0;
-  virtual const gs_uint32 getSize() const =0;
+  virtual gs_uint32 getSize() const =0;
   virtual const gs_uint8* serialize()=0;
   virtual void setName(const std::string &_name)=0;
 };
@@ -164,7 +164,7 @@ public:
   }    
 
   /// Get size of attribute
-  inline virtual const gs_uint32 getSize() const { 
+  inline virtual gs_uint32 getSize() const {
     return sizeof(T); 
   } 
 
@@ -313,7 +313,7 @@ public:
   }    
 
   /// Get size of attribute
-  inline virtual const gs_uint32 getSize() const { 
+  inline virtual gs_uint32 getSize() const {
     return sizeof(T); 
   } 
 
