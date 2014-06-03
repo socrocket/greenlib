@@ -178,17 +178,26 @@ public:
         }
       }
       else
-        GS_DUMP("Swallowing phase "<<phase<<" because txn was already completed by target.");
+      {
+        GS_DUMP("Swallowing phase " << phase
+                << " because txn was already completed by target.");
+      }
       bool is_over=true;
       if (has_bytes_valid)
         is_over=ext_base_type::get_extension<bytes_valid>(trans)->value==trans.get_data_length();
       if (phase==tlm::END_RESP  //last resp accept or resp error
           && (is_over | (trans.get_response_status()!=tlm::TLM_INCOMPLETE_RESPONSE && trans.get_response_status()!=tlm::TLM_OK_RESPONSE))) {
         m_idle=true; //TODO: sc_signal?
-        if ((trans.get_response_status()!=tlm::TLM_INCOMPLETE_RESPONSE && trans.get_response_status()!=tlm::TLM_OK_RESPONSE)) 
-          GS_DUMP("Transaction finished due to a "<<((txn_sts->value[router_id]&0x1)?"response":"request")<<" error");
-        else 
+        if ((trans.get_response_status()!=tlm::TLM_INCOMPLETE_RESPONSE && trans.get_response_status()!=tlm::TLM_OK_RESPONSE))
+        {
+          GS_DUMP("Transaction finished due to a "
+                 << ((txn_sts->value[router_id] & 0x1) ? "response" : "request")
+                 << " error");
+        }
+        else
+        {
           GS_DUMP("Transaction finished due to acceptance of final response");
+        }
         GS_DUMP("Release of "<<std::hex<<&trans);
         trans.release();
         startMasterAccessProcessingEvent.notify(sc_core::sc_time(m_clkPeriod, sc_core::SC_NS)); // handle next request
@@ -225,7 +234,10 @@ public:
       }
     }
     else
-        GS_DUMP("Swallowing phase "<<phase<<" because txn "<<&trans<<" was already completed by init.");
+    {
+        GS_DUMP("Swallowing phase " << phase << " because txn " << &trans
+                                    << " was already completed by init.");
+    }
 
     if (phase==END_DATA){
       bool is_over=!has_write_resp;
@@ -233,10 +245,14 @@ public:
         is_over=is_over && ext_base_type::get_extension<bytes_valid>(trans)->value==trans.get_data_length();
       if (is_over | (trans.get_response_status()!=tlm::TLM_INCOMPLETE_RESPONSE && trans.get_response_status()!=tlm::TLM_OK_RESPONSE)) {
         m_idle=true;
-        if ((trans.get_response_status()!=tlm::TLM_INCOMPLETE_RESPONSE && trans.get_response_status()!=tlm::TLM_OK_RESPONSE)) 
+        if ((trans.get_response_status()!=tlm::TLM_INCOMPLETE_RESPONSE && trans.get_response_status()!=tlm::TLM_OK_RESPONSE))
+        {
           GS_DUMP("Transaction finished due to a data error");
-        else 
-          GS_DUMP("Transaction finished due to acceptance of final data phase");        
+        }
+        else
+        {
+          GS_DUMP("Transaction finished due to acceptance of final data phase");
+        }
         trans.release();
         startMasterAccessProcessingEvent.notify(sc_core::sc_time(m_clkPeriod, sc_core::SC_NS)); // handle next request
       }
