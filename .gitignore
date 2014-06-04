@@ -2,6 +2,10 @@
 
 *~
 
+# Don't allow Patches.
+
+*.patch
+
 # Don't allow Makefiles.
 
 Makefile
