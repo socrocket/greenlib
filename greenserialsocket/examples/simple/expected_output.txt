@@ -1,0 +1,12 @@
+Inside b_transport
+At Serial Receiver
+Total number of charaters recieved is 4
+Parity Bits are enabled
+Valid Bit option is not enable thus assuming 8 number of valid bits in a character.
+Number of stop bits that follows each character is 1
+Baud rate is not set
+Total 4 characters are received. They are: 
+  a with parity 1
+  b with parity 1
+  c with parity 1
+  d with parity 0

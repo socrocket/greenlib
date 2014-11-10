@@ -290,6 +290,19 @@ install(DIRECTORY greensignalbus/examples/
         DESTINATION examples/signalbus
 )
 
+# GreenSerialSocket
+
+set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS}
+     greenserialsocket/include/)
+
+install(DIRECTORY greenserialsocket/include/
+        DESTINATION include
+)
+
+install(DIRECTORY greenserialsocket/docs/
+        DESTINATION docs/greenserialsocket
+)
+
 # Greensocs Library include directory (for example).
 include_directories(${GreenSocs_INCLUDE_DIRS})
 link_directories(${GreenSocs_LIB_DIRS})
@@ -304,6 +317,7 @@ add_subdirectory(greensocket EXCLUDE_FROM_ALL)
 add_subdirectory(greenmessage EXCLUDE_FROM_ALL)
 add_subdirectory(gsgpsocket EXCLUDE_FROM_ALL)
 add_subdirectory(greensignalbus EXCLUDE_FROM_ALL)
+add_subdirectory(greenserialsocket EXCLUDE_FROM_ALL)
 
 # Compile greenreg library.
 add_subdirectory(greenreg)
