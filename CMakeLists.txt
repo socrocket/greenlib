@@ -308,7 +308,8 @@ include_directories(${GreenSocs_INCLUDE_DIRS})
 link_directories(${GreenSocs_LIB_DIRS})
 
 # CXX flags for example or library compilation.
-set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES -D_REENTRANT")
+set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES -D_REENTRANT -fPIC"
+   )
 
 add_subdirectory(greensignalsocket EXCLUDE_FROM_ALL)
 add_subdirectory(greenrouter EXCLUDE_FROM_ALL)
