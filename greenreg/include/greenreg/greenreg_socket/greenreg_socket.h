@@ -46,13 +46,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __GREENREG_SOCKET_H__
 #define __GREENREG_SOCKET_H__
 
-// [greebus protocol Header file]
-//#include "greenbus.h"
-
 #include "gr_gsgpsocket.h"
-
 #include "greenreg/greenreg.h"
-
 
 namespace gs {
 namespace reg {
@@ -102,14 +97,6 @@ namespace reg {
     gs::gp::generic_master( _name)
     {
     }
-    
-    /*
-    //! operator () {enables port binding to bus}
-    gs::gp::GenericMasterBlockingPort<32>& operator()()
-    {
-      return *this;
-    }
-    */
     
     //! get_bus_port {enables port binding to bus}
     gs::gp::GenericMasterBlockingPort<32>& get_bus_port()

@@ -26,21 +26,5 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// ChangeLog GreenSocs
-// 2009-01-21 Christian Schroeder: changed namespace
-// 2009-01-29 Christian Schroeder: renamings
-// 2009-01-29 FURTHER CHANGES SEE SVN LOG!
-
-
-//#include "greenbus.h"
 #include "greenreg/greenreg_socket.h"
 
-/*
-static void test()
-{
-	gs::reg::greenreg_socket< GREENBUS::generic_master> master_port( "master");
-//	gs::reg::greenreg_socket< GREENBUS::generic_slave> slave_port( "slave", NULL, 0, 0);
-
-//	master_port.get_bus_port()( slave_port.get_bus_port());
-}
-*/
