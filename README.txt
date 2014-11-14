@@ -63,4 +63,19 @@ If you want to test, you need to do the previous step and after:
 3.  You can type #> make check
     This action will do the last two step in the same time
 
+How to include this library in a project:
+
+* Copy the misc/FindGREENLIB.cmake in your project repository.
+* Add the following lines into your CMakeLists.txt:
+    FIND_PACKAGE(GREENLIB)
+    if(GREENLIB_FOUND)
+      INCLUDE_DIRECTORIES(${GREENLIB_INCLUDE_DIRS})
+      LINK_DIRECTORIES(${GREENLIB_LIBRARY_DIRS})
+    else()
+      MESSAGE(FATAL_ERROR "GreenLib not found.")
+    endif()
+
+You're now able to use PL011 headers and link the toplevel with
+GREENLIB_LIBRARIES.
+
 CMake: http://www.cmake.org/cmake/resources/software.html
