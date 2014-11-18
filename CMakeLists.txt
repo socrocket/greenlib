@@ -19,7 +19,7 @@ add_custom_target(run_test COMMAND make test)
 
 find_package( SystemC )
 if(SystemC_FOUND)
-    include_directories(${SystemC_INCLUDE_DIRS})
+    set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} ${SystemC_INCLUDE_DIRS})
     link_directories(${SystemC_LIBRARIES})
 else()
     message( FATAL_ERROR "SystemC library not found." )
@@ -28,7 +28,7 @@ endif()
 # Require TLM
 find_package( TLM )
 if(TLM_FOUND)
-    include_directories(${TLM_INCLUDE_DIRS})
+    set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} ${TLM_INCLUDE_DIRS})
 else()
     message( FATAL_ERROR "TLM library not found." )
 endif()
@@ -40,7 +40,7 @@ set(Boost_ADDITIONAL_VERSIONS 1.34 1.34.0 1.34.1)
 
 find_package(Boost)
 if(Boost_FOUND)
-   include_directories(${Boost_INCLUDE_DIRS})
+   set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 else()
    message(FATAL_ERROR "Boost library not found.")
 endif()
@@ -48,20 +48,20 @@ endif()
 # Require Python
 
 if(DEFINED ENV{PYTHON_ROOT})
-  include_directories($ENV{PYTHON_ROOT})
+  set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} $ENV{PYTHON_ROOT})
 else()
   find_package(PythonLibs REQUIRED)
-  include_directories(${PYTHON_INCLUDE_DIRS})
+  set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
 endif()
 
 # Require Lua
 if(DEFINED ENV{LUA_INCLUDE_DIR} AND DEFINED ENV{LUA_LIBRARIES})
-  include_directories($ENV{LUA_INCLUDE_DIR})
+  set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} $ENV{LUA_INCLUDE_DIR})
   link_directories($ENV{LUA_LIBRARIES})
 else()
   find_package(Lua)
   if(LUA_FOUND)
-    include_directories(${LUA_INCLUDE_DIR})
+    set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} ${LUA_INCLUDE_DIR})
     link_directories(${LUA_LIBRARIES})
   else()
     message(FATAL_ERROR "Lua library not found.")
@@ -74,9 +74,9 @@ include(${SWIG_USE_FILE})
 
 # GreenSocs library
 
-set (GreenSocs_INCLUDE_DIRS "")
-set (GreenSocs_LIBRARY_DIRS ../../../lib)
-set (GreenSocs_LIBRARIES pthread)
+set(GreenSocs_INCLUDE_DIRS "")
+set(GreenSocs_LIBRARY_DIRS ../../../lib)
+set(GreenSocs_LIBRARIES pthread)
 
 
 # License
@@ -94,7 +94,7 @@ configure_file(
     @ONLY
 )
 
-set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greencontrol/include/)
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greencontrol/include/)
 
 install(DIRECTORY greencontrol/include/
         DESTINATION include
@@ -118,7 +118,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
 
 # GreenSocket
 
-set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greensocket/include/)
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greensocket/include/)
 
 install(DIRECTORY greensocket/include/
         DESTINATION include
@@ -142,7 +142,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
 
 # GsgpSocket
 
-set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} gsgpsocket/include/)
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} gsgpsocket/include/)
 
 install(DIRECTORY gsgpsocket/include/
         DESTINATION include
@@ -166,7 +166,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
 
 # GreenRouter
 
-set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenrouter/include/)
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenrouter/include/)
 
 install(DIRECTORY greenrouter/include/
         DESTINATION include
@@ -189,7 +189,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
 
 # GreenSignalSocket
 
-set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greensignalsocket/include/)
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greensignalsocket/include/)
 
 install(DIRECTORY greensignalsocket/include/
         DESTINATION include
@@ -212,8 +212,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
 
 # Greenreg
 
-set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenreg/include/)
-set (GreenSocs_LIB_DIRS ${GreenSocs_LIB_DIRS} ${PROJECT_SOURCE_DIR}/greenreg/lib/libgreenreg.a)
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenreg/include/)
+set(GreenSocs_LIB_DIRS ${GreenSocs_LIB_DIRS} ${PROJECT_SOURCE_DIR}/greenreg/lib/libgreenreg.a)
 
 install(DIRECTORY greenreg/include/
         DESTINATION include
@@ -232,7 +232,7 @@ install(DIRECTORY greenreg/doc/     # TODO: doc or docs?
 
 # Greenmessage
 
-set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenmessage/include/)
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenmessage/include/)
 
 install(DIRECTORY greenmessage/include/
 	DESTINATION include
@@ -248,7 +248,7 @@ install(DIRECTORY greenmessage/docs/
 
 # Greenscript
 
-set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenscript/include/)
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenscript/include/)
 
 install(DIRECTORY greenscript/include/
         DESTINATION include
@@ -264,7 +264,7 @@ install(DIRECTORY greenscript/docs/
 
 # Greenmemory
 
-set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenmemory/include/)
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenmemory/include/)
 
 install(DIRECTORY greenmemory/include/
         DESTINATION include
@@ -280,7 +280,7 @@ install(DIRECTORY greenmemory/docs/
 
 # Greensignalbus
 
-set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greensignalbus/include/)
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greensignalbus/include/)
 
 install(DIRECTORY greensignalbus/include/
         DESTINATION include
@@ -292,7 +292,7 @@ install(DIRECTORY greensignalbus/examples/
 
 # GreenSerialSocket
 
-set (GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS}
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS}
      greenserialsocket/include/)
 
 install(DIRECTORY greenserialsocket/include/
@@ -302,6 +302,9 @@ install(DIRECTORY greenserialsocket/include/
 install(DIRECTORY greenserialsocket/docs/
         DESTINATION docs/greenserialsocket
 )
+
+# Include directory must use first the repository headers!
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} ${EXTERNAL_INCLUDE_DIRS})
 
 # Greensocs Library include directory (for example).
 include_directories(${GreenSocs_INCLUDE_DIRS})
