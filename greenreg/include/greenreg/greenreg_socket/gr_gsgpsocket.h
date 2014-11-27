@@ -175,7 +175,7 @@ namespace gp {
 
         // re-creates byte enables.  Assumes addresses are correctly aligned
         unsigned int length = _transaction->getMBurstLength();
-        unsigned int mask; 
+        unsigned int mask;
         switch(length) {
           case 1:
             mask = 0x1;
@@ -191,10 +191,12 @@ namespace gp {
             mask = 0xF;
         }
 
-        m_registers->bus_read( m_bus_read_data, address, mask, &_transaction, m_delay_enabled);      
-        gs::MData mdata(gs::GSDataType::dtype((unsigned char *)&m_bus_read_data,_transaction->getMBurstLength()));  
+        m_registers->bus_read(m_bus_read_data, address, mask, &_transaction,
+                              m_delay_enabled);
+        gs::GSDataType::dtype tmp((unsigned char *)(&m_bus_read_data),
+                                  _transaction->getMBurstLength());
+        gs::MData mdata(tmp);
         _transaction->setSData(mdata);
-
       } else if( _transaction->getMCmd() == gs::Generic_MCMD_WR) {
         unsigned int data;
         unsigned int address = static_cast<unsigned int>(_transaction->getMAddr()) - m_base;        
