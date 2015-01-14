@@ -74,6 +74,16 @@ EXEC_PROGRAM("cat ${_SYSTEMC_VERSION_FILE} |grep '#define SC_API_VERSION_STRING'
 EXEC_PROGRAM("cat ${_SYSTEMC_VERSION_FILE} |grep '#define SC_API_VERSION_STRING' | cut -d '_' -f 9 "
              OUTPUT_VARIABLE SystemC_REV)
 
+# since 2.3.1 the version is defined in another manner, so try again if no version could be found
+if("${SystemC_MAJOR}" MATCHES "")
+    EXEC_PROGRAM("grep '#define SC_VERSION_MAJOR' ${_SYSTEMC_VERSION_FILE} | cut -d ' ' -f 8"
+                 OUTPUT_VARIABLE SystemC_MAJOR)
+    EXEC_PROGRAM("grep '#define SC_VERSION_MINOR' ${_SYSTEMC_VERSION_FILE} | cut -d ' ' -f 8"
+                 OUTPUT_VARIABLE SystemC_MINOR)
+    EXEC_PROGRAM("grep '#define SC_VERSION_PATCH' ${_SYSTEMC_VERSION_FILE} | cut -d ' ' -f 8"
+                 OUTPUT_VARIABLE SystemC_REV)
+endif("${SystemC_MAJOR}" MATCHES "")
+
 set(SystemC_VERSION ${SystemC_MAJOR}.${SystemC_MINOR}.${SystemC_REV})
 
 if("${SystemC_MAJOR}" MATCHES "2")
