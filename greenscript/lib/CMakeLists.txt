@@ -17,6 +17,7 @@ ADD_LIBRARY(_gsp_sc.so SHARED ../src/gsp_sc.cpp
                               ../gsp_scPYTHON_wrap.cxx)
 SET_TARGET_PROPERTIES(_gsp_sc.so PROPERTIES PREFIX "")
 SET_TARGET_PROPERTIES(_gsp_sc.so PROPERTIES SUFFIX "")
+TARGET_LINK_LIBRARIES(_gsp_sc.so ${LUA_LIBRARIES})
 
 #
 # Create _gsp_sc_sa.so and _gsp_sc_sa.py for standalone Python scripts.
