@@ -220,7 +220,11 @@ private:
    */
   const char * name() {
     std::stringstream ss;
+    #if SYSTEMC_API == 210
     ss << this->get_parent()->name() << SC_NAME_DELIMITER << "__Tool_Api__";
+    #else
+    ss << this->get_parent_object()->name() << SC_NAME_DELIMITER << "__Tool_Api__";
+    #endif
     return ss.str().c_str();// "TODO Tool_Api";//(dynamic_cast<sc_core::sc_object*>(this))->name();
   }
 #endif

@@ -125,7 +125,11 @@ sc_core::sc_object* gs::socket::bind_checker<TRAITS>::get_parent(){
     GS_MSG_OUTPUT(GS_MSG_FATAL, "Unexpected class hierarchy for a GreenSocket");
   }
   //use get_parent function of sc_object
+  #if SYSTEMC_API == 210
   return me_as_object->get_parent();
+  #else
+  return me_as_object->get_parent_object();
+  #endif
 }
 
 //get the name of the socket

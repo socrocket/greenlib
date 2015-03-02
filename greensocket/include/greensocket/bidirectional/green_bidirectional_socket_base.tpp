@@ -64,9 +64,17 @@ template <unsigned int BUSWIDTH, typename TRAITS, unsigned int N, typename BIND_
 sc_core::sc_object* gs::socket::bidirectional_socket_base<BUSWIDTH, TRAITS, N, BIND_BASE, MM_INTERFACE, EXT_FILLER, POOL>::get_parent() {
   init_base_type* tmp=this; //cast to inti base
   sc_core::sc_object* tmp2=tmp; //cast nach sc_object ist jetzt nicht mehr mehrdeutig da init base genau ei sc_object als base hat
+  #if SYSTEMC_API == 210
   tmp2 = tmp2->get_parent();
+  #else
+  tmp2 = tmp2->get_parent_object();
+  #endif
   // Note: this has two sc_objects as base. One of init, one of target
+  #if SYSTEMC_API == 210
   assert(tmp2 == dynamic_cast<sc_core::sc_object*>(dynamic_cast<target_base_type*>(this))->get_parent());
+  #else
+  assert(tmp2 == dynamic_cast<sc_core::sc_object*>(dynamic_cast<target_base_type*>(this))->get_parent_object());
+  #endif
   return tmp2; 
 }
 
