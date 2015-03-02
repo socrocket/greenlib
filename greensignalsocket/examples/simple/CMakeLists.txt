@@ -5,6 +5,13 @@ target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES} pthread)
 add_dependencies(compile_test ${EXECUTABLE})
 add_test(NAME COMPILATION:_${EXECUTABLE}
          COMMAND  sh -c "./${EXECUTABLE} > executable_output.txt")
-add_test(NAME DIFF:_${EXECUTABLE}
-         COMMAND ${CMAKE_COMMAND} -E compare_files executable_output.txt
-                                ${CMAKE_CURRENT_SOURCE_DIR}/expected_output.txt)
+
+if(SystemC_VERSION STREQUAL "2.3.1")
+    add_test(NAME DIFF:_${EXECUTABLE}
+             COMMAND ${CMAKE_COMMAND} -E compare_files executable_output.txt
+                             ${CMAKE_CURRENT_SOURCE_DIR}/expected_output.txt)
+else()
+    add_test(NAME DIFF:_${EXECUTABLE}
+             COMMAND ${CMAKE_COMMAND} -E compare_files executable_output.txt
+                             ${CMAKE_CURRENT_SOURCE_DIR}/expected_output_2.1.0-2.3.0.txt)
+endif()
