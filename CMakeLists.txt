@@ -74,7 +74,7 @@ include(${SWIG_USE_FILE})
 
 # GreenSocs library
 
-set(GreenSocs_INCLUDE_DIRS "")
+set(GreenSocs_INCLUDE_DIRS "include")
 set(GreenSocs_LIBRARY_DIRS ../../../lib)
 set(GreenSocs_LIBRARIES pthread)
 

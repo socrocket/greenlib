@@ -43,7 +43,7 @@
 
 #include <boost/config.hpp> // needed for SystemC 2.1 (ulong_long issue)
 #include <systemc>
-#include <greencontrol/core/gs_sc_api_detection.h>
+#include "greenlib/gs_sc_api_detection.h"
 
 #include "gcexception.h"
 #include "transport/gs_datatypes.h"

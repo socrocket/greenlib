@@ -37,7 +37,7 @@
 
 #include <vector>
 #include <systemc>
-#include "gs_sc_api_detection.h"
+#include "greenlib/gs_sc_api_detection.h"
 
 
 namespace gs {
