@@ -31,12 +31,13 @@
 
 #include <systemc>
 
-// Respect if the macro is set externally (to 210, 220 or 230 only)
+// Respect if the macro is set externally (to 210, 220, 230 or 231 only)
 #ifdef SYSTEMC_API
 
-#if SYSTEMC_API != 210 && SYSTEMC_API != 220 && SYSTEMC_API != 230
+#if SYSTEMC_API != 210 && SYSTEMC_API != 220 && SYSTEMC_API != 230 && \
+SYSTEMC_API != 231
 #error The SYSTEMC_API macro is set to an unknown value. Accepted values are \
-210, 220 or 230. Please, see the source code gs_sc_api_detection.h for more \
+210, 220, 230 or 231. Please, see the source code gs_sc_api_detection.h for more \
 information.
 #endif
 
@@ -56,6 +57,11 @@ information.
 // OSCI SystemC 2.3.0
 #if SYSTEMC_VERSION == 20111121 || SYSTEMC_VERSION == 20120701
 #define SYSTEMC_API 230
+#endif
+
+// OSCI SystemC 2.3.1
+#if SYSTEMC_VERSION == 20140417
+#define SYSTEMC_API 231
 #endif
 
 // SystemC API to use must be defined at this point
