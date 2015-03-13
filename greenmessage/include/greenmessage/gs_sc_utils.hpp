@@ -54,7 +54,7 @@ namespace gs {
       sc_core::sc_module* node_as_module = dynamic_cast< sc_core::sc_module* >(node);
       if (node_as_module) childs_stack = &(node_as_module->get_child_objects());
       else childs_stack = &empty_vector;
-#elif SYSTEMC_API == 220 || SYSTEMC_API == 230
+#elif SYSTEMC_API == 220 || SYSTEMC_API == 230 || SYSTEMC_API == 231
       childs_stack = &node->get_child_objects();
 #else
 #error get_child_objects: unknown SYSTEMC_API value
@@ -65,7 +65,7 @@ namespace gs {
       sc_core::sc_simcontext *sim; // deprecated with SystemC-2.2
       sim = sc_core::sc_get_curr_simcontext(); // deprecated with SystemC-2.2
       childs_stack = &(sim->get_child_objects());
-#elif SYSTEMC_API == 220 || SYSTEMC_API == 230
+#elif SYSTEMC_API == 220 || SYSTEMC_API == 230 || SYSTEMC_API == 231
       childs_stack = &sc_core::sc_get_top_level_objects();
 #endif
     }
