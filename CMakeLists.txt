@@ -85,6 +85,9 @@ install(FILES greencontrol/LICENSE
         DESTINATION .
 )
 
+install(DIRECTORY include/
+        DESTINATION include
+)
 
 # GreenControl
 
