@@ -3,7 +3,7 @@
 // LICENSETEXT
 //
 //   Copyright (C) 2007-2009 : GreenSocs Ltd
-// 	 http://www.greensocs.com/ , email: info@greensocs.com
+//   http://www.greensocs.com/ , email: info@greensocs.com
 //
 //   Developed by :
 //   
@@ -351,7 +351,13 @@ namespace cnf {
           // key must be integer values (ignore floating part)
           // also convert from 1-based to 0-based indexes (decrement 1)
           should_inc_integer_index_count = true;
-          next_level = level + sprintf(level, "%lld", (long long) lua_tonumber(L, -2) - 1);
+          #ifdef __MINGW32__
+          next_level = level + __mingw_sprintf(level, "%lld",
+                       (long long) lua_tonumber(L, -2) - 1);
+          #else
+          next_level = level + sprintf(level, "%lld",
+                       (long long) lua_tonumber(L, -2) - 1);
+          #endif
           break;
 
         case LUA_TSTRING:
@@ -378,12 +384,27 @@ namespace cnf {
           else {
             long double num = lua_tonumber(L, -1);
             // test if it is an integer
-            if ((long long) num == num)
+            if ((long long) num == num) {
+              #ifdef __MINGW32__
+              __mingw_sprintf(value, "%lld", (long long) num);
+              #else
               sprintf(value, "%lld", (long long) num);
-            else if (((-1 < num) && (num < 1)) || (num < -1e20) || (1e20 < num))
+              #endif
+            }
+            else if (((-1 < num) && (num < 1)) || (num < -1e20) || (1e20 < num)) {
+              #ifdef __MINGW32__
+              __mingw_sprintf(value, "%Le", num);
+              #else
               sprintf(value, "%Le", num);
-            else
+              #endif
+            }
+            else {
+              #ifdef __MINGW32__
+              __mingw_sprintf(value, "%Lf", num);
+              #else
               sprintf(value, "%Lf", num);
+              #endif
+            }
             mApi->setInitValue(key, value);
             if (GC_LUA_VERBOSE) fprintf(stderr, "(SET %s) %s = %s\n", lua_typename(L, lua_type(L, -1)), key, value);
             if (should_inc_integer_index_count) ++integer_index_count;
