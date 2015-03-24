@@ -62,7 +62,7 @@ int sc_main(int argc, char* argv[])
   //sc_report_handler::set_actions(SC_ERROR, SC_ABORT); 
 
   /// GreenControl Core instance
-  gs::ctr::GC_Core       core();
+  gs::ctr::GC_Core core;
   // GreenConfig Plugin
   gs::cnf::ConfigDatabase cnfdatabase("ConfigDatabase");
   gs::cnf::ConfigPlugin configPlugin(&cnfdatabase);

@@ -44,7 +44,7 @@ slightly changed to use the quantum keeper.
 int sc_main(int argc, char** argv){
 
   /// GreenControl Core instance
-  gs::ctr::GC_Core       core();
+  gs::ctr::GC_Core core;
   
   // GreenConfig Plugin
   gs::cnf::ConfigDatabase* cnfdatabase = new gs::cnf::ConfigDatabase("ConfigDatabase");

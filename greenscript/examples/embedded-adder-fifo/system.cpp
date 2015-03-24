@@ -53,7 +53,7 @@ int sc_main(int argc, char *argv[])
 {
 
   ////////// Defines for GreenControl //////////
-  gs::ctr::GC_Core       core();
+  gs::ctr::GC_Core core;
   gs::cnf::ConfigDatabase *db = new gs::cnf::ConfigDatabase("ConfigDatabase");
   gs::cnf::ConfigPlugin configPlugin(db);
   gs::cnf::LuaFile_Tool luareader("luareader");
