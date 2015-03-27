@@ -3,107 +3,138 @@
 # include files and libraries are. This code sets the following
 # variables: (from kernel/sc_ver.h)
 #
-#  SystemC_VERSION_MAJOR      = The major version of the package found.
-#  SystemC_VERSION_MINOR      = The minor version of the package found.
-#  SystemC_VERSION_REV        = The patch version of the package found.
-#  SystemC_VERSION            = This is set to: $major.$minor.$rev
+#  SystemC_MAJOR_VERSION      = The major version of the package found
+#  SystemC_MINOR_VERSION      = The minor version of the package found
+#  SystemC_PATCH_VERSION      = The patch version of the package found
+#  SystemC_VERSION_STRING     = The version of SystemC found, eg. "2.3.1"
 #
 # The minimum required version of SystemC can be specified using the
 # standard CMake syntax, e.g. FIND_PACKAGE(SystemC 2.2)
 #
 # For these components the following variables are set:
 #
-#  SystemC_INCLUDE_DIRS             - Full paths to all include dirs.
-#  SystemC_LIBRARIES                - Full paths to all libraries.
+#  SystemC_INCLUDE_DIRS             - Full paths to all include dirs
+#  SystemC_LIBRARIES                - Full paths to all libraries
+#  SystemC_LIBRARY_DIRS             - Link directories for SystemC libraries
 #
 # Example Usages:
 #  FIND_PACKAGE(SystemC)
-#  FIND_PACKAGE(SystemC 2.3)
-#
+#  FIND_PACKAGE(SystemC 2.3.0)
 
 #=============================================================================
-# Copyright 2012 GreenSocs
-#
+# Copyright 2015 GreenSocs
 #=============================================================================
 
 message(STATUS "Searching for SystemC")
 
-# The HINTS option should only be used for values computed from the system.
-SET(_SYSTEMC_HINTS
-  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\SystemC\\2.2;SystemcHome]/include"
-  ${SYSTEMC_PREFIX}/include
-  ${SYSTEMC_PREFIX}/lib
-  ${SYSTEMC_PREFIX}/lib-linux
-  ${SYSTEMC_PREFIX}/lib-linux64
-  ${SYSTEMC_PREFIX}/lib-macos
-  $ENV{SYSTEMC_PREFIX}/include
-  $ENV{SYSTEMC_PREFIX}/lib
-  $ENV{SYSTEMC_PREFIX}/lib-linux
-  $ENV{SYSTEMC_PREFIX}/lib-linux64
-  $ENV{SYSTEMC_PREFIX}/lib-macos
-  ${CMAKE_INSTALL_PREFIX}/include
-  ${CMAKE_INSTALL_PREFIX}/lib
-  ${CMAKE_INSTALL_PREFIX}/lib-linux
-  ${CMAKE_INSTALL_PREFIX}/lib-linux64
-  ${CMAKE_INSTALL_PREFIX}/lib-macos
-  )
-# Hard-coded guesses should still go in PATHS. This ensures that the user
-# environment can always override hard guesses.
-SET(_SYSTEMC_PATHS
-  /usr/include/systemc
-  /usr/lib
-  /usr/lib-linux
-  /usr/lib-linux64
-  /usr/lib-macos
-  /usr/local/lib
-  /usr/local/lib-linux
-  /usr/local/lib-linux64
-  /usr/local/lib-macos
-  )
-FIND_FILE(_SYSTEMC_VERSION_FILE
-  NAMES sc_ver.h
-  HINTS ${_SYSTEMC_HINTS}
-  PATHS ${_SYSTEMC_PATHS}
-  PATH_SUFFIXES sysc/kernel
-)
+function(SYSTEMC_APPEND_TARGET var prefix)
+    set(listVar "")
+    foreach(f ${ARGN})
+        list(APPEND listVar "${prefix}${f}")
+    endforeach(f)
+    set(${var} "${listVar}" PARENT_SCOPE)
+endfunction(SYSTEMC_APPEND_TARGET)
 
-EXEC_PROGRAM("cat ${_SYSTEMC_VERSION_FILE} |grep '#define SC_API_VERSION_STRING' | cut -d '_' -f 7 "
-             OUTPUT_VARIABLE SystemC_MAJOR)
-EXEC_PROGRAM("cat ${_SYSTEMC_VERSION_FILE} |grep '#define SC_API_VERSION_STRING' | cut -d '_' -f 8 "
-             OUTPUT_VARIABLE SystemC_MINOR)
-EXEC_PROGRAM("cat ${_SYSTEMC_VERSION_FILE} |grep '#define SC_API_VERSION_STRING' | cut -d '_' -f 9 "
-             OUTPUT_VARIABLE SystemC_REV)
+set(_SYSTEMC_TARGET_SUFFIXES linux
+                             linux64
+                             bsd
+                             bsd64
+                             macosx
+                             macosx64
+                             macosxppc
+                             macosxppc64
+                             mingw
+                             mingw64
+                             gccsparcOS5
+                             sparcOS5)
 
-# since 2.3.1 the version is defined in another manner, so try again if no version could be found
-if("${SystemC_MAJOR}" MATCHES "")
-    EXEC_PROGRAM("grep '#define SC_VERSION_MAJOR' ${_SYSTEMC_VERSION_FILE} | cut -d ' ' -f 8"
-                 OUTPUT_VARIABLE SystemC_MAJOR)
-    EXEC_PROGRAM("grep '#define SC_VERSION_MINOR' ${_SYSTEMC_VERSION_FILE} | cut -d ' ' -f 8"
-                 OUTPUT_VARIABLE SystemC_MINOR)
-    EXEC_PROGRAM("grep '#define SC_VERSION_PATCH' ${_SYSTEMC_VERSION_FILE} | cut -d ' ' -f 8"
-                 OUTPUT_VARIABLE SystemC_REV)
-endif("${SystemC_MAJOR}" MATCHES "")
+SYSTEMC_APPEND_TARGET(_SYSTEMC_PREFIX_SUFFIXES ${SYSTEMC_PREFIX}/lib- ${_SYSTEMC_TARGET_SUFFIXES})
+SYSTEMC_APPEND_TARGET(_SYSTEMC_HOME_SUFFIXES $ENV{SYSTEMC_HOME}/lib- ${_SYSTEMC_TARGET_SUFFIXES})
+SYSTEMC_APPEND_TARGET(_USR_SUFFIXES /usr/lib- ${_SYSTEMC_TARGET_SUFFIXES})
+SYSTEMC_APPEND_TARGET(_USR_LOCAL_SUFFIXES /usr/local/lib- ${_SYSTEMC_TARGET_SUFFIXES})
 
-set(SystemC_VERSION ${SystemC_MAJOR}.${SystemC_MINOR}.${SystemC_REV})
+set(_SYSTEMC_HINTS
+    ${SYSTEMC_PREFIX}/include
+    ${SYSTEMC_PREFIX}/lib
+    ${_SYSTEMC_PREFIX_SUFFIXES}
+    $ENV{SYSTEMC_HOME}/lib
+    $ENV{SYSTEMC_HOME}/include
+    ${_SYSTEMC_HOME_SUFFIXES})
 
-if("${SystemC_MAJOR}" MATCHES "2")
-  set(SystemC_FOUND TRUE)
-endif("${SystemC_MAJOR}" MATCHES "2")
+set(_SYSTEMC_PATHS
+    /usr/local/lib
+    ${_USR_LOCAL_SUFFIXES}
+    /usr/local/lib64
+    /usr/local/include
+    /usr/local/systemc
+    /usr/local/systemc/include
+    /usr/lib
+    ${_USR_SUFFIXES}
+    /usr/lib64
+    /usr/include
+    /usr/systemc
+    /usr/systemc/include)
 
-message(STATUS "SystemC version = ${SystemC_VERSION}")
+find_file(_SYSTEMC_VERSION_FILE
+          NAMES sc_ver.h
+          HINTS ${_SYSTEMC_HINTS}
+          PATHS ${_SYSTEMC_PATHS}
+          PATH_SUFFIXES sysc/kernel)
 
-FIND_PATH(SystemC_INCLUDE_DIRS
-  NAMES systemc.h
-  HINTS ${_SYSTEMC_HINTS}
-  PATHS ${_SYSTEMC_PATHS}
-)
+if(EXISTS ${_SYSTEMC_VERSION_FILE})
+    file (READ ${_SYSTEMC_VERSION_FILE} _SYSTEMC_VERSION_FILE_CONTENTS)
+    string (REGEX MATCH
+        "SC_API_VERSION_STRING[ \t]+sc_api_version_([0-9]+)_([0-9]+)_([0-9]+)"
+        SC_API_VERSION_STRING ${_SYSTEMC_VERSION_FILE_CONTENTS})
 
-FIND_PATH(SystemC_LIBRARY_DIRS
-  NAMES libsystemc.a
-  HINTS ${_SYSTEMC_HINTS}
-  PATHS ${_SYSTEMC_PATHS}
-)
+    if(NOT "${SC_API_VERSION_STRING}" MATCHES "")
+        # SystemC < 2.3.1
+        string (REGEX MATCHALL "([0-9]+)" _SystemC_VERSION
+            ${SC_API_VERSION_STRING})
+        list(GET _SystemC_VERSION 0 SystemC_MAJOR_VERSION)
+        list(GET _SystemC_VERSION 1 SystemC_MINOR_VERSION)
+        list(GET _SystemC_VERSION 2 SystemC_PATCH_VERSION)
+    else(NOT "${SC_API_VERSION_STRING}" MATCHES "")
+        # SystemC >= 2.3.1
+        string (REGEX MATCH "SC_VERSION_MAJOR[ \t]+([0-9]+)"
+            SystemC_MAJOR_VERSION ${_SYSTEMC_VERSION_FILE_CONTENTS})
+        string (REGEX MATCH "([0-9]+)" SystemC_MAJOR_VERSION
+            ${SystemC_MAJOR_VERSION})
+        string (REGEX MATCH "SC_VERSION_MINOR[ \t]+([0-9]+)"
+            SystemC_MINOR_VERSION ${_SYSTEMC_VERSION_FILE_CONTENTS})
+        string (REGEX MATCH "([0-9]+)" SystemC_MINOR_VERSION
+            ${SystemC_MINOR_VERSION})
+        string (REGEX MATCH "SC_VERSION_PATCH[ \t]+([0-9]+)"
+            SystemC_PATCH_VERSION ${_SYSTEMC_VERSION_FILE_CONTENTS})
+        string (REGEX MATCH "([0-9]+)" SystemC_PATCH_VERSION
+            ${SystemC_PATCH_VERSION})
+    endif(NOT "${SC_API_VERSION_STRING}" MATCHES "")
 
-set(SystemC_LIBRARIES ${SystemC_LIBRARY_DIRS}/libsystemc.a)
+    set(SystemC_VERSION_STRING "${SystemC_MAJOR_VERSION}.${SystemC_MINOR_VERSION}.${SystemC_PATCH_VERSION}")
 
-message(STATUS "SystemC library = ${SystemC_LIBRARIES}")
+    if("${SystemC_MAJOR_VERSION}" MATCHES "2")
+        set(SystemC_FOUND TRUE)
+    endif("${SystemC_MAJOR_VERSION}" MATCHES "2")
+
+    message(STATUS "SystemC version = ${SystemC_VERSION_STRING}")
+
+    find_path(SystemC_INCLUDE_DIRS
+              NAMES systemc systemc.h
+              HINTS ${_SYSTEMC_HINTS}
+              PATHS ${_SYSTEMC_PATHS})
+
+    find_library(SystemC_LIBRARIES
+                 NAMES systemc SystemC
+                 HINTS ${_SYSTEMC_HINTS}
+                 PATHS ${_SYSTEMC_PATHS})
+
+    if("${CMAKE_VERSION}" VERSION_GREATER 2.8.12)
+        get_filename_component(SystemC_LIBRARY_DIRS ${SystemC_LIBRARIES}
+            DIRECTORY)
+    else("${CMAKE_VERSION}" VERSION_GREATER 2.8.12)
+        get_filename_component(SystemC_LIBRARY_DIRS ${SystemC_LIBRARIES}
+            PATH)
+    endif()
+
+    message(STATUS "SystemC library = ${SystemC_LIBRARIES}")
+endif()
