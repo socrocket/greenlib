@@ -269,20 +269,19 @@ void GreenScriptModule::add_to_pythonpath(const char* path) {
 
 
 // private function used by load()
-bool GreenScriptModule::private_load(const char *fullname) {
-  FILE *script = fopen(fullname,"r");
-  if(!script) return false;
+bool GreenScriptModule::private_load(const char* fullname) {
+  char mode[] = "r";
 
   establish_interpreter_name();
 
   // run the script
-  PyObject *ret = PyRun_File(
-    script, fullname, Py_file_input, my_namespace, my_namespace);
+  PyObject* PyFileObject = PyFile_FromString((char *)fullname, mode);
+  PyObject *ret = PyRun_File(PyFile_AsFile(PyFileObject),
+                  (char *)fullname, Py_file_input, my_namespace, my_namespace);
+
   if(ret == NULL) PyErr_Print();
   Py_XDECREF(ret);
 
-  // finish
-  fclose(script);
   return true;
 }
 
