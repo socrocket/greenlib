@@ -12,5 +12,3 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/system.py
 
 add_test(NAME COMPILATION:_${EXECUTABLE}
          COMMAND sh -c "export PYTHONPATH=$ENV{PYTHONPATH} && python system.py")
-
-add_dependencies(compile_test ${EXECUTABLE})
