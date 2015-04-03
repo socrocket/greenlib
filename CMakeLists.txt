@@ -237,15 +237,15 @@ install(DIRECTORY greenreg/doc/     # TODO: doc or docs?
 set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenmessage/include/)
 
 install(DIRECTORY greenmessage/include/
-	DESTINATION include
+    DESTINATION include
 )
 
 install(DIRECTORY greenmessage/examples/
-	DESTINATION examples/greenmessage
+    DESTINATION examples/greenmessage
 )
 
 install(DIRECTORY greenmessage/docs/
-	DESTINATION docs/greenmessage
+    DESTINATION docs/greenmessage
 )
 
 # Greenscript
@@ -313,8 +313,11 @@ include_directories(${GreenSocs_INCLUDE_DIRS})
 link_directories(${GreenSocs_LIB_DIRS})
 
 # CXX flags for example or library compilation.
-set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES -D_REENTRANT -fPIC"
-   )
+if(MINGW)
+    set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES -D_REENTRANT -static-libgcc -static-libstdc++")
+else(MINGW)
+    set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES -D_REENTRANT -fPIC")
+endif(MINGW)
 
 add_subdirectory(greensignalsocket EXCLUDE_FROM_ALL)
 add_subdirectory(greenrouter EXCLUDE_FROM_ALL)
@@ -329,7 +332,10 @@ add_subdirectory(greenserialsocket EXCLUDE_FROM_ALL)
 add_subdirectory(greenreg)
 
 # Compile greenscript library
-add_subdirectory(greenscript)
+if(NOT MINGW)
+    # FIX ME : add greenscript support with MINGW
+    add_subdirectory(greenscript)
+endif(NOT MINGW)
 
 # build a CPack driven installer package
 include (InstallRequiredSystemLibraries)

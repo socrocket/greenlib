@@ -23,7 +23,7 @@
 
 // Some MSVC DLL handling
 // NOTE: _DLL is defined when /MD or /MDd is specified.
-#ifdef _DLL
+#if defined(_DLL) && !defined(__MINGW32__) && !defined(__MINGW64__)
   #ifdef GREENSOCKET_EXPORTS
     #define GREENSOCKET_API __declspec(dllexport)
     #define GREENSOCKET_DECL_VISIBLE 1
