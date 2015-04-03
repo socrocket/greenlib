@@ -25,6 +25,7 @@ install_manifest.txt
 #Don't allow executable_output.txt
 
 executable_output.txt
+executable_output.template
 
 #Don't allow to check in example files.
 
