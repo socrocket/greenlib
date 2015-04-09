@@ -1,7 +1,7 @@
 SET(EXECUTABLE "greenmemory_simple")
 
 add_executable(${EXECUTABLE} test.cpp)
-target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES})
+target_link_libraries(${EXECUTABLE})
 
 add_dependencies(compile_test ${EXECUTABLE})
 
