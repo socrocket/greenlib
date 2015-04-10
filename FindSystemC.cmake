@@ -94,7 +94,7 @@ if(EXISTS ${_SYSTEMC_VERSION_FILE})
         list(GET _SystemC_VERSION 0 SystemC_MAJOR_VERSION)
         list(GET _SystemC_VERSION 1 SystemC_MINOR_VERSION)
         list(GET _SystemC_VERSION 2 SystemC_PATCH_VERSION)
-    else(NOT "${SC_API_VERSION_STRING}" MATCHES "")
+    else()
         # SystemC >= 2.3.1
         string (REGEX MATCH "SC_VERSION_MAJOR[ \t]+([0-9]+)"
             SystemC_MAJOR_VERSION ${_SYSTEMC_VERSION_FILE_CONTENTS})
@@ -108,13 +108,9 @@ if(EXISTS ${_SYSTEMC_VERSION_FILE})
             SystemC_PATCH_VERSION ${_SYSTEMC_VERSION_FILE_CONTENTS})
         string (REGEX MATCH "([0-9]+)" SystemC_PATCH_VERSION
             ${SystemC_PATCH_VERSION})
-    endif(NOT "${SC_API_VERSION_STRING}" MATCHES "")
+    endif()
 
     set(SystemC_VERSION_STRING "${SystemC_MAJOR_VERSION}.${SystemC_MINOR_VERSION}.${SystemC_PATCH_VERSION}")
-
-    if("${SystemC_MAJOR_VERSION}" MATCHES "2")
-        set(SystemC_FOUND TRUE)
-    endif("${SystemC_MAJOR_VERSION}" MATCHES "2")
 
     message(STATUS "SystemC version = ${SystemC_VERSION_STRING}")
 
@@ -123,10 +119,31 @@ if(EXISTS ${_SYSTEMC_VERSION_FILE})
               HINTS ${_SYSTEMC_HINTS}
               PATHS ${_SYSTEMC_PATHS})
 
-    find_library(SystemC_LIBRARIES
+    # Static
+    set(_SystemC_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
+    if(WIN32)
+        set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
+    else()
+        set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
+    endif()
+
+    find_library(SystemC_LIBRARIES_STATIC
                  NAMES systemc SystemC
                  HINTS ${_SYSTEMC_HINTS}
                  PATHS ${_SYSTEMC_PATHS})
+
+    # Restore original CMAKE_FIND_LIBRARY_SUFFIXES
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ${_SystemC_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES})
+
+    # If SystemC_USE_STATIC_LIBS set to ON, force the use of the static libraries
+    if(SystemC_USE_STATIC_LIBS)
+        set(SystemC_LIBRARIES SystemC_LIBRARIES_STATIC)
+    else()
+        find_library(SystemC_LIBRARIES
+                     NAMES systemc SystemC
+                     HINTS ${_SYSTEMC_HINTS}
+                     PATHS ${_SYSTEMC_PATHS})
+    endif()
 
     if("${CMAKE_VERSION}" VERSION_GREATER 2.8.12)
         get_filename_component(SystemC_LIBRARY_DIRS ${SystemC_LIBRARIES}
@@ -134,6 +151,10 @@ if(EXISTS ${_SYSTEMC_VERSION_FILE})
     else("${CMAKE_VERSION}" VERSION_GREATER 2.8.12)
         get_filename_component(SystemC_LIBRARY_DIRS ${SystemC_LIBRARIES}
             PATH)
+    endif()
+
+    if(SystemC_VERSION_STRING AND SystemC_INCLUDE_DIRS AND SystemC_LIBRARIES)
+        set(SystemC_FOUND TRUE)
     endif()
 
     message(STATUS "SystemC library = ${SystemC_LIBRARIES}")
