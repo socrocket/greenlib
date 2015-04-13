@@ -1,31 +1,26 @@
-# - Find SystemC
+# Find SystemC
 # This module finds if SystemC is installed and determines where the
 # include files and libraries are. This code sets the following
 # variables: (from kernel/sc_ver.h)
 #
-#  SystemC_MAJOR_VERSION      = The major version of the package found
-#  SystemC_MINOR_VERSION      = The minor version of the package found
-#  SystemC_PATCH_VERSION      = The patch version of the package found
-#  SystemC_VERSION_STRING     = The version of SystemC found, eg. "2.3.1"
-#
-# The minimum required version of SystemC can be specified using the
-# standard CMake syntax, e.g. FIND_PACKAGE(SystemC 2.2)
+#  SystemC_VERSION_MAJOR      = The major version of the package found
+#  SystemC_VERSION_MINOR      = The minor version of the package found
+#  SystemC_VERSION_PATCH      = The patch version of the package found
+#  SystemC_VERSION            = The full version string of the package found
 #
 # For these components the following variables are set:
 #
 #  SystemC_INCLUDE_DIRS             - Full paths to all include dirs
-#  SystemC_LIBRARIES                - Full paths to all libraries
 #  SystemC_LIBRARY_DIRS             - Link directories for SystemC libraries
+#  SystemC::SystemC                 - Full path to SystemC library
+#  SystemC::SystemC_STATIC          - Full path to SystemC static library
 #
 # Example Usages:
-#  FIND_PACKAGE(SystemC)
-#  FIND_PACKAGE(SystemC 2.3.0)
+#  find_package(SystemC)
 
 #=============================================================================
 # Copyright 2015 GreenSocs
 #=============================================================================
-
-message(STATUS "Searching for SystemC")
 
 function(SYSTEMC_APPEND_TARGET var prefix)
     set(listVar "")
@@ -91,28 +86,29 @@ if(EXISTS ${_SYSTEMC_VERSION_FILE})
         # SystemC < 2.3.1
         string (REGEX MATCHALL "([0-9]+)" _SystemC_VERSION
             ${SC_API_VERSION_STRING})
-        list(GET _SystemC_VERSION 0 SystemC_MAJOR_VERSION)
-        list(GET _SystemC_VERSION 1 SystemC_MINOR_VERSION)
-        list(GET _SystemC_VERSION 2 SystemC_PATCH_VERSION)
+        list(GET _SystemC_VERSION 0 SystemC_VERSION_MAJOR)
+        list(GET _SystemC_VERSION 1 SystemC_VERSION_MINOR)
+        list(GET _SystemC_VERSION 2 SystemC_VERSION_PATCH)
     else()
         # SystemC >= 2.3.1
         string (REGEX MATCH "SC_VERSION_MAJOR[ \t]+([0-9]+)"
-            SystemC_MAJOR_VERSION ${_SYSTEMC_VERSION_FILE_CONTENTS})
-        string (REGEX MATCH "([0-9]+)" SystemC_MAJOR_VERSION
-            ${SystemC_MAJOR_VERSION})
+            SystemC_VERSION_MAJOR ${_SYSTEMC_VERSION_FILE_CONTENTS})
+        string (REGEX MATCH "([0-9]+)" SystemC_VERSION_MAJOR
+            ${SystemC_VERSION_MAJOR})
         string (REGEX MATCH "SC_VERSION_MINOR[ \t]+([0-9]+)"
-            SystemC_MINOR_VERSION ${_SYSTEMC_VERSION_FILE_CONTENTS})
-        string (REGEX MATCH "([0-9]+)" SystemC_MINOR_VERSION
-            ${SystemC_MINOR_VERSION})
+            SystemC_VERSION_MINOR ${_SYSTEMC_VERSION_FILE_CONTENTS})
+        string (REGEX MATCH "([0-9]+)" SystemC_VERSION_MINOR
+            ${SystemC_VERSION_MINOR})
         string (REGEX MATCH "SC_VERSION_PATCH[ \t]+([0-9]+)"
-            SystemC_PATCH_VERSION ${_SYSTEMC_VERSION_FILE_CONTENTS})
-        string (REGEX MATCH "([0-9]+)" SystemC_PATCH_VERSION
-            ${SystemC_PATCH_VERSION})
+            SystemC_VERSION_PATCH ${_SYSTEMC_VERSION_FILE_CONTENTS})
+        string (REGEX MATCH "([0-9]+)" SystemC_VERSION_PATCH
+            ${SystemC_VERSION_PATCH})
     endif()
 
-    set(SystemC_VERSION_STRING "${SystemC_MAJOR_VERSION}.${SystemC_MINOR_VERSION}.${SystemC_PATCH_VERSION}")
+    set(SystemC_VERSION "${SystemC_VERSION_MAJOR}.${SystemC_VERSION_MINOR}.${SystemC_VERSION_PATCH}")
 
-    message(STATUS "SystemC version = ${SystemC_VERSION_STRING}")
+    # Compatibility variable
+    set(SystemC_VERSION_STRING ${SystemC_VERSION})
 
     find_path(SystemC_INCLUDE_DIRS
               NAMES systemc systemc.h
@@ -145,6 +141,20 @@ if(EXISTS ${_SYSTEMC_VERSION_FILE})
                      PATHS ${_SYSTEMC_PATHS})
     endif()
 
+    # Default
+    if(NOT TARGET SystemC::SystemC)
+        add_library(SystemC::SystemC UNKNOWN IMPORTED)
+        set_target_properties(SystemC::SystemC PROPERTIES
+                              IMPORTED_LOCATION "${SystemC_LIBRARIES}")
+    endif()
+
+    # Static
+    if(NOT TARGET SystemC::SystemC_STATIC)
+        add_library(SystemC::SystemC_STATIC STATIC IMPORTED)
+        set_target_properties(SystemC::SystemC_STATIC PROPERTIES
+                              IMPORTED_LOCATION "${SystemC_LIBRARIES_STATIC}")
+    endif()
+
     if("${CMAKE_VERSION}" VERSION_GREATER 2.8.12)
         get_filename_component(SystemC_LIBRARY_DIRS ${SystemC_LIBRARIES}
             DIRECTORY)
@@ -152,10 +162,11 @@ if(EXISTS ${_SYSTEMC_VERSION_FILE})
         get_filename_component(SystemC_LIBRARY_DIRS ${SystemC_LIBRARIES}
             PATH)
     endif()
-
-    if(SystemC_VERSION_STRING AND SystemC_INCLUDE_DIRS AND SystemC_LIBRARIES)
-        set(SystemC_FOUND TRUE)
-    endif()
-
-    message(STATUS "SystemC library = ${SystemC_LIBRARIES}")
 endif()
+
+include(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(SystemC
+                                  FOUND_VAR SystemC_FOUND
+                                  REQUIRED_VARS SystemC_LIBRARIES SystemC_LIBRARY_DIRS SystemC_INCLUDE_DIRS
+                                  VERSION_VAR SystemC_VERSION)
+mark_as_advanced(SystemC_LIBRARIES SystemC_LIBRARY_DIRS SystemC_INCLUDE_DIRS)
