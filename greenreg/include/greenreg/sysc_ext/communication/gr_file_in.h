@@ -119,45 +119,54 @@ public:
 	virtual const char* kind() const
 	{ return( "gr_file_in"); }
 
-	////////////////////////////////////////////
-	/// read_data_process
-	/// read data from the file when a pull comes from
-	/// from the fifo.
-	////////////////////////////////////////////
-	void read_data_process()
-	{
-		unsigned int val;
-		GR_INFO( "reading data");
-		if( feof( m_file_handle))
-		{
-			if( m_continious)
-			{
-				fclose( m_file_handle);
-				m_file_handle = fopen( m_file_name.get_value().c_str(), "rb");
-
-				if( m_file_handle == NULL)
-				{
-					std::stringstream ss;
-					ss<< "gr_file_in : " << basename() << " failed to open " << m_file_name.get_value().c_str() << ". \nExiting";
-					GR_ERROR( ss.str().c_str());
-				}
-
-			} else {
-				fclose( m_file_handle);
-				m_file_handle = NULL;
-			}
-
-		} else {
-
-			// fill up the fifo
-			while( !feof( m_file_handle) && m_fifo_out.num_free() > 0)
-			{
-				fread( &val, 4, 1, m_file_handle);
-				m_fifo_out.nb_write( val);
-			}
-		}
-		next_trigger( m_fifo_out.data_read_event());
-	}
+    ////////////////////////////////////////////
+    /// read_data_process
+    /// read data from the file when a pull comes from
+    /// from the fifo.
+    ////////////////////////////////////////////
+    void read_data_process()
+    {
+        unsigned int val;
+        GR_INFO("reading data");
+        if(feof(m_file_handle))
+        {
+            if(m_continious)
+            {
+                fclose(m_file_handle);
+                m_file_handle = fopen(m_file_name.get_value().c_str(), "rb");
+                if(m_file_handle == NULL)
+                {
+                    std::stringstream ss;
+                    ss << "gr_file_in : " << basename() << " failed to open "
+                       << m_file_name.get_value().c_str() << ". \nExiting";
+                    GR_ERROR(ss.str().c_str());
+                }
+            }
+            else
+            {
+                fclose(m_file_handle);
+                m_file_handle = NULL;
+            }
+        }
+        else
+        {
+            // fill up the fifo
+            while(!feof(m_file_handle) && m_fifo_out.num_free() > 0)
+            {
+                size_t sz;
+                sz = fread(&val, 4, 1, m_file_handle);
+                if (sz != 4)
+                {
+                    std::stringstream ss;
+                    ss << "gr_file_in : " << basename() << " cannot read "
+                       << m_file_name.get_value().c_str() << ". \nExiting";
+                    GR_ERROR(ss.str().c_str());
+                }
+                m_fifo_out.nb_write(val);
+            }
+        }
+        next_trigger(m_fifo_out.data_read_event());
+    }
 
 	////////////////////////////////////////////
 	/// file_name_changed_process
