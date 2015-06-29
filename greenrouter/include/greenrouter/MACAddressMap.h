@@ -11,12 +11,12 @@
 //
 //   Mark Burton, Marcus Bartholomeu
 //     GreenSocs Ltd
-// 
-// 
+//
+//
 // The contents of this file are subject to the licensing terms specified
 // in the file LICENSE. Please consult this file for restrictions and
 // limitations that may apply.
-// 
+//
 // ENDLICENSETEXT
 
 #ifndef __MACAddressMap_h__
@@ -58,7 +58,7 @@ typedef Ethernet_Map_t::iterator Ethernet_Map_iterator_t;         ///< address m
 
 template < typename TRAITS, unsigned int PORTMAX = 255>
 class MACAddressMap {
- 
+
  protected:
  //KEY is PortId and VALUE is MAC address of this device/ethernetController/backendInterface
  Ethernet_Map_t m_address_map;
@@ -143,7 +143,7 @@ class MACAddressMap {
            mapped = true;
            break;
          }
-       }   
+       }
 
        if (!mapped) {
          cerr  << "WARNING: Target ( "
@@ -280,7 +280,7 @@ class MACAddressMap {
 
 
  /** --------------------------------------------------------------------------
-  * returns the default address map 
+  * returns the default address map
  -------------------------------------------------------------------------- */
  const Ethernet_Map_t & get_address_map() const {
     return m_address_map;

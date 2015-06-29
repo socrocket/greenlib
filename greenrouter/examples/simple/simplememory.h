@@ -1,22 +1,22 @@
 // LICENSETEXT
-// 
+//
 //   Copyright (C) 2007-2008 : GreenSocs Ltd
 //       http://www.greensocs.com/ , email: info@greensocs.com
-// 
+//
 //   Developed by :
-// 
+//
 //   Wolfgang Klingauf, Robert Guenzel, Christian Schroeder
 //     Technical University of Braunschweig, Dept. E.I.S.
 //     http://www.eis.cs.tu-bs.de
-// 
+//
 //   Mark Burton, Marcus Bartholomeu
 //     GreenSocs Ltd
-// 
-// 
+//
+//
 // The contents of this file are subject to the licensing terms specified
 // in the file LICENSE. Please consult this file for restrictions and
 // limitations that may apply.
-// 
+//
 // ENDLICENSETEXT
 
 //
@@ -45,7 +45,7 @@ using namespace gs::gp;
 
 #define CYCLES(x) 3*x, sc_core::SC_NS
 
-class simplememory 
+class simplememory
 : public sc_core::sc_module
 , public tlm_b_if<GenericSlaveAccessHandle> // = b_transact(tr)
 , public payload_event_queue_output_if<slave_atom>  // = notify(atom)
@@ -54,7 +54,7 @@ public:
   GenericSlavePort<32> target_port;
   typedef GenericSlavePort<32>::accessHandle accessHandle;
   typedef GenericSlavePort<32>::phase phase;
-  
+
   unsigned char MEM[MEMSIZE];
 
   std::list<std::pair<accessHandle, phase > > waiting;
@@ -65,12 +65,12 @@ public:
   // payload_event_queue_output_if implementation
   void notify(slave_atom&);
   void PVTProcess(accessHandle, phase);
-  
+
   int IPmodel(accessHandle t);
 
   //Constructor
   SC_HAS_PROCESS(simplememory);
-  simplememory(sc_core::sc_module_name name, unsigned int delay=10 ) 
+  simplememory(sc_core::sc_module_name name, unsigned int delay=10 )
     : sc_core::sc_module(name)
     , target_port ("tport")
     , m_delay(delay)
@@ -85,7 +85,7 @@ public:
     cnf.use_wr_resp = true;
     target_port.set_config(cnf);
   }
-  
+
   GSDataType data;
   unsigned int m_delay;
 };
@@ -110,7 +110,7 @@ void simplememory::notify(slave_atom& tc)
  * we are essencially modelling */
 void simplememory::PVTProcess(accessHandle tah, phase p)
 {
-  
+
   switch (p.state) {
 
     case GenericPhase::RequestValid:
@@ -121,7 +121,7 @@ void simplememory::PVTProcess(accessHandle tah, phase p)
         waiting.push_back(std::pair<accessHandle,  phase > (tah,p));
 
       } else {
-      
+
         if (tah->getMCmd() == Generic_MCMD_RD) {
           SHOW_SC_TIME( "PVT : Accepted Read (in 10) sending master data in 50");
                                   // because we can, copy it all on beat one but
@@ -135,7 +135,7 @@ void simplememory::PVTProcess(accessHandle tah, phase p)
         }
       }
       break;
-      
+
     case GenericPhase::DataValid:
       SHOW_SC_TIME( "PVT : DataValid ");
       std::cout<<"DataValid got "<<(tah->getSData()[0])<<(tah->getSData()[1])<<" for address "<<(MAddr)tah->getMAddr()<<std::endl;
@@ -148,7 +148,7 @@ void simplememory::PVTProcess(accessHandle tah, phase p)
       }
       target_port.AckData(tah,p,CYCLES(1));
       break;
-      
+
     case GenericPhase::ResponseAccepted:
       SHOW_SC_TIME( "PVT : ResponseAccepted " << tah->getMCmd());
       if (tah->getMCmd() == Generic_MCMD_WR) {
@@ -162,18 +162,18 @@ void simplememory::PVTProcess(accessHandle tah, phase p)
           PVTProcess(pair.first,pair.second);
         }
       }
-      
+
       // Always nice to know
       break;
-      
+
     default:
       SC_REPORT_ERROR( sc_core::SC_ID_INTERNAL_ERROR_, "Phase not recognized" );
       break;
   }
-  
-  
+
+
 }
-  
+
 
 
 /* Here is what the user should end up writing

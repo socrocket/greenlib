@@ -1,22 +1,22 @@
 // LICENSETEXT
-// 
+//
 //   Copyright (C) 2007 : GreenSocs Ltd
 //       http://www.greensocs.com/ , email: info@greensocs.com
-// 
+//
 //   Developed by :
-// 
+//
 //   Robert Guenzel
 //     Technical University of Braunschweig, Dept. E.I.S.
 //     http://www.eis.cs.tu-bs.de
-// 
+//
 //   Mark Burton, Marcus Bartholomeu
 //     GreenSocs Ltd
-// 
-// 
+//
+//
 // The contents of this file are subject to the licensing terms specified
 // in the file LICENSE. Please consult this file for restrictions and
 // limitations that may apply.
-// 
+//
 // ENDLICENSETEXT
 
 #ifndef __simpleBusProtocol_h__
@@ -29,7 +29,7 @@
 #include "greensocket/generic/gs_callbacks.h"
 //--------------------------------------------------------------------------
 /**
- * A simple bus protocol implementation. 
+ * A simple bus protocol implementation.
  * The bus processes transactions consecutively. The arbitration
  * is clock-synchronous. Thus, incoming requests are always processed
  * with the next positive edge of the clock. Requests are
@@ -42,7 +42,7 @@ namespace gp{
 
 
 template<unsigned int BUSWIDTH>
-class SimpleBusProtocol 
+class SimpleBusProtocol
 : public GenericProtocol_if<tlm::tlm_base_protocol_types>,
   public sc_core::sc_module,
   protected gs::socket::extension_support_base<tlm::tlm_base_protocol_types>,
@@ -55,17 +55,17 @@ class SimpleBusProtocol
   virtual unsigned int get_num_bindings(){return 0;}
 
   typedef GenericProtocol_if<tlm::tlm_base_protocol_types>::payload_type              payload_type;
-  typedef GenericProtocol_if<tlm::tlm_base_protocol_types>::phase_type                phase_type;  
+  typedef GenericProtocol_if<tlm::tlm_base_protocol_types>::phase_type                phase_type;
   typedef tlm::tlm_sync_enum                            sync_enum_type;
-  
+
   typedef gs::socket::extension_support_base<tlm::tlm_base_protocol_types> ext_base_type;
   typedef gs::socket::bind_checker_base<tlm::tlm_base_protocol_types>      bind_checker_base_type;
 
-  SINGLE_MEMBER_GUARDED_DATA(txn_states, gs::ext::vector_container<unsigned char>);  
+  SINGLE_MEMBER_GUARDED_DATA(txn_states, gs::ext::vector_container<unsigned char>);
 
   gp_peq m_fw_peq, m_bw_peq;
-public:  
-  /// the port to the router 
+public:
+  /// the port to the router
   //sc_port<GenericRouter_if<INITPORT, TARGETPORT> > router_port;
   sc_core::sc_port<GenericRouter_if<BUSWIDTH, tlm::tlm_base_protocol_types> > router_port;
 
@@ -126,18 +126,18 @@ public:
     gs::ext::gs_extension_bindability_enum i_wr_bind=i_sock->get_recent_config().template has_extension<wr_resp_dummy>();
     gs::ext::gs_extension_bindability_enum t_b_valid_bind=t_sock->get_recent_config().template has_extension<bytes_valid>();
     gs::ext::gs_extension_bindability_enum i_b_valid_bind=i_sock->get_recent_config().template has_extension<bytes_valid>();
-    
+
     assert(t_b_data_bind==t_e_data_bind);
     assert(i_b_data_bind==i_e_data_bind);
     assert(t_b_data_bind==i_b_data_bind);
     assert(t_wr_bind==i_wr_bind);
     assert(t_b_valid_bind==i_b_valid_bind);
-    
+
     if ((t_b_data_bind!=gs::ext::gs_reject) && (t_wr_bind==gs::ext::gs_reject)) has_write_resp=false;
     else has_write_resp=true;
-    
+
     has_bytes_valid=i_b_valid_bind!=gs::ext::gs_reject; //TODO set using config
-    
+
     GS_DUMP("The simple bus protocol will "<<((t_b_data_bind!=gs::ext::gs_reject)?"expect":"not expect")<<" data phases.");
     GS_DUMP("The simple bus protocol will "<<((has_write_resp)?"expect":"not expect")<<" write responses.");
     GS_DUMP("The simple bus protocol will "<<((has_bytes_valid)?"support":"not support")<<" transfer chunking.");
@@ -212,7 +212,7 @@ public:
         trans.release();
         startMasterAccessProcessingEvent.notify(sc_core::sc_time(m_clkPeriod, sc_core::SC_NS)); // handle next request
       }
-    }  
+    }
   }
 
   void bw_peq_cb(tlm::tlm_generic_payload& trans, const tlm::tlm_phase& phase, unsigned int){
@@ -300,7 +300,7 @@ public:
     }
     //in case of phases that are outside of what we allow (GSGP or BP)
     // we assume they are ignorable and we send them directly to the other side
-    if ((txn_sts->value[router_id] & 0x4)==0){ //txn is not complete on target side      
+    if ((txn_sts->value[router_id] & 0x4)==0){ //txn is not complete on target side
       //This could even happen before a BEGIN_REQ so we gotta store the sender id
       GS_DUMP("Forwarding ignorable phase "<<ph<<" to target");
       sender_ids_type* send_ids=ext_base_type::get_extension<sender_ids_type>(txn);
@@ -327,7 +327,7 @@ public:
    * A master's request is to be processed now.
    */
   //--------------------------------------------------------------------------
-  virtual bool processMasterAccess() 
+  virtual bool processMasterAccess()
   {
     // if bus is idle, check for new request
     if (m_idle && scheduler_port->isPending()) {
@@ -392,10 +392,10 @@ public:
     txn_states* txn_sts;
     bool has_txn_sts=ext_base_type::get_extension<txn_states>(txn_sts, txn);
     assert(has_txn_sts);
-    
+
     //in case of phases that are outside of what we allow (GSGP or BP)
     // we assume they are ignorable and we send them directly to the other side
-    if ((txn_sts->value[router_id] & 0x2)==0){ //txn is not complete on init side      
+    if ((txn_sts->value[router_id] & 0x2)==0){ //txn is not complete on init side
       //This could even happen before a BEGIN_REQ so we gotta store the sender id
       GS_DUMP("Forwarding ignorable phase "<<ph<<" to init");
       sender_ids_type* send_ids=ext_base_type::get_extension<sender_ids_type>(txn);
@@ -409,43 +409,43 @@ public:
    * A slave's request should be processed now.
    */
   //--------------------------------------------------------------------------
-  virtual bool processSlaveAccess() 
+  virtual bool processSlaveAccess()
   {
-    // this method can be used for implementing advanced protocol functions, 
+    // this method can be used for implementing advanced protocol functions,
     // e.g. timeout handling
     return true;
   }
-  
-  
+
+
 
   virtual void before_b_transport(unsigned int, payload_type&, sc_core::sc_time&){
     GS_DUMP("Doing nothing to b_transport txn");
   }
-  
+
   virtual void invalidate_direct_mem_ptr(unsigned int, sc_dt::uint64, sc_dt::uint64){
     //GS_DUMP("I do not support DMI");
     //exit(1);
     GS_DUMP("I now support DMI");
   }
-  
+
   virtual unsigned int transport_dbg(unsigned int, payload_type& trans){
     GS_DUMP("I do not support debug transport");
     exit(1);
   }
-  
+
   virtual bool get_direct_mem_ptr(unsigned int, payload_type& trans, tlm::tlm_dmi&  dmi_data){
     //GS_DUMP("I do not support DMI");
     GS_DUMP("I now support DMI");
     //exit(1);
     return true;
   }
-  
+
   virtual bool assignProcessMasterAccessSensitivity(sc_core::sc_spawn_options& opts){
     GS_DUMP("assignProcessMasterAccessSensitivity triggered.");
     opts.set_sensitivity(&startMasterAccessProcessingEvent);
     return true;
   }
-  
+
   virtual bool assignProcessSlaveAccessSensitivity(sc_core::sc_spawn_options& opts){
     return false;
   }
@@ -456,7 +456,7 @@ private:
   tlm::tlm_phase m_end_req, m_begin_resp;
   unsigned int router_id, num_routers;
   target_socket_type* t_sock;
-  init_socket_type*   i_sock;  
+  init_socket_type*   i_sock;
   /// clock period duration
   gs::gs_param<uint16_t> m_clkPeriod;
 
@@ -464,7 +464,7 @@ private:
   bool m_idle, has_write_resp, has_bytes_valid;
 
 };
- 
+
 }
 }
 

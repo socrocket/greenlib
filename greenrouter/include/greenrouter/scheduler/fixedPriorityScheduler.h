@@ -1,22 +1,22 @@
 // LICENSETEXT
-// 
+//
 //   Copyright (C) 2007 : GreenSocs Ltd
 //       http://www.greensocs.com/ , email: info@greensocs.com
-// 
+//
 //   Developed by :
-// 
+//
 //   Robert Guenzel
 //     Technical University of Braunschweig, Dept. E.I.S.
 //     http://www.eis.cs.tu-bs.de
-// 
+//
 //   Mark Burton, Marcus Bartholomeu
 //     GreenSocs Ltd
-// 
-// 
+//
+//
 // The contents of this file are subject to the licensing terms specified
 // in the file LICENSE. Please consult this file for restrictions and
 // limitations that may apply.
-// 
+//
 // ENDLICENSETEXT
 
 #ifndef __fixedPriorityScheduler_h__
@@ -43,12 +43,12 @@ public:
   fixedPrioritySchedulerCmp() {}
 
   bool operator()(const T& x, const T& y)
-  {    
+  {
     // sorting criterium is the master connection ordering
     return x.second<y.second;
   }
 };
-                 
+
 
 //--------------------------------------------------------------------------
 /**
@@ -61,7 +61,7 @@ public:
 //--------------------------------------------------------------------------
 
 template <typename TRAITS>
-class fixedPriorityScheduler_b 
+class fixedPriorityScheduler_b
 : public GenericScheduler_if<TRAITS>,
   public sc_core::sc_module
 {
@@ -78,7 +78,7 @@ public:
    */
   fixedPriorityScheduler_b(sc_core::sc_module_name name_)
     : sc_core::sc_module(name_), protocol_scheduler_target("protocol_scheduler_target")
-  { 
+  {
     init();
     protocol_scheduler_target(*this);
   }
@@ -86,7 +86,7 @@ public:
   /**
    * This constructor is for compatibility reasons only.
    */
-  fixedPriorityScheduler_b(sc_core::sc_module_name name_, sc_core::sc_time &t) 
+  fixedPriorityScheduler_b(sc_core::sc_module_name name_, sc_core::sc_time &t)
     : sc_core::sc_module(name_), protocol_scheduler_target("protocol_scheduler_target")
   {
     init();
@@ -119,7 +119,7 @@ public:
     return m_last.first;
   }
 
-  
+
   virtual bool isPending() {
     return m_queue.size()>0;
   }
@@ -133,7 +133,7 @@ protected:
   typename transactionSet::iterator m_pos;
   transactionCmp m_cmp;
   set_pair_type m_last;
-  
+
 private:
   void init() {
     GS_DUMP("I am a fixed-priority scheduler.");
@@ -144,16 +144,16 @@ class fixedPriorityScheduler : public fixedPriorityScheduler_b<tlm::tlm_base_pro
 public:
   fixedPriorityScheduler(const char* name)
     : fixedPriorityScheduler_b<tlm::tlm_base_protocol_types>(name)
-  { 
+  {
   }
 
   /**
    * This constructor is for compatibility reasons only.
    */
-  fixedPriorityScheduler(const char* name, sc_core::sc_time &t) 
+  fixedPriorityScheduler(const char* name, sc_core::sc_time &t)
     : fixedPriorityScheduler_b<tlm::tlm_base_protocol_types>(name, t)
   {
-  }  
+  }
 };
 
 }

@@ -1,22 +1,22 @@
 // LICENSETEXT
-// 
+//
 //   Copyright (C) 2007 : GreenSocs Ltd
 //       http://www.greensocs.com/ , email: info@greensocs.com
-// 
+//
 //   Developed by :
-// 
+//
 //   Robert Guenzel
 //     Technical University of Braunschweig, Dept. E.I.S.
 //     http://www.eis.cs.tu-bs.de
-// 
+//
 //   Mark Burton, Marcus Bartholomeu
 //     GreenSocs Ltd
-// 
-// 
+//
+//
 // The contents of this file are subject to the licensing terms specified
 // in the file LICENSE. Please consult this file for restrictions and
 // limitations that may apply.
-// 
+//
 // ENDLICENSETEXT
 
 #ifndef __dynamicPriorityScheduler_h__
@@ -39,14 +39,14 @@ struct unevenpair_with_prio_and_time_and_sock_id {
   sc_core::sc_time m_enqueue_time;
   unsigned int m_prio;
   unsigned int m_sock_id;
-  
+
   unevenpair_with_prio_and_time_and_sock_id(const typename GenericScheduler_if<TRAITS>::pair_type& tp
                                , const sc_core::sc_time& enqueue_time
                                , unsigned int prio
                                , unsigned int sock_id
-                               ) 
-    : m_tp(tp), 
-      m_enqueue_time(enqueue_time), 
+                               )
+    : m_tp(tp),
+      m_enqueue_time(enqueue_time),
       m_prio(prio),
       m_sock_id(sock_id)
   {}
@@ -75,7 +75,7 @@ public:
 
 //----------------------------------------------------------------------------
 template <typename TRAITS>
-class dynamicPriorityScheduler_b 
+class dynamicPriorityScheduler_b
 : public GenericScheduler_if<TRAITS>,
   public sc_core::sc_module,
   protected gs::socket::extension_support_base<TRAITS>
@@ -93,18 +93,18 @@ public:
   dynamicPriorityScheduler_b(sc_core::sc_module_name name_, const sc_core::sc_time &t)
     : sc_core::sc_module(name_),
       protocol_scheduler_target("protocol_scheduler_target"),
-      m_isPendingWasCalled(false), 
+      m_isPendingWasCalled(false),
       m_clkPeriod(t)
-  {    
+  {
     init();
     protocol_scheduler_target(*this);
   }
 
-  dynamicPriorityScheduler_b(sc_core::sc_module_name name_, double time, sc_core::sc_time_unit base) 
+  dynamicPriorityScheduler_b(sc_core::sc_module_name name_, double time, sc_core::sc_time_unit base)
     : sc_core::sc_module(name_),
       protocol_scheduler_target("protocol_scheduler_target"),
       m_isPendingWasCalled(false),
-      m_clkPeriod(time,base)  	
+      m_clkPeriod(time,base)
   {
     init();
     protocol_scheduler_target(*this);
@@ -119,7 +119,7 @@ public:
       m_queue.insert(unevenpair_with_prio_and_time_and_sock_id<TRAITS>(pair_type(txn,ph), sc_core::sc_time_stamp(), prio->value, mid));
     else
       m_queue.insert(unevenpair_with_prio_and_time_and_sock_id<TRAITS>(pair_type(txn,ph), sc_core::sc_time_stamp(), 2, mid));
-    
+
     GS_DUMP("Queuing a RequestValid txn from master id="<<mid);
     GS_DUMP("Queue size now is "<<(int)m_queue.size());
   }
@@ -138,18 +138,18 @@ public:
     }
 
     m_last = (m_pos->m_tp);
-    
-    if (remove){      
+
+    if (remove){
       GS_DUMP("Popping a request from master id="<<m_pos->m_sock_id);
       m_queue.erase(m_pos);
       GS_DUMP("Queue size now is "<<(int)m_queue.size());
-      m_isPendingWasCalled=false;      
+      m_isPendingWasCalled=false;
     }
-    
+
     return m_last;
   }
 
-  
+
   virtual bool isPending() {
     m_isPendingWasCalled=true;
     for(m_pos=m_queue.begin(); m_pos!=m_queue.end();++m_pos){
@@ -170,13 +170,13 @@ protected:
   typename transactionSet::iterator m_pos;
   pair_type m_last;
   sc_core::sc_time m_clkPeriod;
-  
+
 private:
     void init() {
       GS_DUMP("I am a dynamic priority scheduler queue.");
       gs::socket::config<TRAITS> conf;
       conf.template use_mandatory_extension<gs::priority>();
-    } 
+    }
 
 };
 
@@ -184,13 +184,13 @@ class dynamicPriorityScheduler : public dynamicPriorityScheduler_b<tlm::tlm_base
 public:
   dynamicPriorityScheduler(const char* name, double time, sc_core::sc_time_unit base)
     : dynamicPriorityScheduler_b<tlm::tlm_base_protocol_types>(name, time, base)
-  { 
+  {
   }
 
-  dynamicPriorityScheduler(const char* name, const sc_core::sc_time &t) 
+  dynamicPriorityScheduler(const char* name, const sc_core::sc_time &t)
     : dynamicPriorityScheduler_b<tlm::tlm_base_protocol_types>(name, t)
   {
-  }  
+  }
 };
 
 

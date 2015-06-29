@@ -1,22 +1,22 @@
 // LICENSETEXT
-// 
+//
 //   Copyright (C) 2007 : GreenSocs Ltd
 //       http://www.greensocs.com/ , email: info@greensocs.com
-// 
+//
 //   Developed by :
-// 
+//
 //   Robert Guenzel
 //     Technical University of Braunschweig, Dept. E.I.S.
 //     http://www.eis.cs.tu-bs.de
-// 
+//
 //   Mark Burton, Marcus Bartholomeu
 //     GreenSocs Ltd
-// 
-// 
+//
+//
 // The contents of this file are subject to the licensing terms specified
 // in the file LICENSE. Please consult this file for restrictions and
 // limitations that may apply.
-// 
+//
 // ENDLICENSETEXT
 
 #ifndef __genericRouterBiDir_h__
@@ -48,11 +48,11 @@ class GenericRouterBiDir_b : public sc_core::sc_module, public GenericRouter_if<
 private:
   class router_bidir_socket : public GenericRouter_if<BUSWIDTH, TRAITS>::bidir_socket_type{
   public:
-    router_bidir_socket(const char* name, GenericRouterBiDir_b& owner) 
+    router_bidir_socket(const char* name, GenericRouterBiDir_b& owner)
       : GenericRouter_if<BUSWIDTH, TRAITS>::bidir_socket_type(name)
       , m_owner(owner)
     {}
-    
+
     virtual void bound_to(const std::string& other_type, gs::socket::bindability_base<TRAITS>* other, unsigned int index){
       m_owner.bound_to_target(other_type, other, index);
     }
@@ -63,18 +63,18 @@ private:
 public:
   typedef router_bidir_socket                           bidir_socket_type;
   typedef typename TRAITS::tlm_payload_type             payload_type;
-  typedef typename TRAITS::tlm_phase_type               phase_type;  
+  typedef typename TRAITS::tlm_phase_type               phase_type;
   typedef tlm::tlm_sync_enum                            sync_enum_type;
 
   //typedef std::multimap<unsigned int, unsigned int> mm_uint_uint;
   typedef std::multimap<unsigned int, Entry_t> mm_uint_Entry;
-  
+
   //------------------------------------------------------------------------------------
   /**
-   * Input/Output sockets 
+   * Input/Output sockets
    */
   //------------------------------------------------------------------------------------
-    
+
   bidir_socket_type m_socket;
 
   /// port to the protocol
@@ -82,7 +82,7 @@ public:
 
   sc_core::sc_export<GenericRouter_if<BUSWIDTH, TRAITS> > protocol_router_target;
 
-  /// slave address map 
+  /// slave address map
   ADDR_MAP* m_addressMap;
 
   virtual ADDR_MAP& getAddressMap(){return *m_addressMap;}
@@ -121,15 +121,15 @@ public:
 
     // connect to dummy protocol (will only be used if no other protocol is bound)
     protocol_port(m_DummyProtocol);
-    m_DummyProtocol.router_port(*this);    
+    m_DummyProtocol.router_port(*this);
 
     protocol_router_target(*this);
   }
-  
+
   virtual void bound_to_target(const std::string& other_type, gs::socket::bindability_base<TRAITS>* other, unsigned int index){
     GS_DUMP("Initiator socket index "<<index<<" is bound to a socket of type "<<other_type);
     gs::socket::config<TRAITS> conf=m_socket.get_recent_config(0);
-    for (unsigned int i=1; i<m_socket.size(); i++){ 
+    for (unsigned int i=1; i<m_socket.size(); i++){
       std::stringstream s1,s2;
       s1<<"Merged Config of Targets 0 to "<<(i-1)<<" of "<<m_socket.name();
       s2<<"Target at index "<<i<<" of "<<m_socket.name();
@@ -137,17 +137,17 @@ public:
     }
     m_socket.set_config(conf);
   }
-  
+
   void start_of_simulation(){
     GS_DUMP("Resolved configs are"<<std::endl<<"  For initiators/targets:"<<std::endl<<m_socket.get_recent_config(0).to_string()<<std::endl);
   }
-  
-  
+
+
   void assign_address(sc_dt::uint64 baseAddress_, sc_dt::uint64 highAddress_, unsigned int portNumber_){
     if (!m_addressMap) createAddressMap();
     m_addressMap->insert(baseAddress_, highAddress_, portNumber_);
   }
-  
+
   //--------------------------------------------------------------------------
   /**
    * This method can be made sensitive to an event in the bus protocol to control
@@ -176,7 +176,7 @@ public:
 
 
   //--------------------------------------------------------------------------
-  /** 
+  /**
    * Provide access to the initiator port (used by bus protocol).
    */
   //--------------------------------------------------------------------------
@@ -184,14 +184,14 @@ public:
 
 
   //--------------------------------------------------------------------------
-  /** 
+  /**
    * Provide access to the target port (used by bus protocol).
    */
   //--------------------------------------------------------------------------
   virtual typename GenericRouter_if<BUSWIDTH, TRAITS>::target_socket_type* getTargetPort(){ return 0;}
 
   //--------------------------------------------------------------------------
-  /** 
+  /**
    * Provide access to the bidir port (used by bus protocol).
    */
   //--------------------------------------------------------------------------
@@ -207,7 +207,7 @@ public:
   {
     if (m_EOEdone) return;
     GS_DUMP("end_of_elaboration called.");
-    
+
     if (protocol_port.size()>1) { // user protocol bound
       GS_DUMP("User protocol detected.");
       m_protocol_port_index = 1;
@@ -215,15 +215,15 @@ public:
     else {
       GS_DUMP("No user protocol detected. Using dummy protocol.");
     }
-    
-    
+
+
     //TODO: this has to be done each time the protocol is switched!
     {
       sc_core::sc_spawn_options opts;
       opts.spawn_method();
       opts.dont_initialize();
       if (protocol_port[m_protocol_port_index]->assignProcessMasterAccessSensitivity(opts)){
-        sc_core::sc_spawn(sc_bind(&GenericRouterBiDir_b::processMasterAccess, this), 
+        sc_core::sc_spawn(sc_bind(&GenericRouterBiDir_b::processMasterAccess, this),
                           sc_core::sc_gen_unique_name("processMasterAccess"), &opts);
       }
     }
@@ -232,7 +232,7 @@ public:
       opts.spawn_method();
       opts.dont_initialize();
       if (protocol_port[m_protocol_port_index]->assignProcessSlaveAccessSensitivity(opts)){
-        sc_core::sc_spawn(sc_bind(&GenericRouterBiDir_b::processSlaveAccess, this), 
+        sc_core::sc_spawn(sc_bind(&GenericRouterBiDir_b::processSlaveAccess, this),
                           sc_core::sc_gen_unique_name("processSlaveAccess"), &opts);
       }
 
@@ -243,7 +243,7 @@ public:
     {
 	createAddressMap();
     }
-    // create the slave address map 
+    // create the slave address map
     GS_DUMP_N(name(), "Creating address map...");
     m_addressMap->generateMap(m_socket);
     m_addressMap->dumpMap();
@@ -338,20 +338,20 @@ public:
     mm_uint_Entry::iterator it;
     std::set<Port_id_t> port_set;
     protocol_port[m_protocol_port_index]->invalidate_direct_mem_ptr(from, start_range, end_range);
-  
+
     if(end_range < start_range)
     {
        GS_DUMP("ERROR: inv_dmi: End Address is less then start address, please check");
        return;
-    } 
-    ret = m_dmi_tport_entry.equal_range(from); 
-  
+    }
+    ret = m_dmi_tport_entry.equal_range(from);
+
     for (it=ret.first; it!=ret.second; ++it )
     {
         Entry_t &entry1 = (*it).second;
         if(port_set.count(entry1.port_id) == 0)
         {
-            //m_socket[entry1.port_id]->invalidate_direct_mem_ptr(start_range, end_range); 
+            //m_socket[entry1.port_id]->invalidate_direct_mem_ptr(start_range, end_range);
             port_set.insert(entry1.port_id);
         }
 
@@ -362,7 +362,7 @@ public:
         else
         {
               // if the remove_range returns true then the given address range is removd from the
-              // current entry but if it returns false, that is because the given address range 
+              // current entry but if it returns false, that is because the given address range
               // strictly lie in between the given entry
               // Thus the given entry needs to be split into two, which does not cover
               // the given address range
@@ -376,7 +376,7 @@ public:
 
     }
   }
-  
+
   unsigned int tr_dbg(unsigned int from, payload_type& trans){
     return protocol_port[m_protocol_port_index]->transport_dbg(from, trans);
   }
@@ -423,7 +423,7 @@ public:
             return false;
 	}
 
-        ret = m_dmi_tport_entry.equal_range(tar_port_num); 
+        ret = m_dmi_tport_entry.equal_range(tar_port_num);
         // Check for all existing entries
         for (it=ret.first; it!=ret.second; ++it )
         {
@@ -433,13 +433,13 @@ public:
                     continue;
             else
             {
-              // if the given range gets merged with the current entry then 
+              // if the given range gets merged with the current entry then
               // there is no more to do ... so one can return safely
               if (entry1.merge_with(start_addr,end_addr))
                    return true;
             }
         }
-        // if the given address range can not be merged with any other entry 
+        // if the given address range can not be merged with any other entry
         // insert it as another entry
         m_dmi_tport_entry.insert(pair<unsigned int, Entry_t>(tar_port_num,entr));
         return true;
@@ -472,7 +472,7 @@ public:
   virtual unsigned int getCurrentNumRouters(){
     return id_counter;
   }
-  
+
 protected:
   bool m_EOEdone;
   unsigned int my_id;
@@ -482,7 +482,7 @@ protected:
 public:
   DEFAULT_PROTOCOL m_DummyProtocol;
   unsigned m_protocol_port_index; //TODO: change to gs_param
-  
+
 };
 
 template <unsigned int BUSWIDTH, typename TRAITS, typename DEFAULT_PROTOCOL, unsigned int PORTMAX

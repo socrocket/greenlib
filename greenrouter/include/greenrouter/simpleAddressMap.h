@@ -15,12 +15,12 @@
 //
 //   Mark Burton, Marcus Bartholomeu
 //     GreenSocs Ltd
-// 
-// 
+//
+//
 // The contents of this file are subject to the licensing terms specified
 // in the file LICENSE. Please consult this file for restrictions and
 // limitations that may apply.
-// 
+//
 // ENDLICENSETEXT
 
 #ifndef __simpleAddressMap_h__
@@ -64,7 +64,7 @@ class Entry_t                                         ///< address map entry
 
    @brief constructor for 3-tuple address map entry
 
- -------------------------------------------------------------------------------------------- */    
+ -------------------------------------------------------------------------------------------- */
 
  Entry_t                                             ///< default constructor
  ( void
@@ -80,7 +80,7 @@ class Entry_t                                         ///< address map entry
 
    @brief explicit constructor for 3-tuple address map entry
 
- -------------------------------------------------------------------------------------------- */    
+ -------------------------------------------------------------------------------------------- */
 
  Entry_t                                             ///< copy constructor
  ( const Map_address_t  lower                        ///< address lower bound
@@ -99,7 +99,7 @@ class Entry_t                                         ///< address map entry
 
    @brief copy constructor for 3-tuple address map entry
 
- -------------------------------------------------------------------------------------------- */    
+ -------------------------------------------------------------------------------------------- */
 
  Entry_t                                             ///< copy constructor
  ( const Entry_t & entry                             ///< existing address map entry
@@ -116,7 +116,7 @@ class Entry_t                                         ///< address map entry
 
    @brief destructor for 3-tuple address map entry
 
- -------------------------------------------------------------------------------------------- */    
+ -------------------------------------------------------------------------------------------- */
 
  ~Entry_t                                            ///< destructor
  ( void
@@ -129,7 +129,7 @@ class Entry_t                                         ///< address map entry
 
    @brief assignment operator for 3-tuple address map entry
 
- -------------------------------------------------------------------------------------------- */    
+ -------------------------------------------------------------------------------------------- */
 
  Entry_t &                                           ///< new address map
  operator=                                           ///< assignment operator
@@ -149,7 +149,7 @@ class Entry_t                                         ///< address map entry
 
    @brief equality operator for 3-tuple address map entry
 
- -------------------------------------------------------------------------------------------- */    
+ -------------------------------------------------------------------------------------------- */
 
  int                                                 ///< 0 - false / 1 - true
  operator==                                          ///< equality operator
@@ -175,7 +175,7 @@ class Entry_t                                         ///< address map entry
 
    @brief less than operator for 3-tuple address map entry
 
- -------------------------------------------------------------------------------------------- */    
+ -------------------------------------------------------------------------------------------- */
 
  int                                                 ///< 0 - false / 1 - true
  operator<                                           ///< less than operator
@@ -199,7 +199,7 @@ class Entry_t                                         ///< address map entry
 
    @brief address is in 3-tuple address map entry's range
 
- -------------------------------------------------------------------------------------------- */    
+ -------------------------------------------------------------------------------------------- */
 
  bool                                                ///< true / false
  is_in                                               ///< address in entry's range
@@ -224,15 +224,15 @@ class Entry_t                                         ///< address map entry
  /** -------------------------------------------------------------------------------------------
    @func Entry_t:: merge_with
 
-   @brief merge the current entry with the given address range 
+   @brief merge the current entry with the given address range
 
    return true if succeed (address range are overlapping) else return false;
    start_address should be smaller then the end_address
 
- -------------------------------------------------------------------------------------------- */    
+ -------------------------------------------------------------------------------------------- */
 
  bool                                                ///< true / false
- merge_with                                     
+ merge_with
  ( Map_address_t start_address,Map_address_t end_address)
  {
    // is the address in the entries range
@@ -254,7 +254,7 @@ class Entry_t                                         ///< address map entry
 
        if( end_address > this->upper_bound )
 		this->upper_bound = end_address;
-       
+
        return true;
    }
  }
@@ -264,20 +264,20 @@ class Entry_t                                         ///< address map entry
 
    @brief remove the passed address range from the gien entry
 
-   return true if succeed (that is address range are partially or not overlapping) 
+   return true if succeed (that is address range are partially or not overlapping)
    else return false (that is passed address range lies strictly with in the entry)
    start_address should be smaller then the end_address
 
- -------------------------------------------------------------------------------------------- */    
+ -------------------------------------------------------------------------------------------- */
 
  bool                                                ///< true / false
- remove_range                  
+ remove_range
  ( Map_address_t start_address,Map_address_t end_address)
  {
    // is the address in the entries range
    if (    ( end_address < this->lower_bound )  ||  ( start_address > this->upper_bound ) )
    {
-	// nothing to do in this case 
+	// nothing to do in this case
 	return true;
    }
    else if (    ( start_address >= this->lower_bound )  &&  ( end_address <= this->upper_bound ) )
@@ -295,7 +295,7 @@ class Entry_t                                         ///< address map entry
 
 	if ( this->lower_bound > this->upper_bound )
 		this->lower_bound = this->upper_bound = 0;
-       
+
        return true;
    }
  }
@@ -307,7 +307,7 @@ class Entry_t                                         ///< address map entry
 
    @brief stream insertion operator for 3-tuple address map entry
 
- -------------------------------------------------------------------------------------------- */    
+ -------------------------------------------------------------------------------------------- */
 
  friend
  ostream &                                           ///< output stream
@@ -337,7 +337,7 @@ typedef Map_t::iterator       Map_iterator_t;         ///< address map iterator 
 template < typename TRAITS, unsigned int PORTMAX = 255>
 class SimpleAddressMap
 {
- 
+
  protected:
 
  Map_t           m_address_map;                        ///< address map ( list )
@@ -455,7 +455,7 @@ class SimpleAddressMap
 
            break;
          }
-       }      
+       }
 
        if ( ! mapped )
        {
@@ -554,13 +554,13 @@ class SimpleAddressMap
  //( Map_address_t decode_address                        ///< address to decode
  ( payload_type& txn,                        ///< address to decode
    bool &success,
- gs::socket::config<TRAITS>* conf           /// conf of the socket from which the trnx is coming. 
+ gs::socket::config<TRAITS>* conf           /// conf of the socket from which the trnx is coming.
                                             /// This value is ignored here, and used when address map is extension based
  , unsigned int from                /// portId of the socket from which the trnx is coming
  )
  {
    static std::vector<Port_id_t> targetId(1);
-   Map_address_t decode_address = txn.get_address(); 
+   Map_address_t decode_address = txn.get_address();
    Port_id_t port_id ( m_max_port  );
 
    success = false;
@@ -675,12 +675,12 @@ class SimpleAddressMap
 
      // sort the map
      m_address_map.sort ();
-   }    
+   }
  }
  /** --------------------------------------------------------------------------
-  * returns the default address map 
+  * returns the default address map
  -------------------------------------------------------------------------- */
- const Map_t & get_address_map() const 
+ const Map_t & get_address_map() const
  {
     return m_address_map;
  }

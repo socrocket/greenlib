@@ -16,7 +16,7 @@
 // The contents of this file are subject to the licensing terms specified
 // in the file LICENSE. Please consult this file for restrictions and
 // limitations that may apply.
-// 
+//
 // ENDLICENSETEXT
 
 #ifndef __INCLUDED_BY_GENERIC_ROUTER_B_H__
@@ -30,17 +30,17 @@ class DummyProtocol
   , public sc_core::sc_module
 {
   typedef typename TRAITS::tlm_payload_type              payload_type;
-  typedef typename TRAITS::tlm_phase_type                phase_type;  
+  typedef typename TRAITS::tlm_phase_type                phase_type;
   typedef tlm::tlm_sync_enum                            sync_enum_type;
   typedef typename GenericRouter_if<BUSWIDTH, TRAITS>::target_socket_type target_socket_type;
   typedef typename GenericRouter_if<BUSWIDTH, TRAITS>::init_socket_type init_socket_type;
   typedef typename GenericRouter_if<BUSWIDTH,TRAITS>::sender_ids sender_ids_type;
 
 public:
-  
+
   sc_core::sc_port<GenericRouter_if<BUSWIDTH,TRAITS> > router_port;
 
-  
+
   DummyProtocol(sc_core::sc_module_name name_)
     : sc_core::sc_module(name_)
     , router_port("router_port")
@@ -48,7 +48,7 @@ public:
   {
       GS_DUMP("I am a dummy protocol.");
   }
-  
+
   void before_end_of_elaboration(){
     router_id=router_port->getRouterID();
     t_sock=router_port->getTargetPort();
@@ -58,7 +58,7 @@ public:
     if (t_sock) t_sock->set_config(conf);
     if (i_sock) i_sock->set_config(conf);
   }
-  
+
   virtual sync_enum_type registerMasterAccess(unsigned int from,
                                               payload_type& txn, phase_type& ph,
                                               sc_core::sc_time& time)
@@ -91,7 +91,7 @@ public:
   virtual bool processMasterAccess() {
     return true;
   }
-  
+
   virtual bool processSlaveAccess() {
     return true;
   }
@@ -99,29 +99,29 @@ public:
   virtual void before_b_transport(unsigned int, payload_type&, sc_core::sc_time&){
     GS_DUMP("Doing nothing to b_transport txn");
   }
-  
+
   virtual void invalidate_direct_mem_ptr(unsigned int, sc_dt::uint64, sc_dt::uint64){
     GS_DUMP("I do not support DMI");
     exit(1);
   }
-  
+
   virtual unsigned int transport_dbg(unsigned int, payload_type& trans){
     GS_DUMP("I do not support debug transport");
     exit(1);
   }
-  
+
   virtual bool get_direct_mem_ptr(unsigned int, payload_type& trans, tlm::tlm_dmi&  dmi_data){
     GS_DUMP("I do not support DMI");
     exit(1);
     return false;
   }
-  
+
   virtual bool assignProcessMasterAccessSensitivity(sc_core::sc_spawn_options& opts){return false;}
   virtual bool assignProcessSlaveAccessSensitivity(sc_core::sc_spawn_options& opts){return false;}
-  
+
 protected:
   unsigned int router_id;
   target_socket_type* t_sock;
-  init_socket_type*   i_sock;  
+  init_socket_type*   i_sock;
 };
 

@@ -10,12 +10,12 @@
 //
 //   Mark Burton, Marcus Bartholomeu
 //     GreenSocs Ltd
-// 
-// 
+//
+//
 // The contents of this file are subject to the licensing terms specified
 // in the file LICENSE. Please consult this file for restrictions and
 // limitations that may apply.
-// 
+//
 // ENDLICENSETEXT
 #ifndef __routeOnExtensions__
 #define __routeOnExtensions__
@@ -69,14 +69,14 @@ class ExtensionMap {
     }
 
  typedef typename TRAITS::tlm_payload_type payload_type;
-    virtual std::vector<Port_id_t>& 
+    virtual std::vector<Port_id_t>&
     decode (payload_type& txn, bool &success,
             gs::socket::config<TRAITS>* tmp_conf, unsigned int from) {
       tlm::tlm_extension_base* ext = 0;
       gs::ext::gs_extension_base* gs_ext = 0;
 
       success = false;
-      
+
       //for all the extensions present in this config, check which is present in
       //payload. Then broadcast this payload to all the targets that accept this
       //extension. Note that certain targets will reject this signal if 'from' is
