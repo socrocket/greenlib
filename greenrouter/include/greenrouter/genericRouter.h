@@ -272,8 +272,6 @@ public:
     m_addressMap->generateMap(init_socket);
     m_addressMap->dumpMap();
 
-    GS_DUMP_N(name(), "Checking address map sanity (overlapping address regions)...");
-    m_addressMap->checkSanity();
     m_EOEdone=true;
   }
 
@@ -295,9 +293,6 @@ public:
         m_addressMap->generateMap(init_socket);
         m_addressMap->dumpMap();
 
-        GS_DUMP_N(name(),
-                "Checking address map sanity (overlapping address regions)...");
-        m_addressMap->checkSanity();
         m_EOEdone=true;
     }
 

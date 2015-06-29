@@ -49,8 +49,6 @@ class ExtensionMap {
       }
     }
 
-    void checkSanity () { }
-
  //--------------------------------------------------------------------------
  // Define GS_VERBOSE_DUMPMAP if not defined in the compilation command line
  #if ( ! defined ( GS_VERBOSE_DUMPMAP ) )

@@ -2,7 +2,6 @@ insert adding entry [ 0x4000, 0x47ff ] on 0
 insert adding entry [ 0x1200, 0x120f ] on 1
 insert adding entry [ 0xffffff00, 0xffffffff ] on 2
 insert adding entry [ 0x0, 0x11ff ] on 3
-Address check successful.
 time 0 s: MasterMark: run: start writing "Call me or I will call you" to slave
 time 0 s: Slave0: handle cmd 0x1
 time 0 s: MasterMark: run: finished writing to slave

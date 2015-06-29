@@ -248,8 +248,6 @@ public:
     m_addressMap->generateMap(m_socket);
     m_addressMap->dumpMap();
 
-    GS_DUMP_N(name(), "Checking address map sanity (overlapping address regions)...");
-    m_addressMap->checkSanity();
     m_EOEdone=true;
   }
 

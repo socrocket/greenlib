@@ -180,15 +180,6 @@ class MACAddressMap {
  }
 
  //--------------------------------------------------------------------------
- /**
-  * Check for overlapping address ranges
-  */
- //--------------------------------------------------------------------------
- void checkSanity () {
-   cout << "Address check successful." << endl;
- }
-
- //--------------------------------------------------------------------------
  // Define GS_VERBOSE_DUMPMAP if not defined in the compilation command line
  #if ( ! defined ( GS_VERBOSE_DUMPMAP ) )
    #if ( defined ( GS_VERBOSE ) )
