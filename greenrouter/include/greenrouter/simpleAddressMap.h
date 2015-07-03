@@ -310,8 +310,10 @@ public:
      * Generate the address map
      *
      * @param socket address map socket
+     * @param checkOverlap enable or disable overlap check
      */
-    template < typename SOCKET > void generateMap(SOCKET &socket)
+    template < typename SOCKET > void generateMap(SOCKET &socket,
+                                                  bool checkOverlap = true)
     {
         GS_DUMP_N(m_routine_name, "Generating address map:");
         GS_DUMP_N(m_routine_name,
@@ -350,7 +352,7 @@ public:
                 address_low = other_router->getAddressMap().get_min();
                 address_high = other_router->getAddressMap().get_max();
 
-                insert(address_low, address_high, port_id);
+                insert(address_low, address_high, port_id, checkOverlap);
             } else if (other_gp) {
                 address_low = other_gp->base_addr;
                 address_high = other_gp->high_addr;
@@ -358,8 +360,8 @@ public:
                 /*
                  * We don't want to MAP devices with null sized area.
                  */
-                if(other_gp->base_addr < other_gp->high_addr) {
-                    insert(address_low, address_high, port_id);
+                if(!checkOverlap || other_gp->base_addr < other_gp->high_addr) {
+                    insert(address_low, address_high, port_id, checkOverlap);
                 }
 
 #ifdef GS_SOCKET_ADDRESS_ARRAY
@@ -375,8 +377,8 @@ public:
                     /*
                      * We don't want to MAP devices with null sized area.
                      */
-                    if(address_low < address_high) {
-                        insert(address_low, address_high, port_id);
+                    if(!checkOverlap || address_low < address_high) {
+                        insert(address_low, address_high, port_id, checkOverlap);
                     }
                 }
 #endif
@@ -538,13 +540,14 @@ public:
      * @param address_low address lower bound
      * @param address_high address upper bound
      * @param port_id port ID
+     * @param checkOverlap enable or disable overlap check
      *
      * @return maximum port associated with this simple_address_map
      */
     void insert(Map_address_t address_low, Map_address_t address_high,
-                Port_id_t port_id)
+                Port_id_t port_id, bool checkOverlap = true)
     {
-        if (address_low > address_high) {
+        if (checkOverlap && address_low > address_high) {
             SC_REPORT_ERROR(m_routine_name, "address lower bound is greater "
                                             "than upper bound");
         } else if(port_id >= m_max_port) {
@@ -557,18 +560,21 @@ public:
         Entry_t entry(address_low, address_high, port_id);
 
         // check for range overlap
-        for(Map_iterator_t i = m_address_map.begin();
-            i != m_address_map.end(); i++)
-        {
-            if((i->is_in(address_low)) || (i->is_in(address_high))) {
-                cout << "mapping failed: " << entry << " overlaps " << *i
-                     << endl;
+        if(checkOverlap) {
+            for(Map_iterator_t i = m_address_map.begin();
+                i != m_address_map.end(); i++)
+            {
+                if((i->is_in(address_low)) || (i->is_in(address_high))) {
+                    cout << "mapping failed: " << entry << " overlaps " << *i
+                         << endl;
 
-                SC_REPORT_ERROR(m_routine_name, "address range already mapped");
+                    SC_REPORT_ERROR(m_routine_name,
+                        "address range already mapped");
 
-                success = false;
+                    success = false;
 
-                break;
+                    break;
+                }
             }
         }
 

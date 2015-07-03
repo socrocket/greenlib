@@ -325,7 +325,7 @@ public:
 
         // create the slave address map
         GS_DUMP_N(name(), "Creating address map...");
-        m_addressMap->generateMap(init_socket);
+        m_addressMap->generateMap(init_socket, true);
         m_addressMap->dumpMap();
 
         m_EOEdone=true;
@@ -334,7 +334,7 @@ public:
     /**
      * Refresh Address Mapping.
      */
-    void refreshAddressMap()
+    void refreshAddressMap(bool checkOverlap = true)
     {
         if(m_addressMap)
         {
@@ -343,7 +343,7 @@ public:
         createAddressMap();
 
         GS_DUMP_N(name(), "Creating address map...");
-        m_addressMap->generateMap(init_socket);
+        m_addressMap->generateMap(init_socket, checkOverlap);
         m_addressMap->dumpMap();
 
         m_EOEdone=true;

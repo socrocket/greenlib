@@ -245,7 +245,7 @@ public:
     }
     // create the slave address map
     GS_DUMP_N(name(), "Creating address map...");
-    m_addressMap->generateMap(m_socket);
+    m_addressMap->generateMap(m_socket, true);
     m_addressMap->dumpMap();
 
     m_EOEdone=true;

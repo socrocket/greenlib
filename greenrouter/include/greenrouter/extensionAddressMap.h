@@ -31,8 +31,14 @@ class ExtensionMap {
 
     virtual ~ExtensionMap () {}
 
+    /**
+     * Generate the map
+     *
+     * @param socket map socket
+     * @param checkOverlap (Unused) enable or disable overlap check
+     */
     template < typename SOCKET >
-    void generateMap (SOCKET& init_socket) {
+    void generateMap (SOCKET& init_socket, bool checkOverlap = true) {
       unsigned int maxExts = 0;
       gs::socket::config<TRAITS> tmp_conf;
       //iterate over all the connections of init_socket i.e. over all the targets

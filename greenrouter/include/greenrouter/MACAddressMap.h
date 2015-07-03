@@ -90,9 +90,10 @@ public:
      * Generate the MAC map
      *
      * @param socket map socket
-    */
+     * @param checkOverlap (Unused) enable or disable overlap check
+     */
     template <typename SOCKET>
-    void generateMap(SOCKET& socket)
+    void generateMap(SOCKET& socket, bool checkOverlap = true)
     {
         GS_DUMP_N(m_routine_name, "Generating address map:");
         GS_DUMP_N(m_routine_name, "Number of target connections: "
