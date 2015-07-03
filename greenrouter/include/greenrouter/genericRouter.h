@@ -44,7 +44,7 @@ template <unsigned int BUSWIDTH, typename TRAITS, typename DEFAULT_PROTOCOL,
               &(TRAITS::tlm_payload_type::set_response_status),
           typename ADDR_MAP = SimpleAddressMap<TRAITS, PORTMAX>
          >
-class GenericRouter_b:
+class GenericRouterRaw:
 public sc_core::sc_module,
 public GenericRouter_if<BUSWIDTH, TRAITS>,
 public GenericRouterBase<TRAITS, PORTMAX, ADDR_MAP>
@@ -54,7 +54,7 @@ private:
     public GenericRouter_if<BUSWIDTH, TRAITS>::init_socket_type
     {
     public:
-        router_init_socket(const char* name, GenericRouter_b& owner) :
+        router_init_socket(const char* name, GenericRouterRaw& owner) :
         GenericRouter_if<BUSWIDTH, TRAITS>::init_socket_type(name),
         m_owner(owner)
         {
@@ -67,14 +67,14 @@ private:
             m_owner.bound_to_target(other_type, other, index);
         }
     private:
-        GenericRouter_b& m_owner;
+        GenericRouterRaw& m_owner;
     };
 
     class router_target_socket :
     public GenericRouter_if<BUSWIDTH, TRAITS>::target_socket_type
     {
     public:
-        router_target_socket(const char* name, GenericRouter_b& owner):
+        router_target_socket(const char* name, GenericRouterRaw& owner):
         GenericRouter_if<BUSWIDTH, TRAITS>::target_socket_type(name),
         m_owner(owner)
         {
@@ -87,7 +87,7 @@ private:
             m_owner.bound_to_initiator(other_type, other, index);
         }
     private:
-        GenericRouter_b& m_owner;
+        GenericRouterRaw& m_owner;
     };
 
 public:
@@ -129,14 +129,14 @@ public:
         end_of_elaboration();
     }
 
-    SC_HAS_PROCESS(GenericRouter_b);
+    SC_HAS_PROCESS(GenericRouterRaw);
 
     /**
      * Constructor; bind ports and register SC_METHODs with the kernel.
      *
      * @param name_ module name
      */
-    GenericRouter_b(sc_core::sc_module_name name_):
+    GenericRouterRaw(sc_core::sc_module_name name_):
     sc_core::sc_module(name_),
     target_socket("tsocket", *this),
     init_socket("isocket", *this),
@@ -150,15 +150,15 @@ public:
     {
         GS_DUMP("I am a generic router.");
 
-        init_socket.register_nb_transport_bw(this, &GenericRouter_b::nb_bw);
+        init_socket.register_nb_transport_bw(this, &GenericRouterRaw::nb_bw);
         init_socket.register_invalidate_direct_mem_ptr(this,
-            &GenericRouter_b::inv_dmi);
+            &GenericRouterRaw::inv_dmi);
 
-        target_socket.register_nb_transport_fw(this, &GenericRouter_b::nb_fw);
-        target_socket.register_b_transport(this, &GenericRouter_b::b_tr);
-        target_socket.register_transport_dbg(this, &GenericRouter_b::tr_dbg);
+        target_socket.register_nb_transport_fw(this, &GenericRouterRaw::nb_fw);
+        target_socket.register_b_transport(this, &GenericRouterRaw::b_tr);
+        target_socket.register_transport_dbg(this, &GenericRouterRaw::tr_dbg);
         target_socket.register_get_direct_mem_ptr(this,
-            &GenericRouter_b::get_dmi);
+            &GenericRouterRaw::get_dmi);
 
         // connect to dummy protocol (will only be used if no other
         // protocol is bound)
@@ -170,23 +170,7 @@ public:
 
     virtual void bound_to_target(const std::string& other_type,
                                  gs::socket::bindability_base<TRAITS>* other,
-                                 unsigned int index)
-    {
-        GS_DUMP("Initiator socket index " << index
-                                          << " is bound to a socket of type "
-                                          << other_type);
-        gs::socket::config<TRAITS> conf=init_socket.get_recent_config(0);
-        for (unsigned int i=1; i<init_socket.size(); i++){
-            std::stringstream s1, s2;
-            s1 << "Merged Config of Targets 0 to " << (i-1) << " of "
-               << init_socket.name();
-            s2 << "Target at index " << i << " of " << init_socket.name();
-            conf.merge_with(s1.str().c_str(), s2.str().c_str(),
-                            init_socket.get_recent_config(i));
-        }
-        target_socket.set_config(conf);
-        init_socket.set_config(conf);
-    }
+                                 unsigned int index) = 0;
 
     virtual void bound_to_initiator(const std::string& other_type,
                                     gs::socket::bindability_base<TRAITS>* other,
@@ -299,7 +283,7 @@ public:
             if(protocol_port[m_protocol_port_index]->
                 assignProcessMasterAccessSensitivity(opts))
             {
-                sc_core::sc_spawn(sc_bind(&GenericRouter_b::processMasterAccess,
+                sc_core::sc_spawn(sc_bind(&GenericRouterRaw::processMasterAccess,
                     this),
                     sc_core::sc_gen_unique_name("processMasterAccess"), &opts);
             }
@@ -311,7 +295,7 @@ public:
             if (protocol_port[m_protocol_port_index]->
                  assignProcessSlaveAccessSensitivity(opts))
             {
-                sc_core::sc_spawn(sc_bind(&GenericRouter_b::processSlaveAccess,
+                sc_core::sc_spawn(sc_bind(&GenericRouterRaw::processSlaveAccess,
                     this),
                     sc_core::sc_gen_unique_name("processSlaveAccess"), &opts);
             }
@@ -581,9 +565,182 @@ template <unsigned int BUSWIDTH, typename TRAITS, typename DEFAULT_PROTOCOL,
           unsigned int PORTMAX, typename RESP_TYPE, RESP_TYPE ADDR_ERR_RESP,
           void (TRAITS::tlm_payload_type::*SET_RESP_CALL)(const RESP_TYPE),
           typename ADDR_MAP >
-unsigned int GenericRouter_b<BUSWIDTH, TRAITS, DEFAULT_PROTOCOL, PORTMAX,
+unsigned int GenericRouterRaw<BUSWIDTH, TRAITS, DEFAULT_PROTOCOL, PORTMAX,
                             RESP_TYPE, ADDR_ERR_RESP, SET_RESP_CALL,
                             ADDR_MAP>::id_counter=0;
+
+template <unsigned int BUSWIDTH, typename TRAITS, typename DEFAULT_PROTOCOL,
+          unsigned int PORTMAX, typename RESP_TYPE, RESP_TYPE ADDR_ERR_RESP,
+          void (TRAITS::tlm_payload_type::*SET_RESP_CALL)(const RESP_TYPE),
+          typename ADDR_MAP >
+class GenericRouter_b:
+public GenericRouterRaw<BUSWIDTH, TRAITS, DEFAULT_PROTOCOL, PORTMAX,
+                        RESP_TYPE, ADDR_ERR_RESP, SET_RESP_CALL,
+                        ADDR_MAP>
+{
+protected:
+    typedef GenericRouterRaw<BUSWIDTH, TRAITS, DEFAULT_PROTOCOL, PORTMAX,
+                             RESP_TYPE, ADDR_ERR_RESP, SET_RESP_CALL,
+                             ADDR_MAP >
+            GenericRouterRawType;
+
+public:
+    GenericRouter_b(sc_core::sc_module_name name_):
+    GenericRouterRawType(name_)
+    {
+    };
+
+    virtual void bound_to_target(const std::string& other_type,
+                                 gs::socket::bindability_base<TRAITS>* other,
+                                 unsigned int index)
+    {
+        GS_DUMP("Initiator socket index " << index
+                                          << " is bound to a socket of type "
+                                          << other_type);
+        gs::socket::config<TRAITS> conf=this->init_socket.get_recent_config(0);
+        for (unsigned int i=1; i<this->init_socket.size(); i++){
+            std::stringstream s1, s2;
+            s1 << "Merged Config of Targets 0 to " << (i-1) << " of "
+               << this->init_socket.name();
+            s2 << "Target at index " << i << " of " << this->init_socket.name();
+            conf.merge_with(s1.str().c_str(), s2.str().c_str(),
+                            this->init_socket.get_recent_config(i));
+        }
+        this->target_socket.set_config(conf);
+        this->init_socket.set_config(conf);
+    }
+};
+
+template <unsigned int BUSWIDTH, typename TRAITS, typename DEFAULT_PROTOCOL,
+          unsigned int PORTMAX, typename RESP_TYPE, RESP_TYPE ADDR_ERR_RESP,
+          void (TRAITS::tlm_payload_type::*SET_RESP_CALL)(const RESP_TYPE)>
+class GenericRouter_b<BUSWIDTH, TRAITS, DEFAULT_PROTOCOL, PORTMAX,
+                      RESP_TYPE, ADDR_ERR_RESP, SET_RESP_CALL,
+                      SimpleAddressMap<TRAITS, PORTMAX> >:
+public GenericRouterRaw<BUSWIDTH, TRAITS, DEFAULT_PROTOCOL, PORTMAX,
+                        RESP_TYPE, ADDR_ERR_RESP, SET_RESP_CALL,
+                        SimpleAddressMap<TRAITS, PORTMAX> >
+{
+    GC_HAS_CALLBACKS();
+protected:
+    typedef GenericRouterRaw<BUSWIDTH, TRAITS, DEFAULT_PROTOCOL, PORTMAX,
+                             RESP_TYPE, ADDR_ERR_RESP, SET_RESP_CALL,
+                             SimpleAddressMap<TRAITS, PORTMAX> >
+            GenericRouterRawType;
+
+public:
+    typedef typename GenericRouterRawType::payload_type payload_type;
+
+    GenericRouter_b(sc_core::sc_module_name name_):
+    GenericRouterRawType(name_)
+    {
+    };
+
+    virtual void bound_to_target(const std::string& other_type,
+                                 gs::socket::bindability_base<TRAITS>* other,
+                                 unsigned int index)
+    {
+        GS_DUMP("Initiator socket index " << index
+                                          << " is bound to a socket of type "
+                                          << other_type);
+        gs::socket::config<TRAITS> conf=this->init_socket.get_recent_config(0);
+        for (unsigned int i=1; i<this->init_socket.size(); i++){
+            std::stringstream s1, s2;
+            s1 << "Merged Config of Targets 0 to " << (i-1) << " of "
+               << this->init_socket.name();
+            s2 << "Target at index " << i << " of " << this->init_socket.name();
+            conf.merge_with(s1.str().c_str(), s2.str().c_str(),
+                            this->init_socket.get_recent_config(i));
+        }
+        this->target_socket.set_config(conf);
+        this->init_socket.set_config(conf);
+
+        gs::socket::GreenSocketAddress_base*
+                greenSocketAddress(
+                    dynamic_cast<gs::socket::GreenSocketAddress_base*>(other));
+
+        if (greenSocketAddress)
+        {
+            GC_REGISTER_TYPED_PARAM_CALLBACK(&greenSocketAddress->base_addr,
+                                             gs::cnf::post_write,
+                                             GenericRouter_b,
+                                             addressChanged);
+        }
+    }
+
+   /*
+    * Callback on base_addr / high_addr of each device (post_write)
+    * Update address map with new address and invalidate DMI
+    * Only support simpleAddressMap
+    *
+    * @param param address (base or high)
+    * @param type callback type
+    * @return gs::cnf::return_nothing
+    */
+   gs::cnf::callback_return_type addressChanged(
+       gs::gs_param_base& param,
+       gs::cnf::callback_type type)
+   {
+       gs::gs_param<gs_uint64>& addr =
+           static_cast<gs::gs_param<gs_uint64>&>(param);
+       bool decodeResult = false;
+       payload_type txn;
+       std::vector<Port_id_t> portIDs;
+       Port_id_t portID, portIDTmp;
+       gs::socket::config<TRAITS> conf;
+       gs::gs_param<gs_uint64> baseAddr;
+       gs::gs_param<gs_uint64> highAddr;
+
+       GS_DUMP_N(name(), "addressChanged : " << param.getName()
+           << " = 0x" << std::hex << addr << std::dec);
+
+       this->refreshAddressMap(false);
+
+       txn.set_address(addr);
+
+       for(unsigned int i = 0; i < this->target_socket.size(); i++) {
+           portIDs = this->decodeAddress(txn, decodeResult, &conf, i);
+           if (decodeResult) {
+               for (std::vector<Port_id_t>::iterator it = portIDs.begin();
+                    it != portIDs.end(); ++it)
+               {
+                   portID = *it;
+                   gs::socket::bindability_base<TRAITS>*
+                       otherSide(this->init_socket.get_other_side(portID,
+                                 portIDTmp));
+                   gs::socket::GreenSocketAddress_base*
+                       greenSocketAddress(
+                           dynamic_cast<gs::socket::GreenSocketAddress_base*>
+                               (otherSide));
+                   GenericRouterBase<TRAITS, PORTMAX,
+                                     SimpleAddressMap<TRAITS, PORTMAX> >*
+                       router(NULL);
+
+                   if (otherSide) {
+                       router  = dynamic_cast<GenericRouterBase<TRAITS,
+                                              PORTMAX,
+                                              SimpleAddressMap<TRAITS, PORTMAX>
+                                             >*>
+                                      (otherSide->get_parent());
+                   }
+
+                   if (router) {
+                       baseAddr = router->getAddressMap().get_min();
+                       highAddr = router->getAddressMap().get_max();
+                   } else if (greenSocketAddress) {
+                       baseAddr = greenSocketAddress->base_addr;
+                       highAddr = greenSocketAddress->high_addr;
+                   }
+
+                   this->target_socket[i]->invalidate_direct_mem_ptr(baseAddr,
+                                                               highAddr);
+               }
+           }
+       }
+
+       return gs::cnf::return_nothing;
+   }
+};
 
 #define __INCLUDED_BY_GENERIC_ROUTER_B_H__
 #include "greenrouter/protocol/Dummy/DummyProtocol.h"
