@@ -1,5 +1,3 @@
-insert adding entry [ 0x0, 0x10 ] on 0
-insert adding entry [ 0x11, 0xffff ] on 1
 time 0 s: sillysort: run: Initally memory contains: "As molt example in..."
 time 0 s: sillysort: run: Got 'A' and 's' from address 0
 time 0 s: sillysort: run: Got 's' and ' ' from address 1

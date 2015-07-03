@@ -573,7 +573,8 @@ public:
         }
 
         if(success) {
-            cout << __FUNCTION__ << " adding entry " << entry << endl;
+            GS_DUMP_N(m_routine_name, __FUNCTION__ << " adding entry "
+                                                   << entry);
 
             // add the entry
             m_address_map.push_back(entry);
