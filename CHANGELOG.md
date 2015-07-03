@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.2.0 (unreleased)
+## Added
+ * GreenRouter: DMI Invalidate support for dynamic memory map
+
 ## v1.1.0
  * MinGW support
  * SystemC 2.3.1 support

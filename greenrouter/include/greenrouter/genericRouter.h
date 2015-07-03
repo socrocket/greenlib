@@ -145,6 +145,7 @@ public:
     m_addressMap(0),
     m_EOEdone(false),
     my_id(id_counter++),
+    mapCheckPending(false),
     m_DummyProtocol("DummyProtocol"),
     m_protocol_port_index(0)
     {
@@ -338,6 +339,11 @@ public:
      */
     void b_tr(unsigned int from, payload_type& txn, sc_core::sc_time& time)
     {
+        if(mapCheckPending) {
+            refreshAddressMap(true);
+            mapCheckPending = false;
+        }
+
         protocol_port[m_protocol_port_index]->before_b_transport(from, txn,
                                                                  time);
         GS_DUMP("forwarding PV transaction from master index"
@@ -368,6 +374,11 @@ public:
     sync_enum_type nb_bw(unsigned int from, payload_type& txn, phase_type& ph,
                          sc_core::sc_time& time)
     {
+        if(mapCheckPending) {
+            refreshAddressMap(true);
+            mapCheckPending = false;
+        }
+
         return protocol_port[m_protocol_port_index]->
             registerSlaveAccess(from, txn, ph, time);
     }
@@ -375,6 +386,10 @@ public:
     sync_enum_type nb_fw(unsigned int from, payload_type& txn, phase_type& ph,
                          sc_core::sc_time& time)
     {
+        if(mapCheckPending) {
+            refreshAddressMap(true);
+            mapCheckPending = false;
+        }
 
         //get the config of initiator 'from' (through target socket of bus)
         gs::socket::config<TRAITS> tmp_conf =
@@ -469,6 +484,11 @@ public:
         gs::socket::config<TRAITS> tmp_conf =
             target_socket.get_recent_config(from);
 
+        if(mapCheckPending) {
+            refreshAddressMap(true);
+            mapCheckPending = false;
+        }
+
         bool decode_ok = false;
         Port_id_t tar_port_num = decodeAddress(trans, decode_ok, &tmp_conf,
                                                from)[0];
@@ -556,6 +576,7 @@ protected:
     static unsigned int id_counter;
     //mm_uint_uint m_dmi_iport_tport;
     mm_uint_Entry m_dmi_tport_entry;
+    bool mapCheckPending;
 public:
     DEFAULT_PROTOCOL m_DummyProtocol;
     unsigned m_protocol_port_index; //TODO: change to gs_param
@@ -731,7 +752,7 @@ public:
                        baseAddr = greenSocketAddress->base_addr;
                        highAddr = greenSocketAddress->high_addr;
                    }
-
+                   this->mapCheckPending = true;
                    this->target_socket[i]->invalidate_direct_mem_ptr(baseAddr,
                                                                highAddr);
                }
