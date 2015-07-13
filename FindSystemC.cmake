@@ -169,4 +169,7 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(SystemC
                                   FOUND_VAR SystemC_FOUND
                                   REQUIRED_VARS SystemC_LIBRARIES SystemC_LIBRARY_DIRS SystemC_INCLUDE_DIRS
                                   VERSION_VAR SystemC_VERSION)
+if("${CMAKE_VERSION}" VERSION_LESS 2.8.11)
+    set(SystemC_FOUND ${SYSTEMC_FOUND})
+endif()
 mark_as_advanced(SystemC_LIBRARIES SystemC_LIBRARY_DIRS SystemC_INCLUDE_DIRS)

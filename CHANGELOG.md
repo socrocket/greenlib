@@ -3,6 +3,8 @@
 ## v1.2.0 (unreleased)
 ## Added
  * GreenRouter: DMI Invalidate support for dynamic memory map
+## Fixed
+ * FindSystemC with CMake < 2.8.11
 
 ## v1.1.0
  * MinGW support
