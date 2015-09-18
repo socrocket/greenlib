@@ -1,11 +1,9 @@
-ADD_LIBRARY(greenscript STATIC
-	../src/greenscript.cpp
-    )
+add_library(greenscript STATIC ../src/greenscript.cpp)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_GREENCONTROL -Wno-unused-value")
 
 #
-# Create _gsp_sc.so and _gsp_sc.py for embedded Python scripts.
+# Create _gsp_sc and _gsp_sc.py for embedded Python scripts.
 #
 SET_SOURCE_FILES_PROPERTIES(../gsp_scPYTHON_wrap.cxx PROPERTIES GENERATED 1)
 SET_SOURCE_FILES_PROPERTIES(../gsp_sc.i PROPERTIES CPLUSPLUS ON)
@@ -20,7 +18,7 @@ SET_TARGET_PROPERTIES(_gsp_sc.so PROPERTIES SUFFIX "")
 TARGET_LINK_LIBRARIES(_gsp_sc.so ${LUA_LIBRARIES})
 
 #
-# Create _gsp_sc_sa.so and _gsp_sc_sa.py for standalone Python scripts.
+# Create _gsp_sc_sa and _gsp_sc_sa.py for standalone Python scripts.
 #
 SET_SOURCE_FILES_PROPERTIES(../gsp_sc_saPYTHON_wrap.cxx
                                                          PROPERTIES GENERATED 1)
@@ -36,6 +34,9 @@ SET_TARGET_PROPERTIES(_gsp_sc_sa.so PROPERTIES SUFFIX "")
 TARGET_LINK_LIBRARIES(_gsp_sc_sa.so ${SystemC_LIBRARIES}
                                     ${LUA_LIBRARIES})
 
+#
+# INSTALL
+#
 install(TARGETS greenscript DESTINATION lib)
 install(FILES ../gs.py
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
@@ -46,11 +47,11 @@ install(FILES ../gs_sa.py
 #
 # This is generated files, there are in CMAKE_CURRENT_BINARY_DIR.
 #
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/_gsp_sc.so
+install(TARGETS _gsp_sc
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gsp_sc.py
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/_gsp_sc_sa.so
+install(TARGETS _gsp_sc_sa
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gsp_sc_sa.py
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")

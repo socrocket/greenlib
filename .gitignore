@@ -77,8 +77,8 @@ greenscript/gs.pyc
 greenscript/gs_sa.pyc
 greenscript/gsp_scPYTHON_wrap.cxx
 greenscript/gsp_sc_saPYTHON_wrap.cxx
-greenscript/lib/_gsp_sc.so
-greenscript/lib/_gsp_sc_sa.so
+greenscript/lib/_gsp_sc.*
+greenscript/lib/_gsp_sc_sa.*
 greenscript/lib/gsp_sc.py
 greenscript/lib/gsp_sc.pyc
 greenscript/lib/gsp_sc_sa.py
