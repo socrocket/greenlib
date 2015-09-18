@@ -1252,4 +1252,11 @@ gsp_sc_findReceiver(std::string name)
   }
 }
 
-
+/**
+ * Empty main. Necessary since SystemC 2.3.0
+ *
+ * @return 0
+ */
+int sc_main(int argc, char *argv[]) {
+    return 0;
+}

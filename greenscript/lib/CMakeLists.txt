@@ -33,7 +33,7 @@ ADD_LIBRARY(_gsp_sc_sa.so SHARED ../src/gsp_sc.cpp
                                  ../gsp_sc_saPYTHON_wrap.cxx)
 SET_TARGET_PROPERTIES(_gsp_sc_sa.so PROPERTIES PREFIX "")
 SET_TARGET_PROPERTIES(_gsp_sc_sa.so PROPERTIES SUFFIX "")
-TARGET_LINK_LIBRARIES(_gsp_sc_sa.so ${SystemC_LIBRARIES_STATIC}
+TARGET_LINK_LIBRARIES(_gsp_sc_sa.so ${SystemC_LIBRARIES}
                                     ${LUA_LIBRARIES})
 
 install(TARGETS greenscript DESTINATION lib)
