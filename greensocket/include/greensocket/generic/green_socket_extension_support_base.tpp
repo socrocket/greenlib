@@ -124,7 +124,7 @@ T* gs::socket::extension_support_base<TRAITS>::get_extension(const gs::ext::gs_r
 template <typename TRAITS>
 template <typename T>
 T* gs::socket::extension_support_base<TRAITS>::get_extension(const gs::ext::gs_data_id&, payload_type& txn){
-  T* tmp=txn.get_extension<T>(); //get the pointer
+  T* tmp=txn.template get_extension<T>(); //get the pointer
   if (!tmp) { //test if it is there
     tmp=gs::ext::create_extension<T>();  //if not create and add
     txn.set_extension(tmp);
