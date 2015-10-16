@@ -83,7 +83,7 @@ void gs::socket::mm_base<TRAITS,MM_INTERFACE>::reserve_data_size(payload_type& t
 //see reserve_data_size. works in the same way
 template <typename TRAITS, typename MM_INTERFACE>
 void gs::socket::mm_base<TRAITS,MM_INTERFACE>::reserve_be_size(payload_type& txn, unsigned int size){
-  assert(m_scheme==GS_TXN_WITH_BE | m_scheme==GS_TXN_WITH_BE_AND_DATA);
+  assert(m_scheme==GS_TXN_WITH_BE || m_scheme==GS_TXN_WITH_BE_AND_DATA);
   per_txn_data_and_be* tmp;
   txn.get_extension(tmp);
   assert(tmp);
