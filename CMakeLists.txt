@@ -17,7 +17,7 @@ add_custom_target(run_test COMMAND make test)
 
 # Require SystemC
 set(SystemC_USE_STATIC_LIBS ${USE_STATIC_SYSTEMC})
-find_package( SystemC )
+find_package(SystemC 2.3.0)
 if(SystemC_FOUND)
     set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} ${SystemC_INCLUDE_DIRS})
 else()

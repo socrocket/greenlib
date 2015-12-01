@@ -486,13 +486,7 @@ namespace gs {
 
       const char* socket_name() {
         if (m_name.length() == 0) {
-#if SYSTEMC_API == 210
-          sc_core::sc_module *mod = dynamic_cast<sc_core::sc_module*>(dynamic_cast<gs::socket::bindability_base<tlm::tlm_base_protocol_types>*>(this)->get_parent());
-          assert(mod != NULL);
-          m_name = mod->name();
-#else
           m_name = socket_type::get_parent_object()->name();
-#endif
           m_name += ".";
           m_name += m_type_string;
         }

@@ -31,7 +31,7 @@
 
 #include <systemc>
 
-// Respect if the macro is set externally (to 210, 220, 230 or 231 only)
+// Respect if the macro is set externally (to 230 or 231 only)
 #ifdef SYSTEMC_API
 
 #if SYSTEMC_API != 210 && SYSTEMC_API != 220 && SYSTEMC_API != 230 && \
@@ -44,14 +44,10 @@ information.
 // So it is not defined externally, detect it!
 #else
 
-// OSCI SystemC 2.1
-#if SYSTEMC_VERSION == 20050714
-#define SYSTEMC_API 210
-#endif
-
-// OSCI SystemC 2.2.0 and 2.2.05jun06
-#if SYSTEMC_VERSION == 20070314 || SYSTEMC_VERSION == 20060505
-#define SYSTEMC_API 220
+// OSCI SystemC 2.1.0, 2.2.0 and 2.2.05jun06 (Unsupported)
+#if SYSTEMC_VERSION == 20050714 || SYSTEMC_VERSION == 20070314 \
+                                || SYSTEMC_VERSION == 20060505
+#error GreenLib only supports SystemC 2.3.0 and 2.3.1
 #endif
 
 // OSCI SystemC 2.3.0

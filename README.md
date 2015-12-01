@@ -27,7 +27,7 @@ the implementation of more complex memories
 GreenLib requires :
 
 * GIT > 1.8.2
-* SystemC[^systemc-windows-support] 2.1.0 to 2.3.1
+* SystemC[^systemc-windows-support] 2.3.0 to 2.3.1
 * CMake > 2.8
 * Boost > 1.34
 * Python

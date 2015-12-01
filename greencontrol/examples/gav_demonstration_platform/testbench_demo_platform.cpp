@@ -283,37 +283,22 @@ int sc_main(int argc, char *argv[]) {
   cout << " Router in ports:" << endl;
   // Cache1
   {
-    #if SYSTEMC_API == 210
-    gs::gs_param_base *trCntCache1 = mainApi->getPar("in_port_tr_counter_Cache1");
-    gs::gs_param_base *trPSCache1 = mainApi->getPar("in_port_tr_p_sec_Cache1_result_0");
-    #else
     gs::gs_param_base *trCntCache1 = mainApi->getPar("Router_SimpleBus.tport.payload_event_queue_0.in_port_tr_counter_Cache1");
     gs::gs_param_base *trPSCache1 = mainApi->getPar("Router_SimpleBus.tport.payload_event_queue_0.in_port_tr_p_sec_Cache1_result_0");
-    #endif
     if (trPSCache1)  cout << "  Cache1:   extrapolated transactions per second:  " << trPSCache1->getString() << endl;
     if (trCntCache1) cout << "                       absolut transaction count:  " << trCntCache1->getString() << endl;
   }
   // Cache2
   {
-    #if SYSTEMC_API == 210
-    gs::gs_param_base *trCntCache2 = mainApi->getPar("in_port_tr_counter_Cache2");
-    gs::gs_param_base *trPSCache2 = mainApi->getPar("in_port_tr_p_sec_Cache2_result_0");
-    #else
     gs::gs_param_base *trCntCache2 = mainApi->getPar("Router_SimpleBus.tport.payload_event_queue_0.in_port_tr_counter_Cache2");
     gs::gs_param_base *trPSCache2 = mainApi->getPar("Router_SimpleBus.tport.payload_event_queue_0.in_port_tr_p_sec_Cache2_result_0");
-    #endif
     if (trPSCache2)  cout << "  Cache2:   extrapolated transactions per second:  " << trPSCache2->getString() << endl;
     if (trCntCache2) cout << "                       absolut transaction count:  " << trCntCache2->getString() << endl;
   }
   // Cache3
   {
-    #if SYSTEMC_API == 210
-    gs::gs_param_base *trCntCache3 = mainApi->getPar("in_port_tr_counter_Cache3");
-    gs::gs_param_base *trPSCache3 = mainApi->getPar("in_port_tr_p_sec_Cache3_result_0");
-    #else
     gs::gs_param_base *trCntCache3 = mainApi->getPar("Router_SimpleBus.tport.payload_event_queue_0.in_port_tr_counter_Cache3");
     gs::gs_param_base *trPSCache3 = mainApi->getPar("Router_SimpleBus.tport.payload_event_queue_0.in_port_tr_p_sec_Cache3_result_0");
-    #endif
     if (trPSCache3)  cout << "  Cache3:   extrapolated transactions per second:  " << trPSCache3->getString() << endl;
     if (trCntCache3) cout << "                       absolut transaction count:  " << trCntCache3->getString() << endl;
   }

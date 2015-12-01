@@ -168,11 +168,7 @@ public:
   
   /// Returns the parent of the socket - which should be the same for init and target socket
   virtual sc_core::sc_object* get_parent();
-#if SYSTEMC_API == 210
-  //sc_core::sc_object* get_parent() { return init_base_type::get_parent(); }
-#else
   sc_core::sc_object* get_parent_object() { return init_base_type::get_parent_object(); }
-#endif
   
   /// Get one of the base sc_objects (the init port one)
   /**

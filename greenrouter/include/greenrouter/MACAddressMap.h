@@ -114,11 +114,7 @@ public:
             string other_name("generic OSCI socket");
 
             if(other_side) {
-#if SYSTEMC_API == 210
-                other_router = dynamic_cast < GenericRouterBase < TRAITS, PORTMAX, MACAddressMap<TRAITS, PORTMAX>  > * >(other_side->get_parent());
-#else
                 other_router = dynamic_cast < GenericRouterBase < TRAITS, PORTMAX, MACAddressMap<TRAITS, PORTMAX>  > * >(other_side->get_parent_object());
-#endif
                 other_name = other_side->get_name();
             }
 
