@@ -3,7 +3,7 @@ add_library(greenscript STATIC ../src/greenscript.cpp)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_GREENCONTROL -Wno-unused-value")
 
 #
-# Create _gsp_sc and _gsp_sc.py for embedded Python scripts.
+# Create _gsp_sc and _gsp_sc.py for GreenScript.
 #
 
 ### SWIG (gsp_scPYTHON_wrap) ###
@@ -27,36 +27,10 @@ target_link_libraries(_gsp_sc ${LUA_LIBRARIES}
                               ${SystemC_LIBRARIES})
 
 #
-# Create _gsp_sc_sa and _gsp_sc_sa.py for standalone Python scripts.
-#
-
-### SWIG (gsp_sc_saPYTHON_wrap) ###
-add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/../gsp_sc_saPYTHON_wrap.cxx
-    COMMAND ${SWIG_EXECUTABLE} -python -c++ -DUSE_GREENCONTROL
-            -o ${CMAKE_CURRENT_BINARY_DIR}/../gsp_sc_saPYTHON_wrap.cxx
-            -outdir ${CMAKE_CURRENT_BINARY_DIR}
-            ../gsp_sc_sa.i
-    DEPENDS ../gsp_sc_sa.i)
-add_custom_target(gsp_sc_saPYTHON_wrap
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/../gsp_sc_saPYTHON_wrap.cxx)
-
-### gsp_sc_sa ###
-add_library(_gsp_sc_sa SHARED ../src/gsp_sc.cpp
-                              ${CMAKE_CURRENT_BINARY_DIR}/../gsp_sc_saPYTHON_wrap.cxx)
-set_target_properties(_gsp_sc_sa PROPERTIES PREFIX "")
-add_dependencies(_gsp_sc_sa gsp_sc_saPYTHON_wrap)
-target_link_libraries(_gsp_sc_sa ${LUA_LIBRARIES}
-                                 ${PYTHON_LIBRARIES}
-                                 ${SystemC_LIBRARIES})
-
-#
 # INSTALL
 #
 install(TARGETS greenscript DESTINATION lib)
 install(FILES ../gs.py
-        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
-install(FILES ../gs_sa.py
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
 
 #
@@ -65,8 +39,4 @@ install(FILES ../gs_sa.py
 install(TARGETS _gsp_sc
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gsp_sc.py
-        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
-install(TARGETS _gsp_sc_sa
-        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gsp_sc_sa.py
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
