@@ -82,7 +82,7 @@ if(EXISTS ${_SYSTEMC_VERSION_FILE})
         "SC_API_VERSION_STRING[ \t]+sc_api_version_([0-9]+)_([0-9]+)_([0-9]+)"
         SC_API_VERSION_STRING ${_SYSTEMC_VERSION_FILE_CONTENTS})
 
-    if(NOT "${SC_API_VERSION_STRING}" MATCHES "")
+    if(NOT "${SC_API_VERSION_STRING}" STREQUAL "")
         # SystemC < 2.3.1
         string (REGEX MATCHALL "([0-9]+)" _SystemC_VERSION
             ${SC_API_VERSION_STRING})
@@ -133,7 +133,7 @@ if(EXISTS ${_SYSTEMC_VERSION_FILE})
 
     # If SystemC_USE_STATIC_LIBS set to ON, force the use of the static libraries
     if(SystemC_USE_STATIC_LIBS)
-        set(SystemC_LIBRARIES SystemC_LIBRARIES_STATIC)
+        set(SystemC_LIBRARIES ${SystemC_LIBRARIES_STATIC})
     else()
         find_library(SystemC_LIBRARIES
                      NAMES systemc SystemC
@@ -165,11 +165,15 @@ if(EXISTS ${_SYSTEMC_VERSION_FILE})
 endif()
 
 include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(SystemC
-                                  FOUND_VAR SystemC_FOUND
-                                  REQUIRED_VARS SystemC_LIBRARIES SystemC_LIBRARY_DIRS SystemC_INCLUDE_DIRS
-                                  VERSION_VAR SystemC_VERSION)
-if("${CMAKE_VERSION}" VERSION_LESS 2.8.11)
+if("${CMAKE_VERSION}" VERSION_GREATER 2.8.10)
+    FIND_PACKAGE_HANDLE_STANDARD_ARGS(SystemC
+                                      FOUND_VAR SystemC_FOUND
+                                      REQUIRED_VARS SystemC_LIBRARIES SystemC_LIBRARY_DIRS SystemC_INCLUDE_DIRS
+                                      VERSION_VAR SystemC_VERSION)
+else()
+    FIND_PACKAGE_HANDLE_STANDARD_ARGS(SystemC
+                                      REQUIRED_VARS SystemC_LIBRARIES SystemC_LIBRARY_DIRS SystemC_INCLUDE_DIRS
+                                      VERSION_VAR SystemC_VERSION)
     set(SystemC_FOUND ${SYSTEMC_FOUND})
 endif()
 mark_as_advanced(SystemC_LIBRARIES SystemC_LIBRARY_DIRS SystemC_INCLUDE_DIRS)
