@@ -12,8 +12,9 @@ add_custom_command(
     COMMAND ${SWIG_EXECUTABLE} -python -c++ -DUSE_GREENCONTROL
             -o ${CMAKE_CURRENT_BINARY_DIR}/../gsp_scPYTHON_wrap.cxx
             -outdir ${CMAKE_CURRENT_BINARY_DIR}
-            ../gsp_sc.i
-    DEPENDS ../gsp_sc.i)
+            -I${CMAKE_CURRENT_SOURCE_DIR}/../include
+            ${CMAKE_CURRENT_SOURCE_DIR}/../gsp_sc.i
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../gsp_sc.i)
 add_custom_target(gsp_scPYTHON_wrap
     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/../gsp_scPYTHON_wrap.cxx)
 
