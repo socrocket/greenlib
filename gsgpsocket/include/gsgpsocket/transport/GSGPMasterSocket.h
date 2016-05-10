@@ -176,6 +176,12 @@ namespace gs {
        */
       void Transact(accessHandle t, sc_core::sc_time& td, unsigned int index = 0);
       
+      /**
+       * DMI request.
+       */
+      int DMIRequest(accessHandle t, tlm::tlm_dmi dmi_data,
+                     unsigned int index = 0);
+
       /// Create a transaction
       accessHandle create_transaction();
 
