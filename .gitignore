@@ -74,7 +74,7 @@ greenserialsocket/examples/simple/greenserialsocket_simple
 
 greenreg/lib/libgreenreg.a
 greenscript/gs.pyc
-greenscript/lib/gsp_scPYTHON_wrap.cxx
+greenscript/gsp_scPYTHON_wrap.cxx
 greenscript/lib/_gsp_sc.*
 greenscript/lib/gsp_sc.py
 greenscript/lib/gsp_sc.pyc
