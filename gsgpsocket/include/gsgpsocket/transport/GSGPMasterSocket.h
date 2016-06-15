@@ -179,7 +179,7 @@ namespace gs {
       /**
        * DMI request.
        */
-      int DMIRequest(accessHandle t, tlm::tlm_dmi dmi_data,
+      int DMIRequest(accessHandle t, tlm::tlm_dmi& dmi_data,
                      unsigned int index = 0);
 
       /// Create a transaction
