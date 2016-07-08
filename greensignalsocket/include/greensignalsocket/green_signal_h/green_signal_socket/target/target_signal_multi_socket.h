@@ -28,9 +28,14 @@ namespace gs_generic_signal {
   class target_signal_multi_socket : public virtual target_signal_multi_base_socket {
  
     public:
-      target_signal_multi_socket (const char* name) : target_signal_multi_base_socket(name) {
-        target_signal_multi_base_socket::register_b_transport(this, &target_signal_multi_socket::b_transport);
-        target_signal_multi_base_socket::register_nb_transport_fw(this, &target_signal_multi_socket::nb_transport_fw);
+      target_signal_multi_socket (const char* name):
+      target_signal_multi_base_socket(name) {
+        target_signal_multi_base_socket::register_b_transport(this,
+                                      &target_signal_multi_socket::b_transport);
+        target_signal_multi_base_socket::register_nb_transport_fw(this,
+                                  &target_signal_multi_socket::nb_transport_fw);
+        this->b_cb = NULL;
+        this->nb_cb = NULL;
       }
     
       template<typename EXT>
@@ -74,21 +79,38 @@ namespace gs_generic_signal {
         nb_cb = cb;
       }
  
-      void b_transport (unsigned int socket_id, transaction_type& trans, sc_core::sc_time& delay) {
-        //check if the source id passed along with the payload is in the supported src list
+      void b_transport(unsigned int socket_id, transaction_type& trans,
+                       sc_core::sc_time& delay) {
+        if (!this->b_cb) {
+          std::stringstream s;
+          s << sc_object::name()
+            << ": no blocking transport callback registered";
+          SC_REPORT_ERROR("target_signal_multi_socket", s.str().c_str());
+        }
+        /*
+         * check if the source id passed along with the payload is in the
+         * supported src list.
+         */
         if (store_signal_value(trans))
           ((parent_mod->*b_cb)(socket_id, trans, delay));
-        //else
-          //std::cout << "Source ID of this txn not supported.\n";
-        return;
       }
  
-      sync_enum_type nb_transport_fw (unsigned int socket_id, transaction_type& trans, phase_type& phase, sc_core::sc_time& delay) {
-        //check if the source id passed along with the payload is in the supported src list
+      sync_enum_type nb_transport_fw(unsigned int socket_id,
+                                     transaction_type& trans,
+                                     phase_type& phase,
+                                     sc_core::sc_time& delay) {
+        if (!this->nb_cb) {
+          std::stringstream s;
+          s << sc_object::name()
+            << ": no non blocking transport callback registered";
+          SC_REPORT_ERROR("target_signal_multi_socket", s.str().c_str());
+        }
+        /*
+         * Check if the source id passed along with the payload is in the
+         * supported src list.
+         */
         if (store_signal_value(trans))
           return ((parent_mod->*nb_cb)(socket_id, trans, phase, delay));
-        //else
-          //std::cout << "Source ID of this txn not supported.\n";
         return tlm::TLM_ACCEPTED;
       }
  
