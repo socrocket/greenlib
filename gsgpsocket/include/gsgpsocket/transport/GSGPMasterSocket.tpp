@@ -615,7 +615,7 @@ template <unsigned int BUSWIDTH, typename TRANSACTION, typename CONFIG,
           typename PHASE, bool BIDIR, typename SOCK_TYPE>
 inline int GSGPMasterSocket<BUSWIDTH, TRANSACTION, CONFIG, PHASE, BIDIR,
                              SOCK_TYPE>::
-DMIRequest(accessHandle t, tlm::tlm_dmi dmi_data, unsigned int index) {
+DMIRequest(accessHandle t, tlm::tlm_dmi& dmi_data, unsigned int index) {
   return (*this)[index]->get_direct_mem_ptr(*t.get_tlm_transaction(), dmi_data);
 }
 
