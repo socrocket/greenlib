@@ -468,7 +468,40 @@ public:
 
     unsigned int tr_dbg(unsigned int from, payload_type& trans)
     {
-        return protocol_port[m_protocol_port_index]->transport_dbg(from, trans);
+	if(mapCheckPending) {
+            refreshAddressMap(true);
+            mapCheckPending = false;
+        }
+
+        protocol_port[m_protocol_port_index]->transport_dbg(from, trans);
+
+        GS_DUMP("forwarding DBG transaction from master index"
+                        << from << " to slave at address=" << txn.get_address());
+
+        //get the config of initiator 'from' (through target socket of bus)
+        gs::socket::config<TRAITS> tmp_conf =
+                target_socket.get_recent_config(from);
+
+        bool decode_ok = false;
+        std::vector<unsigned int> targetIdVec =
+                decodeAddress(trans, decode_ok, &tmp_conf, from);
+
+        unsigned int result = 0;
+
+        if(!decode_ok) {
+            (trans.*SET_RESP_CALL)(ADDR_ERR_RESP);
+            return 0;
+        } else {
+            for (unsigned int i = 0; i < targetIdVec.size(); ++i) {
+                Port_id_t tar_port_num = targetIdVec[i];
+                if (tar_port_num == m_addressMap->get_max_port()) {
+                    (trans.*SET_RESP_CALL)(ADDR_ERR_RESP);
+                } else {
+                    result += init_socket[tar_port_num]->transport_dbg(trans);
+                }
+            }
+        }
+        return result;
     }
 
     bool get_dmi(unsigned int from, payload_type& trans, tlm::tlm_dmi& dmi_data)

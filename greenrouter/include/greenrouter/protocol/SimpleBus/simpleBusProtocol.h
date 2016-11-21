@@ -429,8 +429,7 @@ public:
   }
 
   virtual unsigned int transport_dbg(unsigned int, payload_type& trans){
-    GS_DUMP("I do not support debug transport");
-    exit(1);
+    return 0;
   }
 
   virtual bool get_direct_mem_ptr(unsigned int, payload_type& trans, tlm::tlm_dmi&  dmi_data){
