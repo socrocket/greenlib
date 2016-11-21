@@ -161,7 +161,12 @@ namespace gs {
       AckResponseObj<my_type, PHASE>      AckResponse;
       /// master signals an error on a slave response
       ErrorResponseObj<my_type, PHASE>    ErrorResponse;
-      
+
+      /**
+       * Debug transaction call the transport_dbg.
+       */
+      unsigned int DBGTransact(accessHandle t, unsigned int index = 0);
+
       /**
        * PV blocking transact method. It is used in PV mode 
        * to send a whole transaction container at once.

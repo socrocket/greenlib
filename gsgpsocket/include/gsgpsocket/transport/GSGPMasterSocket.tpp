@@ -592,6 +592,11 @@ bw_peq_cb(tlm::tlm_base_protocol_types::tlm_payload_type& tlmtr,
     peq.out_port->notify(maa); // forward immediately to user
 }
 
+template <unsigned int BUSWIDTH, typename TRANSACTION, typename CONFIG, typename PHASE, bool BIDIR, typename SOCK_TYPE>
+inline unsigned int GSGPMasterSocket<BUSWIDTH, TRANSACTION, CONFIG, PHASE, BIDIR, SOCK_TYPE>::
+DBGTransact(accessHandle t, unsigned int index) {
+  return (*this)[index]->transport_dbg(*t.get_tlm_transaction());
+}
 
 template <unsigned int BUSWIDTH, typename TRANSACTION, typename CONFIG,
           typename PHASE, bool BIDIR, typename SOCK_TYPE>
