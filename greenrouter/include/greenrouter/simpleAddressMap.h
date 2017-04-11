@@ -500,7 +500,7 @@ public:
         m_return_address = 0;
 
         if (m_address_map.size ()) {
-            m_return_address = ( m_address_map.end())->upper_bound;
+            m_return_address = ( m_address_map.back()).upper_bound;
         } else {
             SC_REPORT_ERROR(m_routine_name, "get_max() called on empty map");
         }
@@ -516,7 +516,7 @@ public:
     const Map_address_t & get_min(void)
     {
         if(m_address_map.size()) {
-            m_return_address = (m_address_map.begin())->lower_bound;
+            m_return_address = (m_address_map.front()).lower_bound;
         } else {
             SC_REPORT_ERROR(m_routine_name, "get_min() called on empty map");
         }
