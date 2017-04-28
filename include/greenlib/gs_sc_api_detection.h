@@ -60,6 +60,11 @@ information.
 #define SYSTEMC_API 231
 #endif
 
+// Cadence IUS 15.2.
+#if SC_API_VERSION_STRING == ncsc_api_version_ius_15_2
+#define SYSTEMC_API 231
+#endif
+
 // SystemC API to use must be defined at this point
 // include the detection above for other SystemC vendors to
 // define the SYSTEMC_API macro
