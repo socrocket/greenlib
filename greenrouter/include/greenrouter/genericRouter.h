@@ -586,7 +586,7 @@ public:
     /**
      * GenericRouter_if's decodeAddress function.
      */
-    virtual std::vector<unsigned int>& decodeAddress(payload_type& txn,
+    virtual std::vector<unsigned int> decodeAddress(payload_type& txn,
         bool &decode_ok, gs::socket::config<TRAITS>* conf = 0,
         unsigned int from = 0)
     {

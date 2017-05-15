@@ -20,6 +20,7 @@
 #define __HELPFUNCTIONS_H__
 
 #include <tlm.h>
+#include <sstream>
 #include <iostream>
 
 namespace gs {

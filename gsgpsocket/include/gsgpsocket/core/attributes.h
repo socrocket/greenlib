@@ -23,6 +23,7 @@
 #define __ATTRIBUTES_H__
 
 #include "attributeBase.h"
+#include <sstream>
 #include <string.h>
 #include <boost/config.hpp> // needed for SystemC 2.1
 #include <systemc>

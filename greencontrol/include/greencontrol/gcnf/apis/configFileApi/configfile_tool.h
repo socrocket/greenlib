@@ -32,6 +32,7 @@
 //#define ENABLE_SHORT_COMMAND_LINE_OPTIONS  // enables the short synonyms for the gs_ options
 
 #include <sstream>
+#include <fstream>
 #include "greencontrol/gcnf/plugin/config_globals.h" // may define USE_GETOPT
 
 #ifdef USE_GETOPT

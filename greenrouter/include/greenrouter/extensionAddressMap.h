@@ -73,7 +73,7 @@ class ExtensionMap {
     }
 
  typedef typename TRAITS::tlm_payload_type payload_type;
-    virtual std::vector<Port_id_t>&
+    virtual std::vector<Port_id_t>
     decode (payload_type& txn, bool &success,
             gs::socket::config<TRAITS>* tmp_conf, unsigned int from) {
       tlm::tlm_extension_base* ext = 0;
