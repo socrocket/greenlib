@@ -60,11 +60,6 @@ information.
 #define SYSTEMC_API 231
 #endif
 
-// Cadence IUS 15.2.
-#if SC_API_VERSION_STRING == ncsc_api_version_ius_15_2
-#define SYSTEMC_API 231
-#endif
-
 // OSCI SystemC 2.3.2 public review
 #if SYSTEMC_VERSION == 20170223
 #define SYSTEMC_API 232
