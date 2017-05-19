@@ -278,7 +278,7 @@ template <unsigned int BUSWIDTH = 32,
           unsigned int N=0,
           typename CB_BINDER_BASE = gs_callback_binder_base
 #if !(defined SYSTEMC_VERSION & SYSTEMC_VERSION <= 20050714)
-          ,sc_core::sc_port_policy POL = sc_core::SC_ONE_OR_MORE_BOUND
+          ,sc_core::sc_port_policy POL = sc_core::SC_ZERO_OR_MORE_BOUND
 #endif
           >
 class multi_init_base: public tlm::tlm_initiator_socket<BUSWIDTH,
@@ -331,7 +331,7 @@ template <unsigned int BUSWIDTH = 32,
           unsigned int N=0,
           typename CB_BINDER_BASE = gs_callback_binder_base
 #if !(defined SYSTEMC_VERSION & SYSTEMC_VERSION <= 20050714)
-          ,sc_core::sc_port_policy POL = sc_core::SC_ONE_OR_MORE_BOUND
+          ,sc_core::sc_port_policy POL = sc_core::SC_ZERO_OR_MORE_BOUND
 #endif
           >
 class multi_target_base: public tlm::tlm_target_socket<BUSWIDTH, 

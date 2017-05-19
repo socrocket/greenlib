@@ -43,7 +43,7 @@ template <unsigned int BUSWIDTH = 32,
           typename CB_BINDER_BASE=gs_callback_binder_base,
           typename MULTI_MULTI_BASE = gs_multi_to_multi_bind_base<TRAITS>
 #if !(defined SYSTEMC_VERSION & SYSTEMC_VERSION <= 20050714)
-          ,sc_core::sc_port_policy POL = sc_core::SC_ONE_OR_MORE_BOUND
+          ,sc_core::sc_port_policy POL = sc_core::SC_ZERO_OR_MORE_BOUND
 #endif
           >
 class initiator_socket_callback_base: public multi_init_base< BUSWIDTH, 
