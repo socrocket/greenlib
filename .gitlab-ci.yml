@@ -1,0 +1,14 @@
+# Templates
+.job_unix_makefile: &job_unix_makefile
+  script:
+    - cmake . -DSYSTEMC_PREFIX=$SYSTEMC_HOME_2_3_1
+    - make
+    - make check
+
+# Jobs
+## Linux
+Linux:
+  variables:
+    CC: "gcc"
+    CXX: "g++"
+  <<: *job_unix_makefile
