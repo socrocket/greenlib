@@ -307,6 +307,22 @@ install(DIRECTORY greenserialsocket/docs/
         DESTINATION docs/greenserialsocket
 )
 
+# Greenthreads
+
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenthreads/include/)
+
+install(DIRECTORY greenthreads/include/
+        DESTINATION include
+)
+
+install(DIRECTORY greenthreads/examples/
+        DESTINATION examples/threads
+)
+
+install(DIRECTORY greenthreads/docs/
+        DESTINATION docs/greenthreads
+)
+
 # Include directory must use first the repository headers!
 set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} ${EXTERNAL_INCLUDE_DIRS})
 
@@ -329,6 +345,7 @@ add_subdirectory(greenmessage EXCLUDE_FROM_ALL)
 add_subdirectory(gsgpsocket EXCLUDE_FROM_ALL)
 add_subdirectory(greensignalbus EXCLUDE_FROM_ALL)
 add_subdirectory(greenserialsocket EXCLUDE_FROM_ALL)
+add_subdirectory(greenthreads EXCLUDE_FROM_ALL)
 
 # Compile greenreg library.
 add_subdirectory(greenreg)
