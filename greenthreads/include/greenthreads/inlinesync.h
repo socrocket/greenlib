@@ -153,15 +153,17 @@ namespace gs {
         unsigned int tr_dbg(unsigned int from, tlm::tlm_generic_payload& trans)
           {
             sem_wait(&mutex);
-            return gs::gp::GenericRouter<BUSWIDTH>::tr_dbg(from,trans);
+            unsigned int r=gs::gp::GenericRouter<BUSWIDTH>::tr_dbg(from,trans);
             sem_post(&mutex);
+            return r;
           }
         
         bool get_dmi(unsigned int from, tlm::tlm_generic_payload& trans, tlm::tlm_dmi& dmi_data) 
           {
             sem_wait(&mutex);
-            return gs::gp::GenericRouter<BUSWIDTH>::get_dmi(from, trans, dmi_data);
+            bool r=gs::gp::GenericRouter<BUSWIDTH>::get_dmi(from, trans, dmi_data);
             sem_post(&mutex);
+            return r;
           }
       
       };
