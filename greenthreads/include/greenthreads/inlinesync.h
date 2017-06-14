@@ -6,7 +6,6 @@
 //#include <tlm_utils/simple_initiator_socket.h>
 //#include <tlm_utils/simple_target_socket.h>
 #include "greenthreads/thread_safe_event.h"
-#include <semaphore.h>
 #include <pthread.h>
 
 //#include <greensocket/generic/gs_extension.h>
@@ -33,35 +32,44 @@ namespace gs {
     private:
       gs::gp::GenericRouter<BUSWIDTH> *internalRouter;
     
-      event_async syncUnlock;
-    
+      event_async processTxnEvent;
       pthread_t mainThread;
     
       unsigned int l_port;
       tlm::tlm_generic_payload * l_trans;
       sc_core::sc_time * l_delay;
-      bool txnPending;
-      sem_t txnDone;
-      sem_t txnMutex;
+      tlm::tlm_dmi * l_dmi_data;
+      unsigned int l_result;
       
+      gs::gt::sem_i txnDone;
+      gs::gt::spin_mutex txnMutex;
+
+      event_async processDmiEvent;
+      event_async processDbgEvent;
+
     public:
       
-      SC_CTOR(inLineSync):  target_socket("input"),  init_socket("output")
+      SC_CTOR(inLineSync):  target_socket("input"),  init_socket("output"),
+                            txnDone(0)
         {
           mainThread=pthread_self();
-          sem_init(&txnDone, 0, 0);
-          sem_init(&txnMutex, 0, 1);
         
           internalRouter=createRouter();
         
           internalRouter->init_socket(init_socket);
           target_socket(internalRouter->target_socket);
-        
-          txnPending=0;
           
           SC_THREAD(processTxn);
+
+          SC_METHOD(processDmiMethod);
+          sensitive << processDmiEvent;
+          dont_initialize();
+
+          SC_METHOD(processDbgMethod);
+          sensitive << processDbgEvent;
+          dont_initialize();
         }
-    
+
     
       // NB, the WHOLE point is that this b_transport will be called from a remote
       // system, hence it will be in a different thread !
@@ -75,21 +83,64 @@ namespace gs {
           if ( pthread_equal(pthread_self(), mainThread)) {
             internalRouter->b_tr(from,trans,delay);
           } else {
-            sem_wait(&txnMutex); // only allow one txn at a time, as we only have one
-            // set of l_* variables.
+            txnMutex.lock();
             l_port=from;
             l_trans=&trans;
             l_delay=&delay;
-            txnPending=true;
             COUT << "Unlock SystemC\n";
-            syncUnlock.notify();
+            processTxnEvent.notify();
             COUT << "Qemu waiting for SystemC\n";
-            sem_wait(&txnDone); // we really hold this thread now.
-            sem_post(&txnMutex);
+            txnDone.wait(); // we really hold this thread now.
+            txnMutex.unlock();
             COUT << "txn done, Qemu running again\n";
           }
         }
-      
+
+      bool get_dmi(unsigned int from, tlm::tlm_generic_payload& trans, tlm::tlm_dmi& dmi_data)
+        {
+          COUT << "get dmi requested\n";
+
+          // We're in the same thread - dont do anything, pass through.
+          if ( pthread_equal(pthread_self(), mainThread)) {
+            return internalRouter->get_dmi(from,trans, dmi_data);
+          } else {
+            txnMutex.lock();
+            l_port=from;
+            l_trans=&trans;
+            l_dmi_data=&dmi_data;
+            COUT << "Unlock SystemC\n";
+            processDmiEvent.notify();
+            COUT << "Qemu waiting for SystemC\n";
+            txnDone.wait(); // we really hold this thread now.
+            bool r=(bool)l_result; // pick this up before releasing the mutex!
+            txnMutex.unlock();
+            COUT << "txn done, Qemu running again\n";
+            return r;
+          }
+        }
+
+      unsigned int tr_dbg(unsigned int from, tlm::tlm_generic_payload& trans)
+        {
+          COUT << "debug transport requested\n";
+
+          // We're in the same thread - dont do anything, pass through.
+          if ( pthread_equal(pthread_self(), mainThread)) {
+            return internalRouter->tr_dbg(from,trans);
+          } else {
+            txnMutex.lock();
+            l_port=from;
+            l_trans=&trans;
+            COUT << "Unlock SystemC\n";
+            processDbgEvent.notify();
+            COUT << "Qemu waiting for SystemC\n";
+            txnDone.wait(); // we really hold this thread now.
+            unsigned int r=l_result; // pick this up before releasing the mutex!
+            txnMutex.unlock();
+            COUT << "tr dbg done, Qemu running again\n";
+            return r;
+          }
+        }
+
       void assign_address (sc_dt::uint64 baseAddress, sc_dt::uint64 highAddress, unsigned int portNumber)
         {
           internalRouter->assign_address(baseAddress, highAddress, portNumber);
@@ -100,75 +151,79 @@ namespace gs {
     private:
       void b_transport_safe()
         {
-          if (txnPending) {
-            COUT << "Doing txn\n";
-            internalRouter->b_tr(l_port, *l_trans,*l_delay);
-            txnPending=false;
-            COUT << "Done txn\n";
-            // just one thing, before we allow the other thread to
-            // continue.... TIME !
-            sem_post(&txnDone); // release the other thread.
-            COUT << "Finished txn\n";
-          }  
         }
-    
+      // note this MUST be in a thread, not a method, to allow models to call wait!    
       void processTxn()
         {
           while (1) {
-          
-            COUT << "Process pending txn\n";
-            b_transport_safe();
-            COUT << "Processed txn\n";
-            wait(syncUnlock);        // await - dont fall of the end of time
+            wait(processTxnEvent);        // await - dont fall of the end of time
+            COUT << "Doing txn\n";
+            internalRouter->b_tr(l_port, *l_trans,*l_delay);
+            txnDone.post(); // release the other thread.
+            COUT << "Finished txn\n";
           }
+        }
+
+      // must not call wait (clause l of 11.2.6)
+      void processDmiMethod()
+        {
+          COUT << "Doing dmi\n";
+          l_result=internalRouter->get_dmi(l_port, *l_trans, *l_dmi_data);
+          txnDone.post(); // release the other thread.
+          COUT << "Finished dmi\n";
+        }
+
+      // must not call wait (clause t of 11.3.4)
+      void processDbgMethod()
+        {
+          COUT << "Doing dbg\n";
+          l_result=internalRouter->tr_dbg(l_port, *l_trans);
+          txnDone.post(); // release the other thread.
+          COUT << "Finished dbg\n";
         }
 
       class SafeRouter : public gs::gp::GenericRouter<BUSWIDTH>
       {
         inLineSync *parent;
-        sem_t mutex;
+
       public:
       
         SafeRouter(const char* name, inLineSync *p):
             gs::gp::GenericRouter<BUSWIDTH>(name)
           {
-            sem_init(&mutex, 0, 1);
-            gs::gp::GenericRouter<BUSWIDTH>::target_socket.register_b_transport(this, &SafeRouter::b_transport);
-            gs::gp::GenericRouter<BUSWIDTH>::target_socket.register_transport_dbg(this, &SafeRouter::tr_dbg);
-            gs::gp::GenericRouter<BUSWIDTH>::target_socket.register_get_direct_mem_ptr(this, &SafeRouter::get_dmi);
-
             parent=p;
+            gs::gp::GenericRouter<BUSWIDTH>::target_socket.register_b_transport(this, &SafeRouter::b_tr_in);
+            gs::gp::GenericRouter<BUSWIDTH>::target_socket.register_transport_dbg(this, &SafeRouter::tr_dbg_in);
+            gs::gp::GenericRouter<BUSWIDTH>::target_socket.register_get_direct_mem_ptr(this, &SafeRouter::get_dmi_in);
           }
-        void b_transport( unsigned int from, tlm::tlm_generic_payload& trans, sc_core::sc_time& delay )
+        void b_tr_in( unsigned int from, tlm::tlm_generic_payload& trans, sc_core::sc_time& delay )
           {
             parent->b_transport(from, trans, delay);
           }
         void b_tr( unsigned int from, tlm::tlm_generic_payload& trans, sc_core::sc_time& delay )
           {
-            // The transaction will be processed in the SystemC thread, no need
-            // to take the mutex.
             gs::gp::GenericRouter<BUSWIDTH>::b_tr(from, trans, delay);
           }
 
+        unsigned int tr_dbg_in(unsigned int from, tlm::tlm_generic_payload& trans)
+          {
+            return parent->tr_dbg(from, trans);
+          }
         unsigned int tr_dbg(unsigned int from, tlm::tlm_generic_payload& trans)
           {
-            sem_wait(&mutex);
-            unsigned int r=gs::gp::GenericRouter<BUSWIDTH>::tr_dbg(from,trans);
-            sem_post(&mutex);
-            return r;
+            return gs::gp::GenericRouter<BUSWIDTH>::tr_dbg(from,trans);
           }
-        
+
+        bool get_dmi_in(unsigned int from, tlm::tlm_generic_payload& trans, tlm::tlm_dmi& dmi_data)
+          {
+            return parent->get_dmi(from, trans, dmi_data);
+          }
         bool get_dmi(unsigned int from, tlm::tlm_generic_payload& trans, tlm::tlm_dmi& dmi_data) 
           {
-            sem_wait(&mutex);
-            bool r=gs::gp::GenericRouter<BUSWIDTH>::get_dmi(from, trans, dmi_data);
-            sem_post(&mutex);
-            return r;
+            return gs::gp::GenericRouter<BUSWIDTH>::get_dmi(from, trans, dmi_data);
           }
-      
       };
-    
-    
+
       gs::gp::GenericRouter<BUSWIDTH> *createRouter()
         {
           gs::gp::SimpleBusProtocol<BUSWIDTH> *protocol;
