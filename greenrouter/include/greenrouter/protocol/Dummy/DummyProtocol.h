@@ -105,9 +105,25 @@ public:
     exit(1);
   }
 
-  virtual unsigned int transport_dbg(unsigned int, payload_type& trans){
-    GS_DUMP("I do not support debug transport");
-    exit(1);
+  virtual unsigned int transport_dbg(unsigned int from, payload_type& trans){
+    sender_ids_type* send_ids=t_sock->template get_extension<sender_ids_type>(trans);
+    if (send_ids->value.size()<=router_id) send_ids->value.resize(router_id+1);
+    send_ids->value[router_id]=from; //gotta set it every time, since we are protocol agnostic
+
+    bool decode_ok = false;
+    Port_id_t tar_port_num = router_port->decodeAddress(trans, decode_ok)[0];
+
+    if (decode_ok)
+    {
+      return (*i_sock)[tar_port_num]->transport_dbg(trans);
+    }
+    else
+    {
+      /*
+       * FIXME: Need to update the txn..
+       */
+      return tlm::TLM_UPDATED;
+    }
   }
 
   virtual bool get_direct_mem_ptr(unsigned int, payload_type& trans, tlm::tlm_dmi&  dmi_data){
