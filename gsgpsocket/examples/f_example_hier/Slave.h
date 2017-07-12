@@ -54,6 +54,10 @@ using std::list;
 using namespace gs;
 using namespace gs::gp;
 
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+  #include <memory>
+#endif
+
 #include <iomanip>
 
 #define DELAY(x) 10*x, sc_core::SC_NS
@@ -304,7 +308,11 @@ class SlaveMemHier
 {
 public:
   GenericSlavePort<32> target_port;
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+  std::unique_ptr<SlaveMem> child;
+#else
   std::auto_ptr<SlaveMem> child;
+#endif
 
   SlaveMemHier(sc_core::sc_module_name name_, int delay_=3) :
     sc_module(name_),

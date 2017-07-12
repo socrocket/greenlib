@@ -135,7 +135,7 @@ public:
   /**
    * @see gs::cnf::GCnf_Api::getUpdateEvent()
    */
-  const sc_event& getUpdateEvent(const std::string &parname)  throw (RegisterObserverFailedException) {
+  const sc_event& getUpdateEvent(const std::string &parname) /* throw (RegisterObserverFailedException) */ {
     GCNF_DUMP_N(name(), "getUpdateEvent("<<parname.c_str()<<")");      
     return m_gcnf_api->getUpdateEvent(parname);
   }

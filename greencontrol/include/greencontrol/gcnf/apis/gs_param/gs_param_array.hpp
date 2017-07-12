@@ -294,7 +294,7 @@ public:
     if (m_locked) {                                                
       GS_PARAM_DUMP("parameter is locked!");                                      
       SC_REPORT_ERROR(GCNF_SC_REPORTER(this->getName()), "parameter is locked!");
-      return;                                                               
+      return *this;
     }                                                                             
 #endif
     this->delete_array();

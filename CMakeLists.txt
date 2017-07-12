@@ -4,6 +4,10 @@ project (GREENLIB)
 include(FeatureSummary)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
+function (add_test_compare name file1 file2)
+	add_test(NAME ${name}
+             COMMAND diff --strip-trailing-cr ${file1} ${file2})
+endfunction()
 
 # Compile and run the tests
 add_custom_target(check COMMAND make compile_test COMMAND make test)

@@ -168,7 +168,7 @@ public:
    * @param argc The argc of main(...).
    * @param argv The argv of main(...).
    */
-  void parseCommandLine(const int argc, const char* const* argv) throw(CommandLineException) {
+  void parseCommandLine(const int argc, const char* const* argv) /* throw(CommandLineException) */ {
 #ifdef USE_GETOPT
     parseCommandLineWithGetOpt(argc, argv);
 #else
@@ -260,7 +260,7 @@ protected:
    * @param argc The argc of main(...).
    * @param argv The argv of main(...).
    */
-  void parseCommandLineWithBoost(const int argc, const char* const* argv) throw(CommandLineException) {
+  void parseCommandLineWithBoost(const int argc, const char* const* argv) /* throw(CommandLineException) */ {
     GCNF_DUMP_N(m_name.c_str(), "Parse command line ("<<argc<<" arguments) with boost program_options");
 
     for (int i = 0; i<argc; i++) {
@@ -315,7 +315,7 @@ protected:
    * @param argc The argc of main(...).
    * @param argv The argv of main(...).
    */
-  void parseCommandLineWithGetOpt(const int argc, const char* const* argv) throw(CommandLineException) {
+  void parseCommandLineWithGetOpt(const int argc, const char* const* argv) /* throw(CommandLineException) */ {
     GCNF_DUMP_N(m_name.c_str(), "Parse command line ("<<argc<<" arguments) with getopt");
  
     assert(argc < ARGC_COPY_SIZE); // if this fails, enlarge ARGC_COPY_SIZE

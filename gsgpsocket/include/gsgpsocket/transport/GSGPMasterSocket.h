@@ -147,7 +147,7 @@ namespace gs {
         // register callback function to this Socket, see start_of_simulation
 
         // use in-port pointer address as unique master ID (this is important to make genericRouter work)
-        MasterPortNumber = (gs_handle) this;
+        MasterPortNumber = reinterpret_cast<gs_handle>(this);
       }
       
       /// Destructor

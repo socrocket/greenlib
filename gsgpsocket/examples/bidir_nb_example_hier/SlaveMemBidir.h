@@ -43,6 +43,10 @@ using namespace gs::gp;
 #include <iomanip>
 #include "nb_example/gs_dump.h"  // needed for GS_DUMP macro if not USE_GPSOCKET
 
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+  #include <memory>
+#endif
+
 #define DELAY(x) 10*x, sc_core::SC_NS
 
 
@@ -253,7 +257,11 @@ class SlaveMemBidirHier
 {
 public:
   GenericBidirectionalPort<32> target_port;
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+  std::unique_ptr<SlaveMemBidir> child;
+#else
   std::auto_ptr<SlaveMemBidir> child;
+#endif
 
   SlaveMemBidirHier(sc_core::sc_module_name name_, int delay_=3) :
     sc_module(name_),
