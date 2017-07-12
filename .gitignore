@@ -29,6 +29,8 @@ executable_output.template
 
 #Don't allow to check in example files.
 
+*.exe
+
 greenmemory/examples/simple/greenmemory_simple
 greenmessage/examples/broadcast/greenmessage_broadcast
 greenmessage/examples/hierarchy/greenmessage_hierarchy
