@@ -54,7 +54,9 @@ using namespace gs::gp;
 
 #include "tlm_utils/peq_with_get.h"           // Payload event queue FIFO
 
-
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+  #include <memory>
+#endif
 
 #include <iomanip>
 #include "nb_example/gs_dump.h"  // needed for GS_DUMP macro if not USE_GPSOCKET
@@ -382,7 +384,11 @@ class BidirModuleHier
 {
  public:
   GenericBidirectionalPort<32> bidir_port; // bidirectional port!!
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+  std::unique_ptr<BidirModule> child;
+#else
   std::auto_ptr<BidirModule> child;
+#endif
 
   // Constructor
   BidirModuleHier(sc_core::sc_module_name name_)

@@ -32,19 +32,21 @@
  * \file gs_datatypes.h Default POD datatypes for GreenBus models
  */
 
+#include <stdint.h>
+
 namespace tlm {
   
-  typedef char                 gs_int8;
-  typedef short                gs_int16;
-  typedef int                  gs_int32;
-  typedef long long            gs_int64;
-  
-  typedef unsigned char        gs_uint8;
-  typedef unsigned short       gs_uint16;
-  typedef unsigned int         gs_uint32;
-  typedef unsigned long long   gs_uint64;
-  typedef long                 gs_handle;
-  
+typedef int8_t    gs_int8;
+typedef int16_t   gs_int16;
+typedef int32_t   gs_int32;
+typedef int64_t   gs_int64;
+
+typedef uint8_t   gs_uint8;
+typedef uint16_t  gs_uint16;
+typedef uint32_t  gs_uint32;
+typedef uint64_t  gs_uint64;
+typedef uintptr_t gs_handle;
+
 } // end namespace tlm
 
 #endif

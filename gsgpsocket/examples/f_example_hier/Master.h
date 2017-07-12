@@ -61,6 +61,10 @@ using namespace gs::gp;
 
 #include "tlm_utils/peq_with_get.h"           // Payload event queue FIFO
 
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+  #include <memory>
+#endif
+
 #include <iomanip>
 
 
@@ -395,7 +399,11 @@ class MasterHier
 {
  public:
   GenericMasterPort<32> init_port;
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+  std::unique_ptr<Master> child;
+#else
   std::auto_ptr<Master> child;
+#endif
 
   // Constructor
   MasterHier(sc_core::sc_module_name name_)

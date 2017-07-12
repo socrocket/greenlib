@@ -258,7 +258,6 @@ public:
   // unsafe for bool: (according to MSVS)
   //GC_SPECIALISATIONS_BINARY_OPERATORS;
   
-  GC_SPECIALISATIONS_INCREMENT_OPERATORS;
   // not allowed for bool: 
   // GC_SPECIALISATIONS_DECREMENT_OPERATORS;
 

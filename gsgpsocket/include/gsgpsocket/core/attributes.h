@@ -232,8 +232,9 @@ public:
     
     // Destructor: delete own data if this has
     ~GSDataData() {
-      if (own_array)
+      if (own_array) {
         delete[] own_array; own_array = NULL;
+      }
     }
     
     /// set data pointer (remove own data if this has)
