@@ -1,7 +1,11 @@
 SET(EXECUTABLE "greenthreads_async_wait")
 
 add_executable(${EXECUTABLE} main.cpp)
-target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES} pthread rt)
+if(MINGW)
+    target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES} pthread)
+else()
+    target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES} pthread rt)
+endif()
 
 add_dependencies(compile_test ${EXECUTABLE})
 
