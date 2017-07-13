@@ -53,6 +53,7 @@
 #include <pthread.h>
 #include <list>
 #include <cerrno>
+#include <time.h>
 
 
 //#define SC_HAS_ASYNC_ATTACH_SUSPENDING
