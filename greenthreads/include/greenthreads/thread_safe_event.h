@@ -248,10 +248,31 @@ namespace gs
       sc_core::sc_time frontWindow;
       sc_core::sc_time currentDiff;
       sc_core::sc_time rollingAv;
-    public:
+
       sem_i canLock;
-      
-    public:
+      event_async takeLockev;
+      void takeLockMethod()
+      {
+        if (sem_trywait(&canLock())!=0) {
+          SC_REPORT_ERROR("gs::gt::threads", "Unable to use SystemC time lock mutex!");
+        }
+      }
+  public:
+      void releaseLock()
+      {
+        canLock.post();
+      }
+      void takeLock()
+      {
+        if (sem_trywait(&canLock())!=0) {
+          // If your here, the only reason is because of a race between SystemC
+          // trying to wait, and us saying you shoudl wait, we've ended up
+          // waiting in the wrong place....
+          // we deal with this by using an async event to take the lock back
+          takeLockev.notify();
+        }
+      }
+
       SC_CTOR(centralSyncPolicy)
           : endTimes()
           , mutex()
@@ -272,6 +293,9 @@ namespace gs
             sensitive << checkWindowEvent;
             dont_initialize();
 
+            SC_METHOD(takeLockMethod);
+            sensitive << takeLockev;
+            dont_initialize();
         }
       
       ~centralSyncPolicy () 
@@ -360,7 +384,6 @@ namespace gs
           }
         }
       event_async checkWindowEvent;
-      
     };
 
     static centralSyncPolicy share("CentralSyncPolicy");
@@ -398,26 +421,13 @@ namespace gs
             share.setWindow(localBackWindow, entityRef, decoupled);
           }
 
-          int i=0;
-//        change this into a sync event - then get the event to submit the can lock.... Then you guarantee that the fat controller isnt going to block us !!!
-          
-          while (sem_trywait(&share.canLock())!=0) {
-            // If your here, the only reason is because of a race between SystemC
-            // trying to wait, and us saying you shoudl wait, we've ended up
-            // waiting in the wrong place....
-            sem_post(&share.canLock()); // now guaranteed an extra slot
-            sem_wait(&share.canLock()); // hopefully this kicks the other thread
-            // and we get to go...
-            if (++i>10) {
-              SC_REPORT_ERROR("gs::gt::threads", "Unable to use SystemC time lock mutex!");
-            }
-          }
+          share.takeLock();
         }
-      
+
       void unlock()
         {
           if ( pthread_equal(pthread_self(), mainThread)) { return; }
-          sem_post(&share.canLock());
+          share.releaseLock();
         }
     };
 
