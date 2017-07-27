@@ -159,7 +159,7 @@ namespace cnf {
      * @param argc The argc of main(...).
      * @param argv The argv of main(...).
      */
-    void parseCommandLine(const int argc, const char* const* argv) throw(CommandLineException) {
+    void parseCommandLine(const int argc, const char* const* argv) /* throw(CommandLineException) */ {
 #ifdef USE_GETOPT
       parseCommandLineWithGetOpt(argc, argv);
 #else
@@ -226,7 +226,7 @@ namespace cnf {
      * @param argc The argc of main(...).
      * @param argv The argv of main(...).
      */
-    void parseCommandLineWithGetOpt(const int argc, const char* const* argv) throw(CommandLineException) {
+    void parseCommandLineWithGetOpt(const int argc, const char* const* argv) /* throw(CommandLineException) */ {
       GCNF_DUMP_N(name(), "Parse command line for --gs_luafile option ("<<argc<<" arguments)");
 
       // getopt permutes argv array, so copy it to argv_cp
