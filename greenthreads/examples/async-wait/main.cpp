@@ -100,7 +100,7 @@ int sc_main(int argc, char **argv) {
     atn->init_socket(router1->target_socket);
   }
 //  sc_start();
-  sc_start(sc_time(5000000,SC_NS));
+  sc_start(sc_time(500000,SC_NS));
   
   
 

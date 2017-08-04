@@ -75,7 +75,7 @@ namespace gs {
       // system, hence it will be in a different thread !
       void b_transport( unsigned int from, tlm::tlm_generic_payload& trans, sc_core::sc_time& delay )
         {
-          COUT << "b_transport txn requested\n";
+          COUT << "b_transport txn requested at time "<<sc_time_stamp()<<"\n";
 
 //          if we are before the end of elaboration, we should not allow the txn !!!!
                   
@@ -89,6 +89,7 @@ namespace gs {
             l_delay=&delay;
             COUT << "Unlock SystemC\n";
             processTxnEvent.notify();
+            share.releaseLock();
             COUT << "Qemu waiting for SystemC\n";
             txnDone.wait(); // we really hold this thread now.
             txnMutex.unlock();
@@ -110,6 +111,7 @@ namespace gs {
             l_dmi_data=&dmi_data;
             COUT << "Unlock SystemC\n";
             processDmiEvent.notify();
+            share.releaseLock();
             COUT << "Qemu waiting for SystemC\n";
             txnDone.wait(); // we really hold this thread now.
             bool r=(bool)l_result; // pick this up before releasing the mutex!
@@ -132,6 +134,7 @@ namespace gs {
             l_trans=&trans;
             COUT << "Unlock SystemC\n";
             processDbgEvent.notify();
+            share.releaseLock();
             COUT << "Qemu waiting for SystemC\n";
             txnDone.wait(); // we really hold this thread now.
             unsigned int r=l_result; // pick this up before releasing the mutex!
@@ -160,6 +163,7 @@ namespace gs {
             COUT << "Doing txn\n";
             internalRouter->b_tr(l_port, *l_trans,*l_delay);
             txnDone.post(); // release the other thread.
+            share.takeLock();
             COUT << "Finished txn\n";
           }
         }
@@ -170,6 +174,7 @@ namespace gs {
           COUT << "Doing dmi\n";
           l_result=internalRouter->get_dmi(l_port, *l_trans, *l_dmi_data);
           txnDone.post(); // release the other thread.
+          share.takeLock();
           COUT << "Finished dmi\n";
         }
 
@@ -179,6 +184,7 @@ namespace gs {
           COUT << "Doing dbg\n";
           l_result=internalRouter->tr_dbg(l_port, *l_trans);
           txnDone.post(); // release the other thread.
+          share.takeLock();
           COUT << "Finished dbg\n";
         }
 

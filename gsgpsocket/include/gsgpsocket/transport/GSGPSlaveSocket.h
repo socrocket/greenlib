@@ -176,6 +176,7 @@ namespace gs {
         , has_b(false)
         , has_td_b(false)
         , has_nb(false)
+        , wait_report(false)
         { 
           // init m_name
           base_socket_type::socket_name();
@@ -259,6 +260,7 @@ namespace gs {
         bool has_b;
         bool has_td_b;
         bool has_nb;
+        bool wait_report;
       };
     
     /// User class for a standard GSGP Slave Socket
