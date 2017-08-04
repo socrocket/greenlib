@@ -587,8 +587,13 @@ fw_b_transport_cb(unsigned int index, tlm::tlm_generic_payload& tlmtr, sc_core::
       }
       // ... or wait before the non-TD call
       else if (has_b) {
-        if (time != sc_core::SC_ZERO_TIME)
+        if (time != sc_core::SC_ZERO_TIME) {
+          if (!wait_report) {
+            SC_REPORT_WARNING(socket_type::name(), "WARNING transaction with time passed to this socket will cause a 'wait' as it does not implement b_transact(txn *, time)\n");
+            wait_report=true;
+          }
           sc_core::wait(time);
+        }
         multi_b_in->b_transact(th, index);
       }
       else {
@@ -610,8 +615,13 @@ fw_b_transport_cb(unsigned int index, tlm::tlm_generic_payload& tlmtr, sc_core::
       }
       // ... or wait before the non-TD call
       else if (has_b) {
-        if (time != sc_core::SC_ZERO_TIME)
+        if (time != sc_core::SC_ZERO_TIME) {
+          if (!wait_report) {
+            SC_REPORT_WARNING(socket_type::name(), "WARNING transaction with time passed to this socket will cause a 'wait' as it does not implement b_transact(txn *, time)\n");
+            wait_report=true;
+          }
           sc_core::wait(time);
+        }
         b_in->b_transact(th);
       }
       else {

@@ -2,7 +2,7 @@
 #define ASYNCTESTNODE_H
 
 //#define DEBUG
-//#define NOSLEEP
+#define NOSLEEP
 #if (defined(_WIN32) || defined(_WIN64))
 #include <windows.h>
 #define usleep(time) Sleep(time / 1000)
@@ -133,13 +133,12 @@ SC_CTOR(asynctestnode):  target_socket("input"),  init_socket("output"), syncSou
         txn->set_address(addresses.front());
 //        cout << name() << " sending to " <<addresses.front()<<"\n";
 
-        syncSource.unlock();
         if (init_socket.size() > 1) {
           init_socket[rand()%init_socket.size()]->b_transport(*txn, myTime);
         } else {
           init_socket[0]->b_transport(*txn, myTime);
         }
-        syncSource.lockAt(myTime);// + quantum);
+        syncSource.syncAt(myTime);// + quantum);
 
       }
       

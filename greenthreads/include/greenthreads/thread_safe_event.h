@@ -206,7 +206,7 @@ namespace gs
           local_mutex.unlock();
 #endif
         }
-      
+
     protected:
       void update(void)
         {
@@ -250,12 +250,17 @@ namespace gs
       sc_core::sc_time rollingAv;
 
       sem_i canLock;
-      event_async takeLockev;
+      int locksToDo;
+
+      // It is always safe to call this method from anywhere in the SystemC thread
       void takeLockMethod()
       {
-        if (sem_trywait(&canLock())!=0) {
-          SC_REPORT_ERROR("gs::gt::threads", "Unable to use SystemC time lock mutex!");
+        mutex.lock();
+        for (;locksToDo>0;locksToDo--) {
+          while (sem_trywait(&canLock())!=0) {
+          }        
         }
+        mutex.unlock();
       }
   public:
       void releaseLock()
@@ -264,14 +269,19 @@ namespace gs
       }
       void takeLock()
       {
-        if (sem_trywait(&canLock())!=0) {
-          // If your here, the only reason is because of a race between SystemC
-          // trying to wait, and us saying you shoudl wait, we've ended up
-          // waiting in the wrong place....
-          // we deal with this by using an async event to take the lock back
-          takeLockev.notify();
-        }
+        mutex.lock();
+        locksToDo++;
+        checkWindowEvent.notify();
+        mutex.unlock();
       }
+      void kickLock()
+      {
+        mutex.lock();
+        canLock.post();
+        locksToDo++;
+        checkWindowEvent.notify();
+        mutex.unlock();
+      }      
 
       SC_CTOR(centralSyncPolicy)
           : endTimes()
@@ -281,6 +291,7 @@ namespace gs
           , currentDiff(SC_ZERO_TIME)
           , rollingAv(SC_ZERO_TIME)
           , canLock(0)
+          , locksToDo(0)
         {
             sc_core::sc_set_stop_mode(SC_STOP_IMMEDIATE); // this prevents sc_stop
             // posting an invisible event ! (which causes us to hang)
@@ -292,11 +303,15 @@ namespace gs
             SC_METHOD(checkWindow);
             sensitive << checkWindowEvent;
             dont_initialize();
-
-            SC_METHOD(takeLockMethod);
-            sensitive << takeLockev;
-            dont_initialize();
         }
+      void start_of_simulation()
+      {
+        // need to wait till start of simulation to start the window, because
+        // otherwise the quantum may not be set.
+            checkWindowEvent.notify(tlm_utils::tlm_quantumkeeper::get_global_quantum());
+            COUT << " quantum "<<tlm_utils::tlm_quantumkeeper::get_global_quantum()<<"\n";
+      }
+      
       
       ~centralSyncPolicy () 
       {
@@ -337,7 +352,8 @@ namespace gs
         }
         if (windowChanged) {
           ahead.release();
-          checkWindowEvent.notify();
+          // here we 'kick' the SystemC window
+          kickLock();
         }
 
         while (!decoupled && (t > backWindow+quantum)) {
@@ -355,7 +371,7 @@ namespace gs
       sc_core::sc_time getFrontWindow() {
         return frontWindow;
       }
-      
+
       sc_core::sc_time * registerLockable() {
         mutex.lock();
         endTimes.push_back(SC_ZERO_TIME);
@@ -367,21 +383,35 @@ namespace gs
 
       sc_core::sc_event timePasserEvent;
       void timePasser() { }
-      
+
+      // we are called when the window changes, or we call ourself
+      // Or - critically - we get interupted by a txn, and then the txn
+      // finishes, we must be called again....
+      // If we are behind, notify ourself in the future, and check again.
+      // If we are ahead, sleep till we're woken again.
       void checkWindow()
         {
-          if (sc_time_stamp() < backWindow + ((frontWindow-backWindow)/2)) {
-            timePasserEvent.notify((backWindow + ((frontWindow-backWindow)/2)) - sc_time_stamp());
+          if (sc_time_stamp() < frontWindow) {
+//                checkWindowEvent.notify(tlm_utils::tlm_quantumkeeper::get_global_quantum());
+            checkWindowEvent.notify(frontWindow - sc_time_stamp());
           } else {
-            if (sc_time_stamp() > frontWindow) {
               struct timespec ts;
               clock_gettime(CLOCK_REALTIME, &ts);
               ts.tv_sec += 1;
+
+              takeLockMethod(); // Ensure there are no pending token requests.
+
               if (sem_timedwait(&(canLock()), &ts)==0) {
+                // critical we take the lock here, incase the 'kickLock' is
+                // about to post a notify
+                mutex.lock();
                 sem_post(&(canLock()));
+                mutex.unlock();
+                // we  rely on checkWindowEvent being notified at the end of the transaction
+              } else {
+                  checkWindowEvent.notify();
               }
             }
-          }
         }
       event_async checkWindowEvent;
     };
@@ -408,10 +438,10 @@ namespace gs
         }
       
       // CanLock is a semaphore which allows SystemC to lock if SystemC gets ahead.      
-      void lockAt(sc_core::sc_time t) 
+      void syncAt(sc_core::sc_time t) 
         {
           if ( pthread_equal(pthread_self(), mainThread)) { return; }
-          
+
           if (t > localBackWindow) {
             localBackWindow=t;
             // setWindow could lock if WE have got ahead (systemC is behind)
@@ -420,14 +450,6 @@ namespace gs
             }
             share.setWindow(localBackWindow, entityRef, decoupled);
           }
-
-          share.takeLock();
-        }
-
-      void unlock()
-        {
-          if ( pthread_equal(pthread_self(), mainThread)) { return; }
-          share.releaseLock();
         }
     };
 
