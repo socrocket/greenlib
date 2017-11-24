@@ -4,7 +4,7 @@ add_executable(${EXECUTABLE} main.cpp)
 if(MINGW)
     target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES} pthread)
 else()
-    target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES} pthread rt)
+    target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES} pthread rt greenthreads)
 endif()
 
 add_dependencies(compile_test ${EXECUTABLE})

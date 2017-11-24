@@ -82,6 +82,7 @@ greenscript/lib/_gsp_sc.*
 greenscript/lib/gsp_sc.py
 greenscript/lib/gsp_sc.pyc
 greenscript/lib/libgreenscript.a
+greenthreads/lib/libgreenthreads.so
 
 ### Eclipse ###
 

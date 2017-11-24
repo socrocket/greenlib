@@ -170,13 +170,13 @@ namespace gs
 //
 //  Class for notifying event asyncronously
 // ----------------------------------------------------------------------------
-    static sem_i global_semaphore(0);
-#ifndef SC_HAS_ASYNC_ATTACH_SUSPENDING
-    static before_end_of_delta_helper *helper=NULL;
-#endif
     class gs_event_async:  public sc_core::sc_prim_channel, public sc_event, before_end_of_delta_helper_if
     {
       
+    static sem_i global_semaphore;
+#ifndef SC_HAS_ASYNC_ATTACH_SUSPENDING
+    static before_end_of_delta_helper *helper;
+#endif
     private:
       sc_core::sc_time m_delay;
       spin_mutex local_mutex;
@@ -263,6 +263,9 @@ namespace gs
         mutex.unlock();
       }
   public:
+
+      static centralSyncPolicy share;
+
       void releaseLock()
       {
         canLock.post();
@@ -416,9 +419,6 @@ namespace gs
       event_async checkWindowEvent;
     };
 
-    static centralSyncPolicy share("CentralSyncPolicy");
-
-
     class syncSource
     {
       sc_core::sc_time *entityRef;
@@ -431,10 +431,10 @@ namespace gs
       decoupled(_decoupled)
         {
           mainThread=pthread_self();
-          entityRef=share.registerLockable();
+          entityRef=centralSyncPolicy::share.registerLockable();
           
           localBackWindow=SC_ZERO_TIME;
-          share.setWindow(localBackWindow, entityRef, decoupled);
+          centralSyncPolicy::share.setWindow(localBackWindow, entityRef, decoupled);
         }
       
       // CanLock is a semaphore which allows SystemC to lock if SystemC gets ahead.      
@@ -448,7 +448,7 @@ namespace gs
             if (decoupled && localBackWindow<sc_time_stamp()) {
               localBackWindow=sc_time_stamp();
             }
-            share.setWindow(localBackWindow, entityRef, decoupled);
+            centralSyncPolicy::share.setWindow(localBackWindow, entityRef, decoupled);
           }
         }
     };
