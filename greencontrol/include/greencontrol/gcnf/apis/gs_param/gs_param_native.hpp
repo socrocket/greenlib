@@ -33,6 +33,7 @@
 //  char
 //  unsigned short
 
+#include <string.h>
 
 using std::istringstream;
 
