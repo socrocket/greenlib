@@ -61,7 +61,7 @@ information.
 #endif
 
 // OSCI SystemC 2.3.2 public review
-#if SYSTEMC_VERSION == 20170223
+#if SYSTEMC_VERSION == 20171012
 #define SYSTEMC_API 232
 #endif
 
