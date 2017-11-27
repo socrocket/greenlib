@@ -349,7 +349,7 @@ add_subdirectory(greenmessage EXCLUDE_FROM_ALL)
 add_subdirectory(gsgpsocket EXCLUDE_FROM_ALL)
 add_subdirectory(greensignalbus EXCLUDE_FROM_ALL)
 add_subdirectory(greenserialsocket EXCLUDE_FROM_ALL)
-add_subdirectory(greenthreads EXCLUDE_FROM_ALL)
+add_subdirectory(greenthreads)
 
 # Compile greenreg library.
 add_subdirectory(greenreg)
