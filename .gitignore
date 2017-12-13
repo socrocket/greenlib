@@ -72,6 +72,7 @@ gsgpsocket/examples/simple/gsgpsocket_simple
 gsgpsocket/examples/simplebus/gsgpsocket_simplebus
 gsgpsocket/examples/test_devices/gsgpsocket_test_devices
 greenserialsocket/examples/simple/greenserialsocket_simple
+greenthreads/examples/async-wait/greenthreads_async_wait
 
 # Don't checkin libraries output.
 
