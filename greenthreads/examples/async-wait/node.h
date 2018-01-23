@@ -11,7 +11,8 @@
 #endif
 
 #ifdef NOSLEEP
-#define usleep(time) if (0) usleep(time)
+#undef usleep
+#define usleep(time) if (0) while (0)
 #endif
 
 #include <systemc>

@@ -2,7 +2,7 @@ SET(EXECUTABLE "greenthreads_async_wait")
 
 add_executable(${EXECUTABLE} main.cpp)
 if(MINGW)
-    target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES} pthread)
+    target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES} pthread greenthreads)
 else()
     target_link_libraries(${EXECUTABLE} ${SystemC_LIBRARIES} pthread rt greenthreads)
 endif()

@@ -336,7 +336,7 @@ link_directories(${GreenSocs_LIB_DIRS})
 
 # CXX flags for example or library compilation.
 if(MINGW)
-    set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES -D_REENTRANT -static-libgcc -static-libstdc++")
+    set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES -D_REENTRANT")
 else(MINGW)
     set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES -D_REENTRANT -fPIC")
 endif(MINGW)
