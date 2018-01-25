@@ -44,6 +44,7 @@
 #define __TLM_SERIAL_GP_H__
 
 #include <systemc>
+#include <stdint.h>
 
 using namespace tlm;
 
