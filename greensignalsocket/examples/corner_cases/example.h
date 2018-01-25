@@ -2,6 +2,7 @@
 #define EXAMPLE_H_
 
 #include "tlm.h"
+#include <stdint.h>
 #include "greensignalsocket/green_signal.h"
 
 using namespace gs_generic_signal;
