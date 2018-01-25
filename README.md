@@ -1,5 +1,4 @@
 
-
 # GreenLib
 
 ## Overview
@@ -20,7 +19,7 @@ the implementation of more complex memories
 
 ## Code status
 
-[![build status](http://ci.greensocs.com/projects/12/status.png?ref=master)](http://ci.greensocs.com/projects/12?ref=master)
+[![build status](https://git.greensocs.com/greenlib/greenlib/badges/master/build.svg)](https://git.greensocs.com/greenlib/greenlib/commits/master)
 
 ## Requirements
 
