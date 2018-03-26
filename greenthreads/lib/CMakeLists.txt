@@ -1,4 +1,4 @@
-add_library(greenthreads SHARED
+add_library(greenthreads STATIC
     ../src/greenthreads.cpp
     )
 
