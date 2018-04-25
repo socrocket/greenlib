@@ -404,7 +404,7 @@ class syncSource {
         if (t > localBackWindow) {
             localBackWindow = t;
             // setWindow could lock if WE have got ahead (systemC is behind)
-            if (decoupled && localBackWindow < sc_time_stamp()) {
+            if (decoupled) {
                 localBackWindow = sc_time_stamp();
             }
             centralSyncPolicy::share.setWindow(localBackWindow, entityRef, decoupled);
