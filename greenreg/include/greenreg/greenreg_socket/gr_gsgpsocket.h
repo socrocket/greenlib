@@ -100,7 +100,7 @@ namespace gp {
   //: public sc_core::sc_module
   : public gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>
   , public generic_slave_base
-  , public gs::tlm_b_if<gs::gp::GenericSlaveAccessHandle>
+  , public gs::tlm_td_b_if<gs::gp::GenericSlaveAccessHandle>
   , public gs::payload_event_queue_output_if<gs::gp::slave_atom>
   {
   public:
@@ -151,7 +151,8 @@ namespace gp {
     {}
 
     /// this method does not care about time
-    void b_transact(gs::gp::GenericSlaveAccessHandle _transaction) {
+    void b_transact(gs::gp::GenericSlaveAccessHandle _transaction, sc_core::sc_time &_delay) {
+      (void)_delay;
       stimulate_model( _transaction);
     }
 
