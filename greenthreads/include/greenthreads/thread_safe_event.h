@@ -294,8 +294,8 @@ class centralSyncPolicy : sc_core::sc_module {
     void setWindow(sc_core::sc_time t, sc_core::sc_time *entryRef, bool decoupled) {
         mutex.lock();
         *entryRef = t;
-        sc_core::sc_time back = t;
-        sc_core::sc_time front = t;
+        sc_core::sc_time back = sc_time_stamp();
+        sc_core::sc_time front = back;
 
         sc_core::sc_time quantum = tlm_utils::tlm_quantumkeeper::get_global_quantum();
 
