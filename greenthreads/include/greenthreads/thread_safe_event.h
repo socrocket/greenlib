@@ -222,11 +222,11 @@ class centralSyncPolicy : sc_core::sc_module {
     timed_cond ahead;
     sc_core::sc_time backWindow;
     sc_core::sc_time frontWindow;
-    sc_core::sc_time currentDiff;
-    sc_core::sc_time rollingAv;
-
+    bool sc_is_back_window;
     sem_i canLock;
     int locksToDo;
+    sc_core::sc_event timePasserEvent;
+    event_async checkWindowEvent;
 
     /* It is always safe to call this method from anywhere in the SystemC thread */
     void takeLockMethod() {
@@ -241,7 +241,10 @@ class centralSyncPolicy : sc_core::sc_module {
   public:
     static centralSyncPolicy share;
 
-    void releaseLock() { canLock.post(); }
+    void releaseLock() {
+        canLock.post();
+    }
+
     void takeLock() {
         mutex.lock();
         locksToDo++;
@@ -257,8 +260,10 @@ class centralSyncPolicy : sc_core::sc_module {
     }
 
     SC_CTOR(centralSyncPolicy)
-        : endTimes(), mutex(), backWindow(SC_ZERO_TIME), frontWindow(SC_ZERO_TIME), currentDiff(SC_ZERO_TIME),
-          rollingAv(SC_ZERO_TIME), canLock(0), locksToDo(0) {
+        : endTimes(), mutex()
+        , backWindow(SC_ZERO_TIME), frontWindow(SC_ZERO_TIME), sc_is_back_window(false)
+        , canLock(0), locksToDo(0)
+    {
         sc_core::sc_set_stop_mode(SC_STOP_IMMEDIATE); // this prevents sc_stop
         // posting an invisible event ! (which causes us to hang)
 
@@ -270,6 +275,7 @@ class centralSyncPolicy : sc_core::sc_module {
         sensitive << checkWindowEvent;
         dont_initialize();
     }
+
     void start_of_simulation() {
         // need to wait till start of simulation to start the window, because
         // otherwise the quantum may not be set.
@@ -278,52 +284,21 @@ class centralSyncPolicy : sc_core::sc_module {
     }
 
     ~centralSyncPolicy() {
-        sc_core::sc_time quantum = tlm_utils::tlm_quantumkeeper::get_global_quantum();
-
-        COUT << "Last time disparity : " << currentDiff.to_seconds() << "s ( " << currentDiff / quantum
-             << " quantums ) Rolling Average (100 last time updates) " << rollingAv / quantum << " quantums \n";
-
-        /**
+        /*
          *  take the lock, before you exit, will force others out of the critical region
          *  (preventing segfault on exit)
          */
         mutex.lock();
     }
 
-    /* thread safe operation */
-    void setWindow(sc_core::sc_time t, sc_core::sc_time *entryRef, bool decoupled) {
-        mutex.lock();
+    void setWindow(sc_core::sc_time t, sc_core::sc_time *entryRef, bool decoupled)
+    {
         *entryRef = t;
-        sc_core::sc_time back = sc_time_stamp();
-        sc_core::sc_time front = back;
 
+        update_window();
+
+        /* wait if we're ahead the backWindow plus a quantum */
         sc_core::sc_time quantum = tlm_utils::tlm_quantumkeeper::get_global_quantum();
-
-        for (std::list<sc_core::sc_time>::iterator i = endTimes.begin(); i != endTimes.end(); ++i) {
-            if (*i < back)
-                back = *i;
-            if (*i > front)
-                front = *i;
-        }
-        bool windowChanged = (backWindow != back || frontWindow != front);
-        backWindow = back;
-        frontWindow = front;
-
-        mutex.unlock();
-
-        // just for stats
-        currentDiff = (frontWindow - backWindow);
-        rollingAv = ((rollingAv * 99) + currentDiff) / 100;
-        if (currentDiff / quantum > 2) {
-            COUT << " t:" << t << " front:" << frontWindow << " back:" << backWindow << " diff "
-                 << currentDiff / quantum << "\n";
-        }
-        if (windowChanged) {
-            ahead.release();
-            // here we 'kick' the SystemC window
-            kickLock();
-        }
-
         while (!decoupled && (t > backWindow + quantum)) {
             if (ahead.wait()) {
                 COUT << "Timeout reached\n";
@@ -344,7 +319,6 @@ class centralSyncPolicy : sc_core::sc_module {
         return entryRef;
     }
 
-    sc_core::sc_event timePasserEvent;
     void timePasser() {}
 
     // we are called when the window changes, or we call ourself
@@ -352,9 +326,13 @@ class centralSyncPolicy : sc_core::sc_module {
     // finishes, we must be called again....
     // If we are behind, notify ourself in the future, and check again.
     // If we are ahead, sleep till we're woken again.
-    void checkWindow() {
+    void checkWindow()
+    {
+        if (sc_is_back_window) {
+            update_window();
+        }
+
         if (sc_time_stamp() < frontWindow) {
-            //                checkWindowEvent.notify(tlm_utils::tlm_quantumkeeper::get_global_quantum());
             checkWindowEvent.notify(frontWindow - sc_time_stamp());
         } else {
             struct timespec ts;
@@ -376,7 +354,40 @@ class centralSyncPolicy : sc_core::sc_module {
             }
         }
     }
-    event_async checkWindowEvent;
+
+  protected:
+    void update_window()
+    {
+        sc_core::sc_time sc_ts = sc_time_stamp();
+        sc_core::sc_time back = sc_ts;
+        sc_core::sc_time front = sc_ts;
+        bool changed = false;
+
+        mutex.lock();
+        for (std::list<sc_core::sc_time>::iterator i = endTimes.begin(); i != endTimes.end(); ++i) {
+            if (*i < back) {
+                back = *i;
+            }
+            else if (*i > front) {
+                front = *i;
+            }
+        }
+        if (back != backWindow) {
+            changed = true;
+            backWindow = back;
+        }
+        if (frontWindow != front) {
+            changed = true;
+            frontWindow = front;
+        }
+        sc_is_back_window = (sc_ts == backWindow);
+        mutex.unlock();
+
+        if (changed) {
+            ahead.release();
+            kickLock();
+        }
+    }
 };
 
 class syncSource {
