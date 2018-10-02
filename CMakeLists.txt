@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 project (GREENLIB)
 
+find_package(PythonInterp 2.7 REQUIRED)
+find_package(PythonLibs 2.7 REQUIRED)
+
 include(FeatureSummary)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -368,3 +371,7 @@ set (CPACK_PACKAGE_VERSION_MAJOR "1")
 set (CPACK_PACKAGE_VERSION_MINOR "0")
 set (CPACK_PACKAGE_VERSION_PATCH "0")
 include (CPack)
+
+add_library(greenlib INTERFACE)
+add_library(GreenLib:greenlib ALIAS greenlib)
+target_include_directories(greenlib INTERFACE ${GreenSocs_INCLUDE_DIRS})
