@@ -211,6 +211,15 @@ public:
         m_addressMap->insert(baseAddress_, highAddress_, portNumber_);
     }
 
+    void assign_address(sc_dt::uint64 baseAddress_, sc_dt::uint64 highAddress_)
+    {
+        int portNumber_ = 0;
+        if(m_addressMap) {
+            portNumber_ = m_addressMap->get_address_map().size() - 1;
+        }
+        assign_address(baseAddress_, highAddress_, portNumber_);
+    }
+
     /**
      * This method can be made sensitive to an event in the bus protocol to
      * control the processing of transfers from master to slave.
