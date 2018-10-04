@@ -371,5 +371,6 @@ set (CPACK_PACKAGE_VERSION_PATCH "0")
 include (CPack)
 
 add_library(greenlib INTERFACE)
-add_library(GreenLib:greenlib ALIAS greenlib)
+add_library(GreenLib::greenlib ALIAS greenlib)
 target_include_directories(greenlib INTERFACE ${GreenSocs_INCLUDE_DIRS})
+target_link_libraries(greenlib INTERFACE greenreg greenthreads)
