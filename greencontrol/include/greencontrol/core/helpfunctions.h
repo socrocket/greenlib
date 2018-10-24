@@ -128,26 +128,10 @@ static bool search_for_objects(sc_core::sc_object *node, const sc_core::sc_objec
     const std::vector<sc_core::sc_object *> *childs_stack = NULL;
     if (node) {
       // get child vector
-#if SYSTEMC_API == 210
-      // SystemC2.1 cannot get childs of an object, so only modules!
-      sc_core::sc_module* node_as_module = dynamic_cast< sc_core::sc_module* >(node);
-      if (node_as_module) {
-        //sc_assert(node_as_module);
-        if (node_as_module)
-          childs_stack = &(node_as_module->get_child_objects());
-      }
-#else
       childs_stack = &node->get_child_objects();
-#endif
     } else { // If NULL, then top level
       // get child vector of sim context
-#if SYSTEMC_API == 210
-      sc_core::sc_simcontext *sim; // deprecated with SystemC-2.2
-      sim = sc_core::sc_get_curr_simcontext(); // deprecated with SystemC-2.2
-      childs_stack = &(sim->get_child_objects());
-#else
       childs_stack = &sc_core::sc_get_top_level_objects();
-#endif
     }
     // If node can be casted to T, return true
     T *type = dynamic_cast<T*>(node);

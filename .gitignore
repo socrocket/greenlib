@@ -29,6 +29,8 @@ executable_output.template
 
 #Don't allow to check in example files.
 
+*.exe
+
 greenmemory/examples/simple/greenmemory_simple
 greenmessage/examples/broadcast/greenmessage_broadcast
 greenmessage/examples/hierarchy/greenmessage_hierarchy
@@ -54,6 +56,7 @@ greensignalbus/examples/src/greensignalbus_example
 greensignalsocket/examples/invalidate_ext/greensignalsocket_invalidate_ext
 greensignalsocket/examples/multi_example/greensignalsocket_multi_example
 greensignalsocket/examples/simple/greensignalsocket_simple
+greensignalsocket/examples/corner_cases/greensignalsocket_corner_cases
 greensocket/examples/simple_b_transport/greensocket_simple_b_transport
 greensocket/examples/simple_b_transport_hierarchy_bind/greensocket_simple_b_transport_hierarchy_bind
 greensocket/examples/simple_b_transport_multi/greensocket_simple_b_transport_multi
@@ -69,18 +72,68 @@ gsgpsocket/examples/simple/gsgpsocket_simple
 gsgpsocket/examples/simplebus/gsgpsocket_simplebus
 gsgpsocket/examples/test_devices/gsgpsocket_test_devices
 greenserialsocket/examples/simple/greenserialsocket_simple
+greenthreads/examples/async-wait/greenthreads_async_wait
 
 # Don't checkin libraries output.
 
 greenreg/lib/libgreenreg.a
 greenscript/gs.pyc
-greenscript/gs_sa.pyc
 greenscript/gsp_scPYTHON_wrap.cxx
-greenscript/gsp_sc_saPYTHON_wrap.cxx
-greenscript/lib/_gsp_sc.so
-greenscript/lib/_gsp_sc_sa.so
+greenscript/lib/_gsp_sc.*
 greenscript/lib/gsp_sc.py
 greenscript/lib/gsp_sc.pyc
-greenscript/lib/gsp_sc_sa.py
-greenscript/lib/gsp_sc_sa.pyc
 greenscript/lib/libgreenscript.a
+greenthreads/lib/libgreenthreads.*
+
+### Eclipse ###
+
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# Eclipse Core
+.project
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# PyDev specific (Python IDE for Eclipse)
+*.pydevproject
+
+# CDT-specific (C/C++ Development Tooling)
+.cproject
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+# Java annotation processor (APT)
+.factorypath
+
+# PDT-specific (PHP Development Tools)
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# Tern plugin
+.tern-project
+
+# TeXlipse plugin
+.texlipse
+
+# STS (Spring Tool Suite)
+.springBeans
+
+# Code Recommenders
+.recommenders/

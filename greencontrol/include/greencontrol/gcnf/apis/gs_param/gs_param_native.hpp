@@ -33,6 +33,7 @@
 //  char
 //  unsigned short
 
+#include <string.h>
 
 using std::istringstream;
 
@@ -258,7 +259,6 @@ public:
   // unsafe for bool: (according to MSVS)
   //GC_SPECIALISATIONS_BINARY_OPERATORS;
   
-  GC_SPECIALISATIONS_INCREMENT_OPERATORS;
   // not allowed for bool: 
   // GC_SPECIALISATIONS_DECREMENT_OPERATORS;
 
@@ -707,16 +707,16 @@ inline std::string operator+ (const char *lhs, const gs_param<std::string>& rhs)
 // /////////////////// gs_param< UNSIGNED LONG LONG > //////////////////////////// //
 // /////////////////////////////////////////////////////////////////////////////// //
 
-/// Template specialization for gs_param<unsigned long long int>.
+/// Template specialization for gs_param<gs_uint64>.
 /**
  * Default value = 0.
  */
 template<>
-class gs_param<unsigned long long>
-: public gs_param_t<unsigned long long>
+class gs_param<gs_uint64>
+: public gs_param_t<gs_uint64>
 {
   /// Typedef for the value.
-  typedef unsigned long long val_type;
+  typedef gs_uint64 val_type;
   
   using gs_param_t<val_type>::m_locked;
   using gs_param_t<val_type>::m_lock_pwd;
@@ -742,7 +742,7 @@ public:
   
   /// Overloads gs_param_base::getTypeString
   const std::string getTypeString() const {
-    return string("unsigned long long");
+    return string("gs_uint64");
   }
   
   /// Overloads gs_param_base::getType
@@ -772,7 +772,7 @@ public:
     // if next char is a decimal point, ignore
     if (!ss.eof() && ss.peek() == '.') {
       target_val = tmp;
-      GS_PARAM_DUMP_WITHNAME("gs_param", "(unsigned long long) ignored decimal point");
+      GS_PARAM_DUMP_WITHNAME("gs_param", "(gs_uint64) ignored decimal point");
       return true;
     }
     // if error try hex
@@ -872,10 +872,10 @@ public:
       ss.clear(); ss.str(str);
       ss >> (std::hex) >> tmp;
     }
-    // if still error try deserialize to unsigned long long
+    // if still error try deserialize to gs_uint64
     if (!ss.eof() || ss.fail() || ss.bad()) {
       ss.clear(); ss.str(str);
-      unsigned long long ulltmp;
+      gs_uint64 ulltmp;
       ss >> ulltmp;
       if (!ss.eof() || ss.fail() || ss.bad()) {
         ss.clear(); ss.str(str);

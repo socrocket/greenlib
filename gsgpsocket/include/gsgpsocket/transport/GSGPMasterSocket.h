@@ -147,7 +147,7 @@ namespace gs {
         // register callback function to this Socket, see start_of_simulation
 
         // use in-port pointer address as unique master ID (this is important to make genericRouter work)
-        MasterPortNumber = (gs_handle) this;
+        MasterPortNumber = reinterpret_cast<gs_handle>(this);
       }
       
       /// Destructor
@@ -161,7 +161,12 @@ namespace gs {
       AckResponseObj<my_type, PHASE>      AckResponse;
       /// master signals an error on a slave response
       ErrorResponseObj<my_type, PHASE>    ErrorResponse;
-      
+
+      /**
+       * Debug transaction call the transport_dbg.
+       */
+      unsigned int DBGTransact(accessHandle t, unsigned int index = 0);
+
       /**
        * PV blocking transact method. It is used in PV mode 
        * to send a whole transaction container at once.
@@ -176,6 +181,12 @@ namespace gs {
        */
       void Transact(accessHandle t, sc_core::sc_time& td, unsigned int index = 0);
       
+      /**
+       * DMI request.
+       */
+      int DMIRequest(accessHandle t, tlm::tlm_dmi& dmi_data,
+                     unsigned int index = 0);
+
       /// Create a transaction
       accessHandle create_transaction();
 

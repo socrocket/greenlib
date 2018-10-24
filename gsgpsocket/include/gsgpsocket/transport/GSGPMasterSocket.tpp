@@ -592,23 +592,37 @@ bw_peq_cb(tlm::tlm_base_protocol_types::tlm_payload_type& tlmtr,
     peq.out_port->notify(maa); // forward immediately to user
 }
 
-
 template <unsigned int BUSWIDTH, typename TRANSACTION, typename CONFIG, typename PHASE, bool BIDIR, typename SOCK_TYPE>
-inline void GSGPMasterSocket<BUSWIDTH, TRANSACTION, CONFIG, PHASE, BIDIR, SOCK_TYPE>::
+inline unsigned int GSGPMasterSocket<BUSWIDTH, TRANSACTION, CONFIG, PHASE, BIDIR, SOCK_TYPE>::
+DBGTransact(accessHandle t, unsigned int index) {
+  return (*this)[index]->transport_dbg(*t.get_tlm_transaction());
+}
+
+template <unsigned int BUSWIDTH, typename TRANSACTION, typename CONFIG,
+          typename PHASE, bool BIDIR, typename SOCK_TYPE>
+inline void GSGPMasterSocket<BUSWIDTH, TRANSACTION, CONFIG, PHASE, BIDIR,
+                             SOCK_TYPE>::
 Transact(accessHandle t, unsigned int index) {
-  //PORT::b_out->b_transact(t); 
   sc_core::sc_time no_time = sc_core::SC_ZERO_TIME;
   (*this)[index]->b_transport(*t.get_tlm_transaction(), no_time);
 }
 
 
-template <unsigned int BUSWIDTH, typename TRANSACTION, typename CONFIG, typename PHASE, bool BIDIR, typename SOCK_TYPE>
-inline void GSGPMasterSocket<BUSWIDTH, TRANSACTION, CONFIG, PHASE, BIDIR, SOCK_TYPE>::
+template <unsigned int BUSWIDTH, typename TRANSACTION, typename CONFIG,
+          typename PHASE, bool BIDIR, typename SOCK_TYPE>
+inline void GSGPMasterSocket<BUSWIDTH, TRANSACTION, CONFIG, PHASE, BIDIR,
+                             SOCK_TYPE>::
 Transact(accessHandle t, sc_core::sc_time& td, unsigned int index) {
-  //PORT::b_out->b_transact(t); 
   (*this)[index]->b_transport(*t.get_tlm_transaction(), td);
 }
 
+template <unsigned int BUSWIDTH, typename TRANSACTION, typename CONFIG,
+          typename PHASE, bool BIDIR, typename SOCK_TYPE>
+inline int GSGPMasterSocket<BUSWIDTH, TRANSACTION, CONFIG, PHASE, BIDIR,
+                             SOCK_TYPE>::
+DMIRequest(accessHandle t, tlm::tlm_dmi& dmi_data, unsigned int index) {
+  return (*this)[index]->get_direct_mem_ptr(*t.get_tlm_transaction(), dmi_data);
+}
 
 template <unsigned int BUSWIDTH, typename TRANSACTION, typename CONFIG, typename PHASE, bool BIDIR, typename SOCK_TYPE>
 inline Handle<TRANSACTION> GSGPMasterSocket<BUSWIDTH, TRANSACTION, CONFIG, PHASE, BIDIR, SOCK_TYPE>::

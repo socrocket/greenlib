@@ -83,11 +83,7 @@ BEGIN_GS_REPORTMSG_NAMESPACE
 #ifdef MSG_VERBOSE
       sc_core::sc_object *obj = sc_core::sc_get_current_process_handle();
       if (obj) {
-#if SYSTEMC_API == 210
-        obj = obj->get_parent();
-#else
         obj = obj->get_parent_object();
-#endif
         REPMSG_DUMP_N("MessageStreamer", "constructor called within "<< obj->name());
       }
       else {

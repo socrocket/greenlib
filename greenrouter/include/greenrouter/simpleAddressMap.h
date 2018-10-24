@@ -464,11 +464,11 @@ public:
      *
      * @note on error, m_max_port is returned, success is false..
      */
-    virtual std::vector<Port_id_t>& decode(payload_type& txn, bool &success,
+    virtual std::vector<Port_id_t> decode(payload_type& txn, bool &success,
                                            gs::socket::config<TRAITS>* conf,
                                            unsigned int from)
     {
-        static std::vector<Port_id_t> targetId(1);
+        std::vector<Port_id_t> targetId(1);
         Map_address_t decode_address = txn.get_address();
         Port_id_t port_id (m_max_port);
 
@@ -500,7 +500,7 @@ public:
         m_return_address = 0;
 
         if (m_address_map.size ()) {
-            m_return_address = ( m_address_map.end())->upper_bound;
+            m_return_address = ( m_address_map.back()).upper_bound;
         } else {
             SC_REPORT_ERROR(m_routine_name, "get_max() called on empty map");
         }
@@ -516,7 +516,7 @@ public:
     const Map_address_t & get_min(void)
     {
         if(m_address_map.size()) {
-            m_return_address = (m_address_map.begin())->lower_bound;
+            m_return_address = (m_address_map.front()).lower_bound;
         } else {
             SC_REPORT_ERROR(m_routine_name, "get_min() called on empty map");
         }

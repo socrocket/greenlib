@@ -114,11 +114,7 @@ public:
             string other_name("generic OSCI socket");
 
             if(other_side) {
-#if SYSTEMC_API == 210
-                other_router = dynamic_cast < GenericRouterBase < TRAITS, PORTMAX, MACAddressMap<TRAITS, PORTMAX>  > * >(other_side->get_parent());
-#else
                 other_router = dynamic_cast < GenericRouterBase < TRAITS, PORTMAX, MACAddressMap<TRAITS, PORTMAX>  > * >(other_side->get_parent_object());
-#endif
                 other_name = other_side->get_name();
             }
 
@@ -227,12 +223,12 @@ public:
      *
      * @note on error, m_max_port is returned
      */
-    virtual std::vector<Port_id_t>& decode(payload_type& txn,
+    virtual std::vector<Port_id_t> decode(payload_type& txn,
                                            gs::socket::config<TRAITS>* conf,
                                            unsigned int from)
     {
 
-        static std::vector<Port_id_t> targetId(1);
+        std::vector<Port_id_t> targetId(1);
 
         //Update the MAC address of the source if required
         unsigned char* data = txn.get_data_ptr();

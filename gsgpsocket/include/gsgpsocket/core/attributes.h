@@ -23,6 +23,7 @@
 #define __ATTRIBUTES_H__
 
 #include "attributeBase.h"
+#include <sstream>
 #include <string.h>
 #include <boost/config.hpp> // needed for SystemC 2.1
 #include <systemc>
@@ -231,8 +232,9 @@ public:
     
     // Destructor: delete own data if this has
     ~GSDataData() {
-      if (own_array)
+      if (own_array) {
         delete[] own_array; own_array = NULL;
+      }
     }
     
     /// set data pointer (remove own data if this has)

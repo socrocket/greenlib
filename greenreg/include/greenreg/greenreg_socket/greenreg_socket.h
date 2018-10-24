@@ -46,6 +46,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __GREENREG_SOCKET_H__
 #define __GREENREG_SOCKET_H__
 
+#ifndef GREENSOCS_BUSWIDTH
+#define GREENSOCS_BUSWIDTH 32
+#endif
+
 #include "gr_gsgpsocket.h"
 #include "greenreg/greenreg.h"
 
@@ -75,12 +79,12 @@ namespace reg {
     {
     }
     
-    gs::gp::GenericSlavePort<32>& operator()()
+    gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>& operator()()
     {
       return *this;
     }
     
-    gs::gp::GenericSlavePort<32>& get_bus_port()
+    gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>& get_bus_port()
     {
       return *this;
     }
@@ -99,7 +103,7 @@ namespace reg {
     }
     
     //! get_bus_port {enables port binding to bus}
-    gs::gp::GenericMasterBlockingPort<32>& get_bus_port()
+    gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>& get_bus_port()
     {
       return *this;
     }

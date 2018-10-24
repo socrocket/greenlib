@@ -35,6 +35,10 @@
 #ifndef _GR_GSGPSOCKET_H_
 #define _GR_GSGPSOCKET_H_
 
+#ifndef GREENSOCS_BUSWIDTH
+#error do not include this file directly, include greenreg_socket.h
+#endif
+
 #include "greenreg/greenreg.h"
 #include "transactor_if.h"
 
@@ -94,47 +98,47 @@ namespace gp {
 
   class generic_slave 
   //: public sc_core::sc_module
-  : public gs::gp::GenericSlavePort<32>
+  : public gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>
   , public generic_slave_base
-  , public gs::tlm_b_if<gs::gp::GenericSlaveAccessHandle>
+  , public gs::tlm_td_b_if<gs::gp::GenericSlaveAccessHandle>
   , public gs::payload_event_queue_output_if<gs::gp::slave_atom>
   {
   public:
 
-    typedef gs::gp::GenericSlavePort<32>::accessHandle accessHandle_slave;
-    typedef gs::gp::GenericSlavePort<32>::phase phase_slave;
-    typedef gs::gp::GenericSlavePort<32>::virtual_base_type virtual_base_type;
+    typedef gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::accessHandle accessHandle_slave;
+    typedef gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::phase phase_slave;
+    typedef gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::virtual_base_type virtual_base_type;
 
     SC_HAS_PROCESS( generic_slave);
 
     generic_slave( sc_core::sc_module_name _name, gs::reg::I_register_container_bus_access & _reg_bind, gr_uint_t _base_address, gr_uint_t _decode_size)
     //: sc_core::sc_module( _name)
     : virtual_base_type(_name/*"slave_port"*/, GSGP_SLAVE_SOCKET_TYPE_NAME)
-    , gs::gp::GenericSlavePort<32>( _name/*"slave_port"*/)
+    , gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>( _name/*"slave_port"*/)
     , generic_slave_base( &_reg_bind, _base_address, _decode_size)
     , m_base( _base_address)
     , m_high( _base_address + _decode_size)
     {
-      gs::gp::GenericSlavePort<32>::bind_b_if( *this);
-      gs::gp::GenericSlavePort<32>::peq.out_port(*this);
+      gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::bind_b_if( *this);
+      gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::peq.out_port(*this);
       
-      gs::gp::GenericSlavePort<32>::base_addr = _base_address;
-      gs::gp::GenericSlavePort<32>::high_addr = _base_address + _decode_size;
+      gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::base_addr = _base_address;
+      gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::high_addr = _base_address + _decode_size;
     }
 
     generic_slave( sc_core::sc_module_name _name, gs::reg::I_register_container_bus_access & _reg_bind)
     //: sc_core::sc_module( _name)
     : virtual_base_type(_name/*"slave_port"*/, GSGP_SLAVE_SOCKET_TYPE_NAME)
-    , gs::gp::GenericSlavePort<32>( _name/*"slave_port"*/)
+    , gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>( _name/*"slave_port"*/)
     , generic_slave_base( &_reg_bind, base_addr, high_addr - base_addr)
     , m_base( base_addr)
     , m_high( high_addr)
     {
-      gs::gp::GenericSlavePort<32>::bind_b_if( *this);
-      gs::gp::GenericSlavePort<32>::peq.out_port(*this);
+      gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::bind_b_if( *this);
+      gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::peq.out_port(*this);
       
-//       gs::gp::GenericSlavePort<32>::base_addr = _base_address;
-//       gs::gp::GenericSlavePort<32>::high_addr = _base_address + _decode_size;
+//       gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::base_addr = _base_address;
+//       gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::high_addr = _base_address + _decode_size;
       if (high_addr == 0) {
         std::stringstream ss;
         ss << "check parameter value for " << base_addr.getName() << "=" << base_addr << " and "
@@ -147,7 +151,8 @@ namespace gp {
     {}
 
     /// this method does not care about time
-    void b_transact(gs::gp::GenericSlaveAccessHandle _transaction) {
+    void b_transact(gs::gp::GenericSlaveAccessHandle _transaction, sc_core::sc_time &_delay) {
+      (void)_delay;
       stimulate_model( _transaction);
     }
 
@@ -156,8 +161,8 @@ namespace gp {
       m_base =base;
       m_high =high;
 
-      gs::gp::GenericSlavePort<32>::base_addr = base;
-      gs::gp::GenericSlavePort<32>::high_addr = high;        
+      gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::base_addr = base;
+      gs::gp::GenericSlavePort<GREENSOCS_BUSWIDTH>::high_addr = high;        
     }
     
     virtual void getAddress(sc_dt::uint64& base, sc_dt::uint64& high) {
@@ -242,22 +247,22 @@ namespace gp {
   //: public sc_core::sc_module
   : public tlm_components::transactor_if
   , public gs::payload_event_queue_output_if<gs::gp::master_atom>
-  , public gs::gp::GenericMasterBlockingPort<32>
+  , public gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>
   {
   public:
 
-    typedef gs::gp::GenericMasterBlockingPort<32>::accessHandle transactionHandle_master;
-    typedef gs::gp::GenericMasterBlockingPort<32>::phase phase_master;
-    typedef gs::gp::GenericMasterBlockingPort<32>::virtual_base_type virtual_base_type;
+    typedef gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>::accessHandle transactionHandle_master;
+    typedef gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>::phase phase_master;
+    typedef gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>::virtual_base_type virtual_base_type;
 
     SC_HAS_PROCESS( generic_master);
 
     generic_master( sc_core::sc_module_name _name)
     //: sc_core::sc_module( _name)
     : virtual_base_type( _name/*"master_port"*/, GSGP_MASTER_SOCKET_TYPE_NAME)
-    , gs::gp::GenericMasterBlockingPort<32>( _name/*"master_port"*/)
+    , gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>( _name/*"master_port"*/)
     {
-      gs::gp::GenericMasterBlockingPort<32>::out_port(*this);
+      gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>::out_port(*this);
     }
 
     virtual ~generic_master()
@@ -281,7 +286,7 @@ namespace gp {
     
     // transactor methods
     virtual void _read(unsigned _address, unsigned _length, unsigned int* _db, bool _bytes_enabled, unsigned int* _be) {
-      transaction = gs::gp::GenericMasterBlockingPort<32>::create_transaction();
+      transaction = gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>::create_transaction();
       // fix because greenbus does not overwrite data block cleanly (even though the back end does)
       *_db = 0;
 
@@ -291,13 +296,13 @@ namespace gp {
       gs::MData mdata(gs::GSDataType::dtype((unsigned char *)_db, _length));
       transaction->setMData(mdata);
 
-      gs::gp::GenericMasterBlockingPort<32>::Transact( transaction);
+      gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>::Transact( transaction);
       
-      gs::gp::GenericMasterBlockingPort<32>::release_transaction(transaction);
+      gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>::release_transaction(transaction);
     }
 
     virtual void _write(unsigned _address, unsigned _length, unsigned int* _db, bool _bytes_enabled, unsigned int* _be) {
-      transaction = gs::gp::GenericMasterBlockingPort<32>::create_transaction();
+      transaction = gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>::create_transaction();
       
       transaction->setMCmd(gs::Generic_MCMD_WR);
       transaction->setMAddr( _address);
@@ -306,9 +311,9 @@ namespace gp {
       transaction->setMData(mdata);
 //        transaction->set_mData(::tlm::MasterDataType( reinterpret_cast< unsigned char *>( _db), _length));
 
-      gs::gp::GenericMasterBlockingPort<32>::Transact( transaction);
+      gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>::Transact( transaction);
       
-      gs::gp::GenericMasterBlockingPort<32>::release_transaction(transaction);
+      gs::gp::GenericMasterBlockingPort<GREENSOCS_BUSWIDTH>::release_transaction(transaction);
     }
 
   private:

@@ -260,8 +260,10 @@ namespace gs {
         if (m_ext_support->get_extension<simulated_length>(sim_len, *m_tb_txn)){ //setMData called prior to setBurstLength
           sim_len->value=_mBurstLength; //so data length has already been set
         }
-        else
+        else {
           m_tb_txn->set_data_length(_mBurstLength);
+          m_tb_txn->set_streaming_width(_mBurstLength);
+        }
       }
       /// get the master burst length
       inline const MBurstLength getMBurstLength() const { 
@@ -316,7 +318,8 @@ namespace gs {
             
             sim_len->value=m_tb_txn->get_data_length();
           }
-          m_tb_txn->set_data_length(_mData.getSize()); 
+          m_tb_txn->set_data_length(_mData.getSize());
+          m_tb_txn->set_streaming_width(_mData.getSize());
           m_ext_support->validate_extension<simulated_length>(*m_tb_txn);
         }
         else{
@@ -398,6 +401,7 @@ namespace gs {
       
       void reset(){
         m_tb_txn->set_data_length(0);
+        m_tb_txn->set_streaming_width(0);
         m_tb_txn->set_data_ptr(NULL);
         m_ext_support->invalidate_extension<lock>(*m_tb_txn);
         m_ext_support->invalidate_extension<semaphore>(*m_tb_txn);

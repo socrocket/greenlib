@@ -43,11 +43,7 @@ namespace cnf {
     sc_core::sc_module *mod = NULL;
     for(int i = 0; i<10; i++) {
       if (!obj) break;
-  #if SYSTEMC_API == 210
-      obj = obj->get_parent();
-  #else
       obj = obj->get_parent_object();
-  #endif
       mod = dynamic_cast<sc_module*>(obj);
       if (mod) break;
     }

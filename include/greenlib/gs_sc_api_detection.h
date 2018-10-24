@@ -31,27 +31,23 @@
 
 #include <systemc>
 
-// Respect if the macro is set externally (to 210, 220, 230 or 231 only)
+// Respect if the macro is set externally (to 230 or 231 only)
 #ifdef SYSTEMC_API
 
 #if SYSTEMC_API != 210 && SYSTEMC_API != 220 && SYSTEMC_API != 230 && \
-SYSTEMC_API != 231
+SYSTEMC_API != 231 && SYSTEMC_API != 232
 #error The SYSTEMC_API macro is set to an unknown value. Accepted values are \
-210, 220, 230 or 231. Please, see the source code gs_sc_api_detection.h for more \
+  210, 220, 230, 231 or 232. Please, see the source code gs_sc_api_detection.h for more \
 information.
 #endif
 
 // So it is not defined externally, detect it!
 #else
 
-// OSCI SystemC 2.1
-#if SYSTEMC_VERSION == 20050714
-#define SYSTEMC_API 210
-#endif
-
-// OSCI SystemC 2.2.0 and 2.2.05jun06
-#if SYSTEMC_VERSION == 20070314 || SYSTEMC_VERSION == 20060505
-#define SYSTEMC_API 220
+// OSCI SystemC 2.1.0, 2.2.0 and 2.2.05jun06 (Unsupported)
+#if SYSTEMC_VERSION == 20050714 || SYSTEMC_VERSION == 20070314 \
+                                || SYSTEMC_VERSION == 20060505
+#error GreenLib only supports SystemC 2.3.0, 2.3.1 and 2.3.2
 #endif
 
 // OSCI SystemC 2.3.0
@@ -62,6 +58,11 @@ information.
 // OSCI SystemC 2.3.1
 #if SYSTEMC_VERSION == 20140417
 #define SYSTEMC_API 231
+#endif
+
+// OSCI SystemC 2.3.2 public review
+#if SYSTEMC_VERSION == 20171012
+#define SYSTEMC_API 232
 #endif
 
 // SystemC API to use must be defined at this point

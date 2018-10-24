@@ -1,0 +1,16 @@
+# Templates
+.job_unix_makefile: &job_unix_makefile
+  script:
+    - mkdir install_prefix
+    - cmake . -DSYSTEMC_PREFIX=$SYSTEMC_HOME_2_3_1 -DCMAKE_INSTALL_PREFIX=`pwd`/install_prefix
+    - make
+    - make check
+    - make install
+
+# Jobs
+## Linux
+Linux:
+  variables:
+    CC: "gcc"
+    CXX: "g++"
+  <<: *job_unix_makefile

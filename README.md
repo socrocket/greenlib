@@ -1,15 +1,14 @@
 
-
 # GreenLib
 
 ## Overview
 
 **Productivity library for SystemC modelling**
 
-* **GreenReg** : Easy accessible register modeling 
+* **GreenReg** : Easy accessible register modeling
 * **GreenSocket** : More advanced and customized socket
-* **GreenSignalSocket** : Model all the ports corresponding to different signals in an IP 
-* **GreenConfig** : Flexible configuration and inspection 
+* **GreenSignalSocket** : Model all the ports corresponding to different signals in an IP
+* **GreenConfig** : Flexible configuration and inspection
 * **GreenControl** : Router that connects user modules with service providers (plugins)
 * **GreenMessage** : A framework to pass messages from one SystemC module to another
 * **GreenSerialSocket** : TLM2 based Asynchronous Serial communication protocol which can be used to model industry standard serial interfaces like UART Model
@@ -20,14 +19,14 @@ the implementation of more complex memories
 
 ## Code status
 
-[![build status](http://ci.greensocs.com/projects/12/status.png?ref=master)](http://ci.greensocs.com/projects/12?ref=master)
+[![build status](https://git.greensocs.com/greenlib/greenlib/badges/master/build.svg)](https://git.greensocs.com/greenlib/greenlib/commits/master)
 
 ## Requirements
 
 GreenLib requires :
 
 * GIT > 1.8.2
-* SystemC[^systemc-windows-support] 2.1.0 to 2.3.1
+* SystemC 2.3.x
 * CMake > 2.8
 * Boost > 1.34
 * Python
@@ -36,9 +35,7 @@ GreenLib requires :
 * Lua > 5.1
 * SWIG
 
-[^systemc-windows-support]: On Windows, GreenLib requires SystemC 2.3.1.
-
-OS support : 
+OS support :
 
 * Linux (Debian/Ubuntu, CentOS)
 * Windows[^windows-support] with MinGW
@@ -73,7 +70,7 @@ Please try to install packages in paths without spaces.
 * [LUA](http://www.lua.org/download.html)
 * [SystemC](http://www.accellera.org/downloads/standards/systemc/)
 
-With MinGW Installer, install these following packages : 
+With MinGW Installer, install these following packages :
 
 **MinGW**
 
@@ -113,25 +110,23 @@ $ cmake -DCMAKE_INSTALL_PREFIX=build -DSYSTEMC_PREFIX=/usr/local/lib/systemc-2.3
 #### Windows
 
 ```sh
-cmake -DCMAKE_INSTALL_PREFIX=build 
+cmake -DCMAKE_INSTALL_PREFIX=build
 -DSYSTEMC_PREFIX=/c/Projects/systemc-2.3.1 \
--DLUA_LIBRARIES=/c/Projects/lua-5.2.4/src/liblua.a 
+-DLUA_LIBRARIES=/c/Projects/lua-5.2.4/src/liblua.a
 -DLUA_INCLUDE_DIR=/c/Projects/lua-5.2.4/src/ \
 -DBOOST_ROOT=/c/Projects/boost-1-57-0/ \
--DSWIG_DIR=/c/Projects/swigwin-3.0.5 
+-DSWIG_DIR=/c/Projects/swigwin-3.0.5
 -DSWIG_EXECUTABLE=/c/Projects/swigwin-3.0.5/swig.exe \
--G"Unix Makefiles" 
+-G"Unix Makefiles"
 ```
 
-Then compile [^make-parallel]:
+Then compile:
 
 ```sh
-make
+make -j[Specifies the number of jobs (commands) to run simultaneously]
 ```
 
 This action will result in the compilation of **GreenLib**.
-
-[^make-parallel]: Currenlty, we don't support parallel jobs. We are working on it.
 
 ## Check
 
@@ -145,7 +140,7 @@ or with parallel jobs:
 make check -j[Specifies the number of jobs (commands) to run simultaneously]
 ```
 
-This action will compile examples and check output with expected output. 
+This action will compile examples and check output with expected output.
 
 If everything is OK, you should get *"100% tests passed"* message.
 
@@ -161,8 +156,8 @@ This action will result in a package of **GreenLib** where you have defined `CMA
 
 * Copy the `misc/FindGreenLib.cmake` file in your project repository.
 * Add the following lines into your `CMakeLists.txt`:
-    
-```cmake    
+
+```cmake
 find_package(GreenLib)
 if(GreenLib_FOUND)
 	include_directories(${GREENLIB_INCLUDE_DIRS})
@@ -174,7 +169,7 @@ endif()
 
 ## Contributing
 
-**GreenLib** is an open source, community-driven project. If you'd like to contribute, please feel free to fork project and open a merge request or to [send us] a patch. 
+**GreenLib** is an open source, community-driven project. If you'd like to contribute, please feel free to fork project and open a merge request or to [send us] a patch.
 
 [send us]:http://www.greensocs.com/contact
 

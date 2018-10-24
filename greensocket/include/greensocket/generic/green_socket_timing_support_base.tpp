@@ -31,7 +31,7 @@ bool gs::socket::timing_info::operator ==( timing_info& rhs)
   // or a difference in timing for the same phase, we signal inequality
   it1=m_timing_map.begin();
   it2= rhs.m_timing_map.begin();
-  for(;it1!= m_timing_map.end(), it2!=rhs.m_timing_map.end();it1++, it2++)
+  for(;it1!= m_timing_map.end() && it2!=rhs.m_timing_map.end();it1++, it2++)
   {
       if(it1->first==it2->first){
           if(it1->second!=it2->second)

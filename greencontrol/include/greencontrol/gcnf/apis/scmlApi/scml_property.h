@@ -95,11 +95,7 @@ protected:
   explicit gcnfScmlProperty_base(const std::string& par_name);
   
   const char * name() {
-#if SYSTEMC_API == 210
-    sc_core::sc_module *mod = dynamic_cast<sc_module*>(this->get_parent());
-#else
     sc_core::sc_module *mod = dynamic_cast<sc_module*>(this->get_parent_object());
-#endif
     if (mod == NULL)
       SC_REPORT_ERROR("scml_property", "Parent module is not a sc_core::sc_module!");
     const char* n = mod->name();
@@ -209,11 +205,7 @@ inline gcnfScmlProperty_tbase<T>::gcnfScmlProperty_tbase(const std::string& par_
 {
   GCNF_DUMP_N(name(), "gcnfScmlProperty_tbase<T>("<<par_name.c_str()<<") constructor");
 
-  #if SYSTEMC_API == 210
-  sc_core::sc_module *mod = dynamic_cast<sc_module*>(this->get_parent());
-  #else
   sc_core::sc_module *mod = dynamic_cast<sc_module*>(this->get_parent_object());
-  #endif
   if (!mod) {
     SC_REPORT_ERROR(name(), "gcnfScmlProperty_tbase: parent is no module!");
   }
@@ -234,11 +226,7 @@ inline gcnfScmlProperty_tbase<T>::gcnfScmlProperty_tbase(const std::string& par_
 
   GCNF_DUMP_N(name(), "gcnfScmlProperty_tbase<T>("<<par_name.c_str()<<", "<<val_ss.str().c_str()<<") constructor");
 
-  #if SYSTEMC_API == 210
-  sc_core::sc_module *mod = dynamic_cast<sc_module*>(this->get_parent());
-  #else
   sc_core::sc_module *mod = dynamic_cast<sc_module*>(this->get_parent_object());
-  #endif
   if (!mod) {
     SC_REPORT_ERROR(name(), "gcnfScmlProperty_tbase: parent is no module!");
   }

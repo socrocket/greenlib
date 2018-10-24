@@ -50,6 +50,7 @@ public:
     : sc_core::sc_module(name),
       gs::msg::receiver_proxy(msgIn,name)
   {
+    id = counter++;
     SC_THREAD(main_action);
   }
 
@@ -59,6 +60,8 @@ public:
     while(1) {
       std::cout << name() << ": reading fifo for incomming messages" << std::endl;
       gs::msg::Message msg = msgIn.read();
+      /* Wait there to be deterministic on all OS. */
+      wait(id, sc_core::SC_SEC);
       std::cout << name() << ": received a message with command: " << msg["command"] << std::endl;
 
       gs::msg::WriteIf& reply = gs::msg::findReceiver(msg["reply"]);
@@ -70,4 +73,8 @@ public:
 
 private:
   sc_core::sc_fifo<gs::msg::Message> msgIn;
+  int id;
+  static int counter;
 };
+
+int receiver_module::counter = 1;

@@ -1,56 +1,43 @@
-ADD_LIBRARY(greenscript STATIC
-	../src/greenscript.cpp
-    )
+add_library(greenscript STATIC ../src/greenscript.cpp)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_GREENCONTROL -Wno-unused-value")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_GREENCONTROL -Wno-unused-value")
 
 #
-# Create _gsp_sc.so and _gsp_sc.py for embedded Python scripts.
+# Create _gsp_sc and _gsp_sc.py for GreenScript.
 #
-SET_SOURCE_FILES_PROPERTIES(../gsp_scPYTHON_wrap.cxx PROPERTIES GENERATED 1)
-SET_SOURCE_FILES_PROPERTIES(../gsp_sc.i PROPERTIES CPLUSPLUS ON)
-SET_SOURCE_FILES_PROPERTIES(../gsp_sc.i
-                                     PROPERTIES SWIG_FLAGS "-DUSE_GREENCONTROL")
-SWIG_ADD_MODULE(gsp_sc python ../gsp_sc.i)
 
-ADD_LIBRARY(_gsp_sc.so SHARED ../src/gsp_sc.cpp
-                              ../gsp_scPYTHON_wrap.cxx)
-SET_TARGET_PROPERTIES(_gsp_sc.so PROPERTIES PREFIX "")
-SET_TARGET_PROPERTIES(_gsp_sc.so PROPERTIES SUFFIX "")
-TARGET_LINK_LIBRARIES(_gsp_sc.so ${LUA_LIBRARIES})
+### SWIG (gsp_scPYTHON_wrap) ###
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/../gsp_scPYTHON_wrap.cxx
+    COMMAND ${SWIG_EXECUTABLE} -python -c++ -DUSE_GREENCONTROL
+            -o ${CMAKE_CURRENT_BINARY_DIR}/../gsp_scPYTHON_wrap.cxx
+            -outdir ${CMAKE_CURRENT_BINARY_DIR}
+            -I${CMAKE_CURRENT_SOURCE_DIR}/../include
+            ${CMAKE_CURRENT_SOURCE_DIR}/../gsp_sc.i
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../gsp_sc.i)
+add_custom_target(gsp_scPYTHON_wrap
+    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/../gsp_scPYTHON_wrap.cxx)
+
+### gsp_sc ###
+add_library(_gsp_sc SHARED ../src/gsp_sc.cpp
+                           ${CMAKE_CURRENT_BINARY_DIR}/../gsp_scPYTHON_wrap.cxx)
+set_target_properties(_gsp_sc PROPERTIES PREFIX "")
+add_dependencies(_gsp_sc gsp_scPYTHON_wrap)
+target_link_libraries(_gsp_sc ${LUA_LIBRARIES}
+                              ${PYTHON_LIBRARIES}
+                              ${SystemC_LIBRARIES})
 
 #
-# Create _gsp_sc_sa.so and _gsp_sc_sa.py for standalone Python scripts.
+# INSTALL
 #
-SET_SOURCE_FILES_PROPERTIES(../gsp_sc_saPYTHON_wrap.cxx
-                                                         PROPERTIES GENERATED 1)
-SET_SOURCE_FILES_PROPERTIES(../gsp_sc_sa.i PROPERTIES CPLUSPLUS ON)
-SET_SOURCE_FILES_PROPERTIES(../gsp_sc_sa.i
-                                     PROPERTIES SWIG_FLAGS "-DUSE_GREENCONTROL")
-SWIG_ADD_MODULE(gsp_sc_sa python ../gsp_sc_sa.i)
-
-ADD_LIBRARY(_gsp_sc_sa.so SHARED ../src/gsp_sc.cpp
-                                 ../gsp_sc_saPYTHON_wrap.cxx)
-SET_TARGET_PROPERTIES(_gsp_sc_sa.so PROPERTIES PREFIX "")
-SET_TARGET_PROPERTIES(_gsp_sc_sa.so PROPERTIES SUFFIX "")
-TARGET_LINK_LIBRARIES(_gsp_sc_sa.so ${SystemC_LIBRARIES_STATIC}
-                                    ${LUA_LIBRARIES})
-
 install(TARGETS greenscript DESTINATION lib)
 install(FILES ../gs.py
-        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
-
-install(FILES ../gs_sa.py
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
 
 #
 # This is generated files, there are in CMAKE_CURRENT_BINARY_DIR.
 #
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/_gsp_sc.so
+install(TARGETS _gsp_sc
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gsp_sc.py
-        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/_gsp_sc_sa.so
-        DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gsp_sc_sa.py
         DESTINATION "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages")

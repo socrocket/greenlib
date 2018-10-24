@@ -44,6 +44,7 @@
 // includes the callback adapter which is needed because the callback register macro is not yet included at this point.
 #include "greencontrol/gcnf/plugin/config_paramcallbadapt.h"
 
+#include <string.h>
 
 namespace gs {
 namespace cnf {

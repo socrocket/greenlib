@@ -53,4 +53,6 @@ public:
 
 private:
   sc_core::sc_fifo<gs::msg::Message> msgIn;
+  int id;
+  static int counter;
 };

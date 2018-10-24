@@ -1,9 +1,21 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 project (GREENLIB)
+
+find_package(PythonInterp 2.7 REQUIRED)
+find_package(PythonLibs 2.7 REQUIRED)
+
+include(GNUInstallDirs)
+
+set(GreenLib_EXAMPLES_DIR ${CMAKE_INSTALL_DATADIR}/greensocs/examples)
+set(GreenLib_DOCS_DIR ${CMAKE_INSTALL_DATADIR}/greensocs/docs)
 
 include(FeatureSummary)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
+function (add_test_compare name file1 file2)
+	add_test(NAME ${name}
+             COMMAND diff --strip-trailing-cr ${file1} ${file2})
+endfunction()
 
 # Compile and run the tests
 add_custom_target(check COMMAND make compile_test COMMAND make test)
@@ -17,7 +29,7 @@ add_custom_target(run_test COMMAND make test)
 
 # Require SystemC
 set(SystemC_USE_STATIC_LIBS ${USE_STATIC_SYSTEMC})
-find_package( SystemC )
+find_package(SystemC 2.3.0)
 if(SystemC_FOUND)
     set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} ${SystemC_INCLUDE_DIRS})
 else()
@@ -46,12 +58,14 @@ endif()
 
 # Require Python
 
-if(DEFINED ENV{PYTHON_ROOT})
-  set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} $ENV{PYTHON_ROOT})
-else()
-  find_package(PythonLibs REQUIRED)
-  set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
-endif()
+if(NOT MINGW)
+    if(DEFINED ENV{PYTHON_ROOT})
+        set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} $ENV{PYTHON_ROOT})
+    else()
+        find_package(PythonLibs REQUIRED)
+        set(EXTERNAL_INCLUDE_DIRS ${EXTERNAL_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
+    endif()
+endif(NOT MINGW)
 
 # Require Lua
 if(DEFINED ENV{LUA_INCLUDE_DIR} AND DEFINED ENV{LUA_LIBRARIES})
@@ -77,15 +91,8 @@ set(GreenSocs_INCLUDE_DIRS "include")
 set(GreenSocs_LIBRARY_DIRS ../../../lib)
 set(GreenSocs_LIBRARIES pthread)
 
-
-# License
-
-install(FILES greencontrol/LICENSE
-        DESTINATION .
-)
-
 install(DIRECTORY include/
-        DESTINATION include
+    DESTINATION include
 )
 
 # GreenControl
@@ -104,17 +111,17 @@ install(DIRECTORY greencontrol/include/
 )
 
 install(DIRECTORY greencontrol/examples/
-        DESTINATION examples/greencontrol
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/greencontrol
         PATTERN ".svn" EXCLUDE
 )
 
 install(DIRECTORY greencontrol/docs/
-        DESTINATION docs/greencontrol
+        DESTINATION ${GreenLib_DOCS_DIR}/greencontrol
         PATTERN ".svn" EXCLUDE
 )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
-        DESTINATION examples/greencontrol
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/greencontrol
 )
 
 
@@ -128,17 +135,17 @@ install(DIRECTORY greensocket/include/
 )
 
 install(DIRECTORY greensocket/examples/
-        DESTINATION examples/greensocket
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/greensocket
         PATTERN ".svn" EXCLUDE
 )
 
 install(DIRECTORY greensocket/doc/     # TODO: doc or docs?
-        DESTINATION docs/greensocket
+        DESTINATION ${GreenLib_DOCS_DIR}/greensocket
         PATTERN ".svn" EXCLUDE
 )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
-        DESTINATION examples/greensocket
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/greensocket
 )
 
 
@@ -152,17 +159,17 @@ install(DIRECTORY gsgpsocket/include/
 )
 
 install(DIRECTORY gsgpsocket/examples/
-        DESTINATION examples/gsgpsocket
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/gsgpsocket
         PATTERN ".svn" EXCLUDE
 )
 
 # install(DIRECTORY gsgpsocket/doc/     # TODO: doc or docs?
-#         DESTINATION docs/gsgpsocket
+#         DESTINATION ${GreenLib_DOCS_DIR}/gsgpsocket
 #         PATTERN ".svn" EXCLUDE
 # )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
-        DESTINATION examples/gsgpsocket
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/gsgpsocket
 )
 
 
@@ -176,17 +183,17 @@ install(DIRECTORY greenrouter/include/
 )
 
 install(DIRECTORY greenrouter/examples/
-        DESTINATION examples/greenrouter
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/greenrouter
         PATTERN ".svn" EXCLUDE
 )
 
 install(DIRECTORY greenrouter/docs/     # TODO: doc or docs?
-        DESTINATION docs/greenrouter
+        DESTINATION ${GreenLib_DOCS_DIR}/greenrouter
         PATTERN ".svn" EXCLUDE
 )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
-        DESTINATION examples/greenrouter
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/greenrouter
 )
 
 # GreenSignalSocket
@@ -199,17 +206,17 @@ install(DIRECTORY greensignalsocket/include/
 )
 
 install(DIRECTORY greensignalsocket/examples/
-        DESTINATION examples/greensignalsocket
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/greensignalsocket
         PATTERN ".svn" EXCLUDE
 )
 
 install(DIRECTORY greensignalsocket/docs/     # TODO: doc or docs?
-        DESTINATION docs/greensignalsocket
+        DESTINATION ${GreenLib_DOCS_DIR}/greensignalsocket
         PATTERN ".svn" EXCLUDE
 )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.defs
-        DESTINATION examples/greensignalsocket
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/greensignalsocket
 )
 
 # Greenreg
@@ -223,12 +230,12 @@ install(DIRECTORY greenreg/include/
 )
 
 install(DIRECTORY greenreg/examples/
-        DESTINATION examples/greenreg
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/greenreg
         PATTERN ".svn" EXCLUDE
 )
 
 install(DIRECTORY greenreg/doc/     # TODO: doc or docs?
-        DESTINATION docs/greenreg
+        DESTINATION ${GreenLib_DOCS_DIR}/greenreg
         PATTERN ".svn" EXCLUDE
 )
 
@@ -241,11 +248,11 @@ install(DIRECTORY greenmessage/include/
 )
 
 install(DIRECTORY greenmessage/examples/
-    DESTINATION examples/greenmessage
+    DESTINATION ${GreenLib_EXAMPLES_DIR}/greenmessage
 )
 
 install(DIRECTORY greenmessage/docs/
-    DESTINATION docs/greenmessage
+    DESTINATION ${GreenLib_DOCS_DIR}/greenmessage
 )
 
 # Greenscript
@@ -257,11 +264,11 @@ install(DIRECTORY greenscript/include/
 )
 
 install(DIRECTORY greenscript/examples/
-        DESTINATION examples/greenscript
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/greenscript
 )
 
 install(DIRECTORY greenscript/docs/
-        DESTINATION docs/greenscript
+        DESTINATION ${GreenLib_DOCS_DIR}/greenscript
 )
 
 # Greenmemory
@@ -273,11 +280,11 @@ install(DIRECTORY greenmemory/include/
 )
 
 install(DIRECTORY greenmemory/examples/
-        DESTINATION examples/memory
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/memory
 )
 
 install(DIRECTORY greenmemory/docs/
-        DESTINATION docs/greenmemory
+        DESTINATION ${GreenLib_DOCS_DIR}/greenmemory
 )
 
 # Greensignalbus
@@ -289,7 +296,7 @@ install(DIRECTORY greensignalbus/include/
 )
 
 install(DIRECTORY greensignalbus/examples/
-        DESTINATION examples/signalbus
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/signalbus
 )
 
 # GreenSerialSocket
@@ -302,7 +309,23 @@ install(DIRECTORY greenserialsocket/include/
 )
 
 install(DIRECTORY greenserialsocket/docs/
-        DESTINATION docs/greenserialsocket
+        DESTINATION ${GreenLib_DOCS_DIR}/greenserialsocket
+)
+
+# Greenthreads
+
+set(GreenSocs_INCLUDE_DIRS ${GreenSocs_INCLUDE_DIRS} greenthreads/include/)
+
+install(DIRECTORY greenthreads/include/
+        DESTINATION include
+)
+
+install(DIRECTORY greenthreads/examples/
+        DESTINATION ${GreenLib_EXAMPLES_DIR}/threads
+)
+
+install(DIRECTORY greenthreads/docs/
+        DESTINATION ${GreenLib_DOCS_DIR}/greenthreads
 )
 
 # Include directory must use first the repository headers!
@@ -314,7 +337,7 @@ link_directories(${GreenSocs_LIB_DIRS})
 
 # CXX flags for example or library compilation.
 if(MINGW)
-    set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES -D_REENTRANT -static-libgcc -static-libstdc++")
+    set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES -D_REENTRANT -pthread")
 else(MINGW)
     set(CMAKE_CXX_FLAGS "-g -Wall -DSC_INCLUDE_DYNAMIC_PROCESSES -D_REENTRANT -fPIC")
 endif(MINGW)
@@ -327,6 +350,7 @@ add_subdirectory(greenmessage EXCLUDE_FROM_ALL)
 add_subdirectory(gsgpsocket EXCLUDE_FROM_ALL)
 add_subdirectory(greensignalbus EXCLUDE_FROM_ALL)
 add_subdirectory(greenserialsocket EXCLUDE_FROM_ALL)
+add_subdirectory(greenthreads)
 
 # Compile greenreg library.
 add_subdirectory(greenreg)
@@ -345,3 +369,8 @@ set (CPACK_PACKAGE_VERSION_MAJOR "1")
 set (CPACK_PACKAGE_VERSION_MINOR "0")
 set (CPACK_PACKAGE_VERSION_PATCH "0")
 include (CPack)
+
+add_library(greenlib INTERFACE)
+add_library(GreenLib::greenlib ALIAS greenlib)
+target_include_directories(greenlib INTERFACE ${GreenSocs_INCLUDE_DIRS})
+target_link_libraries(greenlib INTERFACE greenreg greenthreads)

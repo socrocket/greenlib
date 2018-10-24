@@ -52,22 +52,10 @@ findInSimContextByName(const char* name, sc_core::sc_object *node = 0) {
   const std::vector<sc_core::sc_object *> *childs_stack;
   if (node) {
     // get child vector
-#if SYSTEMC_API == 210
-    sc_core::sc_module* node_as_module = dynamic_cast< sc_core::sc_module* >(node);
-    if (node_as_module) childs_stack = &(node_as_module->get_child_objects());
-    else return 0;
-#else
     childs_stack = &node->get_child_objects();
-#endif
   } else {
     // get child vector of sim context
-#if SYSTEMC_API == 210
-    sc_core::sc_simcontext *sim; // deprecated with SystemC-2.2
-    sim = sc_core::sc_get_curr_simcontext(); // deprecated with SystemC-2.2
-    childs_stack = &(sim->get_child_objects());
-#else
     childs_stack = &sc_core::sc_get_top_level_objects();
-#endif
   }
   // go through childs
   for (unsigned int i = 0; i < childs_stack->size(); i++) {

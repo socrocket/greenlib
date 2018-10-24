@@ -50,7 +50,7 @@ namespace std {
 }
 
 %{
-#include "../include/greenscript/gsp_sc.h"
+#include "greenscript/gsp_sc.h"
 %}
 
-%include "../include/greenscript/gsp_sc.h"
+%include "greenscript/gsp_sc.h"

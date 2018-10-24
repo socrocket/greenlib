@@ -44,7 +44,7 @@ namespace cnf {
   // forward declarations
   class gs_param_base;
   template<typename T> class gs_param;
-  template<typename T, template<class T> class gs_param_T, typename ConfigPlugin_T> class GCnf_private_Api_T;
+  template<typename T, template<class T_> class gs_param_T, typename ConfigPlugin_T> class GCnf_private_Api_T;
   
   /// private Config Plugin to be used within a private config API
   /**
